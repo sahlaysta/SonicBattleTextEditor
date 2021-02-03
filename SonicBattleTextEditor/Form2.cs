@@ -14,17 +14,20 @@ namespace SonicBattleTextEditor
     public partial class Form2 : Form
     {
         private string setlang = Globals.proLang;
+        private List<string> langlist = new List<string>();
         public Form2()
         {
             InitializeComponent();
-            this.MinimumSize = new Size(200, 375);
+            this.MinimumSize = new Size(200, 130);
             
             List<string> jsonlist = new List<string>();
             foreach (string str in Directory.GetFiles(Path.Combine(Globals.dir), "*" + Globals.langExt)) {
+                langlist.Add(str);
                 jsonlist.Add(File.ReadLines(str).First());
             }
 
             listBox1.DataSource = jsonlist;
+            listBox1.SelectedIndex = -1;
 
             this.Text = Globals.strings[6];
             button1.Text = Globals.strings[8];
@@ -38,7 +41,7 @@ namespace SonicBattleTextEditor
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int sel = listBox1.FindString(listBox1.SelectedItem.ToString());
+            
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -48,8 +51,16 @@ namespace SonicBattleTextEditor
 
         private void button1_Click(object sender, EventArgs e)
         {
-
+            bool restart = Globals.prefs[0] == "-1";
+            string targetlang = Path.GetFileNameWithoutExtension(langlist[listBox1.FindString(listBox1.SelectedItem.ToString())]);
+            Globals.prefs[0] = targetlang;
+            Globals.saveprefs();
+            if (restart)
+                Application.Restart();
+            else
+            {
+                MessageBox.Show(Globals.strings[10] + "\n--\n" + System.IO.File.ReadAllText(Path.Combine(Globals.dir, targetlang + Globals.langExt)).Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)[10], Globals.strings[11]);
+            }
         }
-
     }
 }
