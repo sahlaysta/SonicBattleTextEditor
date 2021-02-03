@@ -14,40 +14,15 @@ namespace SonicBattleTextEditor
 {
     public partial class Form1 : Form
     {
-        private string Form2n = "Form2"; //"Select a language" text
         public Form1()
         {
             InitializeComponent();
-            setlang(Globals.sysLang);
-        }
-        private void setlang(string ls)
-        {
-            string textdir = @Path.Combine(Globals.dir, ls + ".json");
-            if (!(File.Exists(textdir)))
-            {
-                if (@Directory.GetFiles(Path.Combine(Globals.dir), Globals.sysLang.Substring(0, Globals.sysLang.IndexOf('-') + 1) + "*.json").Length>0)
-                    textdir = @Directory.GetFiles(Path.Combine(Globals.dir), Globals.sysLang.Substring(0, Globals.sysLang.IndexOf('-') + 1) + "*.json")[0];
-                if (!(File.Exists(textdir)))
-                    return;
-            }
-            string[] strings = System.IO.File.ReadAllText(textdir).Split(new string[] {System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-            setmenustrings(strings);
-        }
-        private void setmenustrings(string[] str)
-        {
-            fileToolStripMenuItem.Text = str[1];
-            openToolStripMenuItem.Text = str[2];
-            toolStripMenuItem1.Text = str[3];
-            toolStripMenuItem3.Text = str[4];
-            this.Text = str[5];
-            Globals.lt1 = str[7];
-        }
-        private void languageselector()
-        {
-            Form2 form = new Form2();
-            form.Text = Form2n;
-            form.Size=new Size(400, 400);
-            form.ShowDialog();
+
+            this.Text = Globals.strings[5];
+            fileToolStripMenuItem.Text = Globals.strings[1];
+            openToolStripMenuItem.Text = Globals.strings[2];
+            toolStripMenuItem1.Text = Globals.strings[3];
+            toolStripMenuItem3.Text = Globals.strings[4];
         }
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -63,12 +38,15 @@ namespace SonicBattleTextEditor
         }
         private void toolStripMenuItem3_Click(object sender, EventArgs e) //change language
         {
-            languageselector();
+            new Form2().Show();
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
 
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }
