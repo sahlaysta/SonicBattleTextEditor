@@ -16,6 +16,7 @@ namespace SonicBattleTextEditor
         public static string proLang = "";
         public static string defaultLang = "en-US";
         public static string langExt = ".json";
+        public static string libn = "sb.lib";
         public static string[] strings = new string[] { "" };
         public static string[] prefs = new string[] { "" };
             public static string prefn = "sbte.prefs";
