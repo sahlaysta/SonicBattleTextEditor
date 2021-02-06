@@ -44,7 +44,7 @@ namespace SonicBattleTextEditor
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            string[] defaultprefs = new string[] { "-1", "g" };
+            string[] defaultprefs = new string[] { "-1", "|/" };
             
             if (Globals.prefsexists())
             {
