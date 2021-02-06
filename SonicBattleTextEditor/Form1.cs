@@ -59,7 +59,7 @@ namespace SonicBattleTextEditor
             lib = new ValueTuple<string[], string[]> (liblinesx, liblinesy);
 
             StringBuilder rom = new StringBuilder();
-            foreach (char ch in File.ReadAllBytes(@"C:\\Users\\tswoo\\Desktop\\Stuff\\00sbter\\sb.gba"))
+            foreach (char ch in File.ReadAllBytes(rompath))
                 rom.AppendFormat(Convert.ToInt32(ch).ToString("X2"));
 
             List<string> sbstrings = new List<string>();
@@ -163,6 +163,15 @@ namespace SonicBattleTextEditor
 
         }
         private void button1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void listBox1_DoubleClick(object sender, MouseEventArgs e)
         {
 
         }
