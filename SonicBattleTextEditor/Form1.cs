@@ -32,7 +32,10 @@ namespace SonicBattleTextEditor
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.InitialDirectory = Globals.dir;
+                if (Globals.prefs[1] == "|/" || !Directory.Exists(Path.GetDirectoryName(Globals.prefs[1])))
+                    openFileDialog.InitialDirectory = Globals.dir;
+                else
+                    openFileDialog.InitialDirectory = Path.GetDirectoryName(Globals.prefs[1]);
                 openFileDialog.Filter = Globals.strings[15] + " (*.*)|*.*|" + Globals.strings[16] + " (*.gba)|*.gba";
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
@@ -41,6 +44,8 @@ namespace SonicBattleTextEditor
                 {
                     rompath = openFileDialog.FileName;
                     listBox1.DataSource = new string[] { Globals.strings[17] };
+                    Globals.prefs[1] = rompath;
+                    Globals.saveprefs();
                 }
                 else
                 {
