@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.VisualBasic;
 
 namespace SonicBattleTextEditor
 {
@@ -192,10 +193,25 @@ namespace SonicBattleTextEditor
         }
         private string replacen(string v)
         {
-            if (v.Contains("\\n"))
-                return v.Replace("\\n", "\n");
+            StringBuilder s = new StringBuilder();
+            char[] c = v.ToArray();
+            for (int i = 0; i < c.Length; i++)
+            {
+                if (c[i] == '\\')
+                {
+                    if (i + 1 < c.Length && c[i + 1] == 'n')
+                    {
+                        s.Append("\n");
+                        i++;
+                    }
+                    else
+                        s.Append("\\");
+                }
+                else
+                    s.Append(c[i]);
+            }
 
-            return v;
+            return s.ToString();
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -206,14 +222,20 @@ namespace SonicBattleTextEditor
                 {
                     textBox1.Enabled = false;
                     textBox1.Clear();
-                    foreach (char ch in replacen(listBox1.Items[listBox1.SelectedIndex].ToString()))
+
+                    StringBuilder s = new StringBuilder();
+                    char[] c = replacen(listBox1.Items[listBox1.SelectedIndex].ToString()).Replace("\\\\", "\\").ToArray();
+                    for (int i = 0; i < c.Length; i++)
                     {
-                        if (ch == '\n')
+                        if (c[i] == '\n')
                         {
-                            textBox1.AppendText(Environment.NewLine);
+                            if (c[i - 1] == '\\')
+                                textBox1.AppendText("n");
+                            else
+                                textBox1.AppendText(Environment.NewLine);
                         }
                         else
-                            textBox1.AppendText(ch.ToString());
+                            textBox1.AppendText(c[i].ToString());
                     }
                 }
                 textBox1.Enabled = true;
@@ -230,13 +252,16 @@ namespace SonicBattleTextEditor
             if (textBox1.Enabled)
             {
                 listBox1.BeginUpdate();
-                sbstrings[listBox1.SelectedIndex] = textBox1.Text.Replace("\n", "\\n");
+                sbstrings[listBox1.SelectedIndex] = textBox1.Text.Replace("\\", "\\\\").Replace("\n", "\\n");
                 listBox1.EndUpdate();
                 this.ActiveControl = textBox1;
             }
         }
-        private string parseSB(string s)
+        private string parseSB(string v)
         {
+            string s = (v.Replace("\r\n", "").Replace("\n", "").Replace("\r", ""));
+            s = replacen(s).Replace("\\\n", "\\\\n").Replace("\\\\", "\\");
+            
             StringBuilder result = new StringBuilder();
             int x = 0;
             for (int i = 0; i < s.Length; i++)
@@ -305,13 +330,10 @@ namespace SonicBattleTextEditor
                             i += "<PURPLE>".Length - 1;
                         }
                     }
-                    else if (s.Substring(i, 1) == "\\")
+                    else if (s[i] == '\n')
                     {
-                        if (s.Substring(i, 2) == "\\n")
-                        {
-                            result.Append("FDFF");
-                            i += 2;
-                        }
+                        result.Append("FDFF");
+                        i++;
                     }
                     else if (s.Substring(i, 1) == str)
                     {
