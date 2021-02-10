@@ -32,8 +32,43 @@ namespace SonicBattleTextEditor
             this.Text = Globals.strings[6];
             button1.Text = Globals.strings[8];
             label1.Text = Globals.strings[7] + " " + Globals.sysLang + "\n" + Globals.strings[9] + " " + Globals.proLang;
-        }
 
+            //dark theme
+            if (Globals.prefs[2] == "dark")
+            {
+                settheme(SystemColors.ControlText, SystemColors.ControlDarkDark);
+            }
+        }
+        private void settheme(Color a, Color b)
+        {
+            this.BackColor = a;
+            this.ForeColor = b;
+            foreach (Control x in this.Controls)
+            {
+                x.BackColor = a;
+                x.ForeColor = b;
+                foreach (Control subx in x.Controls)
+                {
+                    subx.BackColor = a;
+                    subx.ForeColor = b;
+                    foreach (Control y in subx.Controls)
+                    {
+                        y.BackColor = a;
+                        y.ForeColor = b;
+                        foreach (Control suby in y.Controls)
+                        {
+                            suby.BackColor = a;
+                            suby.ForeColor = b;
+                            foreach (Control w in suby.Controls)
+                            {
+                                w.BackColor = a;
+                                w.ForeColor = b;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         private void Form2_Load(object sender, EventArgs e)
         {
 
