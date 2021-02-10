@@ -44,7 +44,7 @@ namespace SonicBattleTextEditor
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            string[] defaultprefs = new string[] { "en-US", "|/" };
+            string[] defaultprefs = new string[] { "en-US", "|/", "light", "|/" };
             
             if (Globals.prefsexists())
             {
@@ -53,6 +53,18 @@ namespace SonicBattleTextEditor
             else
             {
                 Globals.prefs = defaultprefs;
+                Globals.saveprefs();
+            }
+
+            if (Globals.prefs.Length < defaultprefs.Length)
+            {
+                List<string> temp = new List<string>();
+                temp.AddRange(Globals.prefs);
+                for(int i = Globals.prefs.Length; i<defaultprefs.Length;i++)
+                {
+                    temp.Add(defaultprefs[i]);
+                }
+                Globals.prefs = temp.ToArray();
                 Globals.saveprefs();
             }
 

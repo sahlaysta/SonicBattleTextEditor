@@ -25,6 +25,7 @@ namespace SonicBattleTextEditor
             InitializeComponent();
 
             this.Text = Globals.strings[5];
+            this.MinimumSize = new Size(200, 300);
             fileToolStripMenuItem.Text = Globals.strings[1];
             openToolStripMenuItem.Text = Globals.strings[2];
             toolStripMenuItem1.Text = Globals.strings[3];
@@ -36,6 +37,51 @@ namespace SonicBattleTextEditor
             sToolStripMenuItem.Enabled = false;
             toolStripMenuItem2.Text = Globals.strings[19];
             toolStripMenuItem5.Text = Globals.strings[20];
+            thToolStripMenuItem.Text = Globals.strings[27];
+            splitContainer1.Panel1MinSize = 70;
+            splitContainer1.Panel2MinSize = 70;
+            toolStripMenuItem4.Text = Globals.strings[28];
+            toolStripMenuItem7.Text = Globals.strings[29];
+            toolStripMenuItem8.Enabled = false;
+            toolStripMenuItem7.Enabled = false;
+            toolStripMenuItem8.Text = Globals.strings[30];
+
+            //dark theme
+            if (Globals.prefs[2] == "dark")
+            {
+                settheme(SystemColors.ControlText, SystemColors.ControlDarkDark);
+                thToolStripMenuItem.Checked = true;
+            }
+        }
+        private void settheme(Color a, Color b)
+        {
+            this.BackColor = a;
+            this.ForeColor = b;
+            foreach (Control x in this.Controls)
+            {
+                x.BackColor = a;
+                x.ForeColor = b;
+                foreach (Control subx in x.Controls)
+                {
+                    subx.BackColor = a;
+                    subx.ForeColor = b;
+                    foreach (Control y in subx.Controls)
+                    {
+                        y.BackColor = a;
+                        y.ForeColor = b;
+                        foreach (Control suby in y.Controls)
+                        {
+                            suby.BackColor = a;
+                            suby.ForeColor = b;
+                            foreach (Control w in suby.Controls)
+                            {
+                                w.BackColor = a;
+                                w.ForeColor = b;
+                            }
+                        }
+                    }
+                }
+            }
         }
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -74,20 +120,22 @@ namespace SonicBattleTextEditor
                 rom.AppendFormat(Convert.ToInt32(ch).ToString("X2"));
             List<string> sbstringst = new List<string>();
             string endline = "FEFF";
-            foreach(var v in textobj)
+            foreach (var v in textobj)
                 sbstringst.AddRange(rom.ToString().Substring(2 * getloc(v.Item1), (2 * getloc((v.Item2 * 4) + int.Parse(v.Item1, System.Globalization.NumberStyles.HexNumber))) - (2 * getloc(v.Item1))).Split(new string[] { endline }, StringSplitOptions.RemoveEmptyEntries));
 
             //d(sbstrings.Aggregate((i, j) => i + j).Length);
             for (int i = 0; i < sbstringst.Count; i++)
                 sbstringst[i] = readstring(sbstringst[i]);
 
-            foreach(string str in sbstringst)
+            foreach (string str in sbstringst)
             {
                 sbstrings.Add(str);
             }
             sToolStripMenuItem.Enabled = true;
             listBox1.DataSource = sbstrings;
             textBox1.Enabled = true;
+            toolStripMenuItem8.Enabled = true;
+            toolStripMenuItem7.Enabled = true;
             listBox1.SelectedIndex = 1;
             listBox1.SelectedIndex = 0;
         }
@@ -261,7 +309,7 @@ namespace SonicBattleTextEditor
         {
             string s = (v.Replace("\r\n", "").Replace("\n", "").Replace("\r", ""));
             s = replacen(s).Replace("\\\n", "\\\\n").Replace("\\\\", "\\");
-            
+
             StringBuilder result = new StringBuilder();
             int x = 0;
             for (int i = 0; i < s.Length; i++)
@@ -357,11 +405,11 @@ namespace SonicBattleTextEditor
                 current = parseSB(str);
                 result.Append(current);
                 points.Append(reversepointer(pos.ToString("X2")) + "08");
-                pos = pos + current.Length/2;
+                pos = pos + current.Length / 2;
             }
 
             pos = getloc(p.Item1);
-            
+
             try
             {
                 using (var fs = new FileStream(rompath, FileMode.Open, FileAccess.Write))
@@ -372,7 +420,7 @@ namespace SonicBattleTextEditor
             }
             catch (Exception ex)
             {
-                MessageBox.Show(""+ex);
+                MessageBox.Show("" + ex);
                 return -1;
             }
 
@@ -409,7 +457,7 @@ namespace SonicBattleTextEditor
 
         private void toolStripMenuItem5_Click(object sender, EventArgs e)
         {
-            string message = Globals.strings[22] + ": porog" + "\n" + Globals.strings[23] + ": https://github.com/sahlaysta/SonicBattleTextEditor";
+            string message = Globals.strings[22] + ": porog" + "\n" + Globals.strings[23] + ": https://github.com/sahlaysta/SonicBattleTextEditor" + "\n" + Globals.strings[33] + ": 2.1";
             MessageBox.Show(message, Globals.strings[21], MessageBoxButtons.OK, MessageBoxIcon.None);
         }
         private void readsblib()
@@ -436,6 +484,104 @@ namespace SonicBattleTextEditor
                              .Where(x => x % 2 == 0)
                              .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
                              .ToArray();
+        }
+
+        private void thToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Globals.prefs[2]=="light")
+            {
+                Globals.prefs[2] = "dark";
+                Globals.saveprefs();
+                settheme(SystemColors.ControlText, SystemColors.ControlDarkDark);
+            }
+            else
+            {
+                Globals.prefs[2] = "light";
+                Globals.saveprefs();
+                settheme(SystemColors.Control, SystemColors.ControlText);
+            }
+        }
+
+        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void toolStripMenuItem7_Click(object sender, EventArgs e)
+        {
+            string exportpath = "";
+            using (SaveFileDialog openFileDialog = new SaveFileDialog())
+            {
+                if (Globals.prefs[3] == "|/" || !Directory.Exists(Path.GetDirectoryName(Globals.prefs[3])))
+                    openFileDialog.InitialDirectory = Globals.dir;
+                else
+                    openFileDialog.InitialDirectory = Path.GetDirectoryName(Globals.prefs[3]);
+                openFileDialog.Filter = Globals.strings[15] + " (*.*)|*.*|" + Globals.strings[31] + " (*.txt)|*.txt";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+                openFileDialog.Title = Globals.strings[29];
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    exportpath = openFileDialog.FileName;
+                    if (Globals.prefs[3] != exportpath)
+                    {
+                        Globals.prefs[3] = exportpath;
+                        Globals.saveprefs();
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+            List<string> export = new List<string>();
+            for (int i = 0; i < listBox1.Items.Count; i++)
+            {
+                export.Add(listBox1.Items[i].ToString());
+            }
+
+            System.IO.File.WriteAllLines(exportpath, export);
+            MessageBox.Show(Globals.strings[32]);
+        }
+
+        private void toolStripMenuItem8_Click(object sender, EventArgs e)
+        {
+            string exportpath = "";
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                if (Globals.prefs[3] == "|/" || !Directory.Exists(Path.GetDirectoryName(Globals.prefs[3])))
+                    openFileDialog.InitialDirectory = Globals.dir;
+                else
+                    openFileDialog.InitialDirectory = Path.GetDirectoryName(Globals.prefs[3]);
+                openFileDialog.Filter = Globals.strings[15] + " (*.*)|*.*|" + Globals.strings[31] + " (*.txt)|*.txt";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+                openFileDialog.Title = Globals.strings[30];
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    exportpath = openFileDialog.FileName;
+                    if (Globals.prefs[3] != exportpath)
+                    {
+                        Globals.prefs[3] = exportpath;
+                        Globals.saveprefs();
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+            string[] lines = File.ReadLines(exportpath).ToArray();
+            for (int i = 0; i < lines.Length; i++)
+            {
+                sbstrings[i] = lines[i];
+            }
+            listBox1.SelectedIndex = -1;
+            textBox1.Enabled = false;
+            textBox1.Text = "";
+            textBox1.Enabled =  true;
         }
     }
 }
