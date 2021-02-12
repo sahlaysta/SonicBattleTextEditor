@@ -112,6 +112,8 @@ namespace SonicBattleTextEditor
                 }
             }
 
+            textBox1.Enabled = false;
+            textBox1.Text = "";
             //read sb.lib file to tuple arrays
             readsblib();
 
@@ -127,6 +129,7 @@ namespace SonicBattleTextEditor
             for (int i = 0; i < sbstringst.Count; i++)
                 sbstringst[i] = readstring(sbstringst[i]);
 
+            sbstrings = new BindingList<string>();
             foreach (string str in sbstringst)
             {
                 sbstrings.Add(str);
@@ -442,6 +445,11 @@ namespace SonicBattleTextEditor
         }
         private void sToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Form3 pr = new Form3(Globals.strings[18], Globals.strings[34].Replace("[f]", Path.GetFileName(rompath)), Globals.strings[35], Globals.strings[36]);
+            pr.ShowDialog();
+            if (Globals.promptchoice == 0)
+                return;
+
             int i = 0;
             int q = 0;
             foreach (var v in textobj)
@@ -457,7 +465,7 @@ namespace SonicBattleTextEditor
 
         private void toolStripMenuItem5_Click(object sender, EventArgs e)
         {
-            string message = Globals.strings[22] + ": porog" + "\n" + Globals.strings[23] + ": https://github.com/sahlaysta/SonicBattleTextEditor" + "\n" + Globals.strings[33] + ": 2.1";
+            string message = Globals.strings[22] + ": porog" + "\n" + Globals.strings[23] + ": https://github.com/sahlaysta/SonicBattleTextEditor" + "\n" + Globals.strings[33] + ": 2.1.1";
             MessageBox.Show(message, Globals.strings[21], MessageBoxButtons.OK, MessageBoxIcon.None);
         }
         private void readsblib()

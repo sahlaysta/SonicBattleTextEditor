@@ -20,6 +20,7 @@ namespace SonicBattleTextEditor
         public static string[] strings = new string[] { "" };
         public static string[] prefs = new string[] { "" };
             public static string prefn = "sbte.prefs";
+        public static int promptchoice = 0;
         
         public static bool prefsexists()
         {
