@@ -96,8 +96,16 @@ namespace SonicBattleTextEditor
                 }
             }
             Globals.proLang = langcode;
-            Globals.strings = System.IO.File.ReadAllText(Path.Combine(Globals.dir, langcode + Globals.langExt)).Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-            
+
+            try
+            {
+                Globals.strings = System.IO.File.ReadAllText(Path.Combine(Globals.dir, langcode + Globals.langExt)).Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex+"");
+            }
+
             Form1 f1 = new Form1();
             Form2 f2 = new Form2();
             if (lang)
