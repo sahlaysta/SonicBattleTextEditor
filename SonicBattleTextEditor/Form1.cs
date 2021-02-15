@@ -465,12 +465,21 @@ namespace SonicBattleTextEditor
 
         private void toolStripMenuItem5_Click(object sender, EventArgs e)
         {
-            string message = Globals.strings[22] + ": porog" + "\n" + Globals.strings[23] + ": https://github.com/sahlaysta/SonicBattleTextEditor" + "\n" + Globals.strings[33] + ": 2.1.1";
+            string message = Globals.strings[22] + ": porog" + "\n" + Globals.strings[23] + ": https://github.com/sahlaysta/SonicBattleTextEditor" + "\n" + Globals.strings[33] + ": 2.1.2";
             MessageBox.Show(message, Globals.strings[21], MessageBoxButtons.OK, MessageBoxIcon.None);
         }
         private void readsblib()
         {
-            string[] liblines = File.ReadAllLines(Path.Combine(Globals.dir, Globals.libn));
+            string[] liblines = new string[0];
+            try
+            {
+                liblines = File.ReadAllLines(Path.Combine(Globals.dir, Globals.libn));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex + "");
+                Environment.Exit(1);
+            }
             var temp = new List<string>();
             foreach (var s in liblines)
             {
@@ -582,7 +591,7 @@ namespace SonicBattleTextEditor
                 }
             }
             string[] lines = File.ReadLines(exportpath).ToArray();
-            for (int i = 0; i < lines.Length; i++)
+            for (int i = 0; i < sbstrings.Count; i++)
             {
                 sbstrings[i] = lines[i];
             }
@@ -590,6 +599,7 @@ namespace SonicBattleTextEditor
             textBox1.Enabled = false;
             textBox1.Text = "";
             textBox1.Enabled =  true;
+            MessageBox.Show(Globals.strings[37]);
         }
     }
 }
