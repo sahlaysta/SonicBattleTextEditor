@@ -12,32 +12,107 @@ namespace SonicBattleTextEditor
 {
     public partial class Form3 : Form
     {
+        public int ans = -1;
+        private int use = -1;
+        private void startup()
+        {
+            InitializeComponent();
+            Icon = Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            this.ShowIcon = false;
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.ShowInTaskbar = false;
+            this.MinimizeBox = false;
+            this.MaximizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            textBox1.MaxLength = 9;
+            //dark theme
+            if (Globals.prefs[2] == "dark")
+            {
+                settheme(SystemColors.ControlText, SystemColors.ControlDarkDark);
+            }
+        }
         public Form3()
         {
+            startup();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Globals.promptchoice = 1;
-            this.Close();
+            if (use == 0)
+            {
+                Globals.promptchoice = 1;
+                this.Close();
+            }
+            else if (use == 1)
+            {
+                try
+                {
+                    ans = Int32.Parse(textBox1.Text) - 1;
+                    this.Close();
+                }
+                catch (Exception ex)
+                {
+                    if (textBox1.Text.Length == 0)
+                        this.Close();
+                    else
+                        MessageBox.Show(Globals.strings[38], Globals.strings[39]);
+                }
+            }
         }
         public Form3(string title, string text, string yes, string no)
         {
-            InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
+            use = 0;
+            startup();
             this.Text = title;
-            this.ShowInTaskbar = false;
-            this.MinimizeBox = false;
-            this.MaximizeBox = false;
+            textBox1.Hide();
             Globals.promptchoice = 0;
             label1.Text = text;
             button1.Text = yes;
             button2.Text = no;
         }
+        public Form3(string title, string text)
+        {
+            use = 1;
+            startup();
+            this.Text = title;
+            label1.Text = text;
+            button2.Hide();
+            button1.Text = "OK";
+        }
 
         private void button2_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+        private void settheme(Color a, Color b)
+        {
+            this.BackColor = a;
+            this.ForeColor = b;
+            foreach (Control x in this.Controls)
+            {
+                x.BackColor = a;
+                x.ForeColor = b;
+                foreach (Control subx in x.Controls)
+                {
+                    subx.BackColor = a;
+                    subx.ForeColor = b;
+                    foreach (Control y in subx.Controls)
+                    {
+                        y.BackColor = a;
+                        y.ForeColor = b;
+                        foreach (Control suby in y.Controls)
+                        {
+                            suby.BackColor = a;
+                            suby.ForeColor = b;
+                            foreach (Control w in suby.Controls)
+                            {
+                                w.BackColor = a;
+                                w.ForeColor = b;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

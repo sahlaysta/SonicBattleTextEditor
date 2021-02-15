@@ -18,6 +18,8 @@ namespace SonicBattleTextEditor
         public Form2()
         {
             InitializeComponent();
+            Icon = Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            this.ShowIcon = false;
             this.MinimumSize = new Size(200, 130);
             
             List<string> jsonlist = new List<string>();
