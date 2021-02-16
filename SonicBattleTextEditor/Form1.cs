@@ -79,6 +79,9 @@ namespace SonicBattleTextEditor
             splitd = Int32.Parse(Globals.prefs[6]);
             splitContainer1.SplitterDistance = splitd;
 
+            readsblib();
+            d(parseSB("Gre<RED>at\\\\n Sonic going"));
+
             //dark theme
             if (Globals.prefs[2] == "dark")
             {
@@ -425,85 +428,69 @@ namespace SonicBattleTextEditor
             s = replacen(s).Replace("\\\n", "\\\\n").Replace("\\\\", "\\");
 
             StringBuilder result = new StringBuilder();
-            int x = 0;
-            for (int i = 0; i < s.Length; i++)
-            {
-                x = 0;
-                foreach (string str in lib.Item1)
-                {
-                    if (i > s.Length)
-                        break;
-                    if (s.Substring(i, 1) == "<")
-                    {
-                        if (s.Substring(i, "<A>".Length) == "<A>")
-                        {
-                            result.Append("ED00");
-                            i += "<A>".Length - 1;
-                        }
-                        else if (s.Substring(i, "<B>".Length) == "<B>")
-                        {
-                            result.Append("8001");
-                            i += "<B>".Length - 1;
-                        }
-                        else if (s.Substring(i, "<C>".Length) == "<C>")
-                        {
-                            result.Append("CA00");
-                            i += "<C>".Length - 1;
-                        }
-                        else if (s.Substring(i, "<D>".Length) == "<D>")
-                        {
-                            result.Append("F9FF");
-                            i += "<D>".Length - 1;
-                        }
-                        else if (s.Substring(i, "<E>".Length) == "<E>")
-                        {
-                            result.Append("3803");
-                            i += "<E>".Length - 1;
-                        }
+            List<string> fcarr = new List<string>();
+            foreach (string w in lib.Item1)
+                fcarr.Add(w[0].ToString());
+            fcarr = fcarr.Distinct().ToList();
 
-                        else if (s.Substring(i, "<RED>".Length) == "<RED>")
-                        {
-                            result.Append("FBFF0400");
-                            i += "<RED>".Length - 1;
-                        }
-                        else if (s.Substring(i, "<BLUE>".Length) == "<BLUE>")
-                        {
-                            result.Append("FBFF0500");
-                            i += "<BLUE>".Length - 1;
-                        }
-                        else if (s.Substring(i, "<BLACK>".Length) == "<BLACK>")
-                        {
-                            result.Append("FBFF0300");
-                            i += "<BLACK>".Length - 1;
-                        }
-                        else if (s.Substring(i, "<GREEN>".Length) == "<GREEN>")
-                        {
-                            result.Append("FBFF0600");
-                            i += "<GREEN>".Length - 1;
-                        }
-                        else if (s.Substring(i, "<WHITE>".Length) == "<WHITE>")
-                        {
-                            result.Append("FBFF0000");
-                            i += "<WHITE>".Length - 1;
-                        }
-                        else if (s.Substring(i, "<PURPLE>".Length) == "<PURPLE>")
-                        {
-                            result.Append("FBFF0700");
-                            i += "<PURPLE>".Length - 1;
-                        }
-                    }
-                    else if (s[i] == '\n')
-                    {
-                        result.Append("FDFF");
-                        i++;
-                    }
-                    else if (s.Substring(i, 1) == str)
-                    {
-                        result.Append(lib.Item2[x]);
-                    }
-                    x++;
+            List<List<string>> arrg = new List<List<string>>();
+            foreach (string w in fcarr)
+                arrg.Add(new List<string>());
+
+            foreach (string w in lib.Item1)
+            {
+                int i = 0;
+                foreach (string match in fcarr)
+                {
+                    if (w[0].ToString() == match)
+                        arrg[i].Add(w);
+                    i++;
                 }
             }
+
+            for (int w = 0; w < arrg.Count; w++)
+            {
+                arrg[w] = arrg[w].OrderBy(x => x.Length).ToList();
+                arrg[w].Reverse();
+            }
+
+            //read
+            List<string> convarr = new List<string>();
+            string focus = "";
+            bool found = false;
+            int ind = -1;
+            for (int i = 0; i < s.Length; i++)
+            {
+                ind = -1;
+                found = false;
+                focus = s.Substring(i, 1);
+                int q = 0;
+                foreach (string w in fcarr)
+                {
+                    if (focus == w)
+                    {
+                        found = true;
+                        ind = q;
+                    }
+                    q++;
+                }
+                if (!found)
+                    continue;
+
+                foreach(string w in arrg[ind])
+                {
+                    if (s.Substring(i).Length >= w.Length)
+                    {
+                        if (s.Substring(i, w.Length) == w)
+                        {
+                            convarr.Add(w);
+                            i += w.Length-1;
+                        }
+                    }
+                }
+            }
+            d(string.Join("\n", convarr));
+
             return result.ToString() + "FEFF";
         }
         private int write(ValueTuple<string, int, int> p)
