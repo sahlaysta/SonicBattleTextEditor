@@ -20,7 +20,8 @@ namespace SonicBattleTextEditor
         private ValueTuple<string[], string[]> lib = (new string[0], new string[0]);
         private BindingList<string> sbstrings = new BindingList<string>();
         private int previndex = -2;
-        private ValueTuple<string, int, int>[] textobj = new[] { ("EDFE8C", 2299, 0), ("EDCD7C", 17, 0) };
+        private ValueTuple<string, int, int>[] textobj = new[] { ("EDFE8C", 2299, 0), ("EDCD7C", 17, 0), ("EDB9CC", 8, 0), ("EDBF60", 35, 0), ("EDD3B0", 16, 0),
+        ("EDC3FC", 9, 0), ("EDCFD0", 40, 0), ("ED9C2C", 309, 0), ("EDC9D0", 7, 0) };
         private bool edited = false;
         private string problems = "";
         private int swritten = 0;
@@ -75,6 +76,9 @@ namespace SonicBattleTextEditor
             settheme(SystemColors.Control, SystemColors.ControlText);
             this.listView1.Columns.Add("", -2);
             this.StartPosition = FormStartPosition.Manual;
+
+            readsblib();
+            Clipboard.SetText(parseSB("Captured"));
 
             stop = Int32.Parse(Globals.prefs[7]);
             this.Top = stop;
@@ -254,6 +258,7 @@ namespace SonicBattleTextEditor
             edited = false;
             foreach (ListViewItem i in listView1.SelectedItems)
                 i.Selected = false;
+            previndex = -2;
             listView1.Items[0].Selected = true;
             listView1.EnsureVisible(0);
         }
@@ -269,8 +274,11 @@ namespace SonicBattleTextEditor
         {
             return getloc(int.Parse(v, System.Globalization.NumberStyles.HexNumber));
         }
-        private string reversepointer(string v)
+        private string reversepointer(string s)
         {
+            string v = s;
+            if (v.Length == 5)
+                v = "0" + v;
             return v.Substring(4, 2) + v.Substring(2, 2) + v.Substring(0, 2);
         }
         private string readstring(string v)
@@ -798,6 +806,7 @@ namespace SonicBattleTextEditor
             {
                 i.Selected = false;
             }
+            previndex = -2;
             textBox1.Enabled = false;
             textBox1.Text = "";
 
@@ -806,6 +815,8 @@ namespace SonicBattleTextEditor
             {
                 sbstrings[i] = lines[i];
                 listView1.Items[i].Text = lines[i];
+                if (illegal(listView1.Items[i].Text))
+                    listView1.Items[i].ForeColor = Color.Red;
             }
             textBox1.Enabled = true;
             MessageBox.Show(Globals.strings[37]);
@@ -823,6 +834,7 @@ namespace SonicBattleTextEditor
                 {
                     i.Selected = false;
                 }
+                previndex = -2;
                 listView1.Items[pr.ans].Selected = true;
                 listView1.EnsureVisible(pr.ans);
             }
@@ -843,6 +855,7 @@ namespace SonicBattleTextEditor
             {
                 i.Selected = false;
             }
+            previndex = -2;
             listView1.Items[search.ans].Selected = true;
             listView1.EnsureVisible(search.ans);
         }
