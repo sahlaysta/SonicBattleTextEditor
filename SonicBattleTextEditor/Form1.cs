@@ -27,6 +27,8 @@ namespace SonicBattleTextEditor
         //prefs
         private Size formsize = new Size(0, 0);
         private int splitd = -1;
+        private int stop = -1;
+        private int sleft = -1;
         public Form1()
         {
             InitializeComponent();
@@ -72,6 +74,12 @@ namespace SonicBattleTextEditor
             settheme(SystemColors.ControlText, SystemColors.ControlDarkDark);
             settheme(SystemColors.Control, SystemColors.ControlText);
             this.listView1.Columns.Add("", -2);
+            this.StartPosition = FormStartPosition.Manual;
+
+            stop = Int32.Parse(Globals.prefs[7]);
+            this.Top = stop;
+            sleft = Int32.Parse(Globals.prefs[8]);
+            this.Left = sleft;
 
             formsize = new Size(Int32.Parse(Globals.prefs[4]), Int32.Parse(Globals.prefs[5]));
             this.Size = formsize;
@@ -80,7 +88,6 @@ namespace SonicBattleTextEditor
             splitContainer1.SplitterDistance = splitd;
 
             readsblib();
-            d(readstring("34 00 48 00 41 00 54 00 07 00 53 00 00 00 49 00 54 00".Replace(" ", "")));
 
             //dark theme
             if (Globals.prefs[2] == "dark")
@@ -112,6 +119,16 @@ namespace SonicBattleTextEditor
             if (splitd != splitContainer1.SplitterDistance)
             {
                 Globals.prefs[6] = splitContainer1.SplitterDistance + "";
+                prefchange = true;
+            }
+            if (this.Top != stop)
+            {
+                Globals.prefs[7] = this.Top + "";
+                prefchange = true;
+            }
+            if (this.Left != sleft)
+            {
+                Globals.prefs[8] = this.Left + "";
                 prefchange = true;
             }
             if (prefchange)
@@ -258,52 +275,82 @@ namespace SonicBattleTextEditor
         }
         private string readstring(string v)
         {
+            string s = v.Replace(" ", "").Replace("-", "");
+            int avgskip = 4;
             StringBuilder result = new StringBuilder();
-            int q = 0;
-            bool found = false;
-            for (int i = 0; i < v.Length; i += 4)
-            {
-                found = false;
-                q = 0;
-                foreach (string str in lib.Item2)
-                {
-                    if (v.Substring(i, 4) == "FBFF" && !found)
-                    {
-                        if (v.Substring(i + 4, 4) == "0500")
-                            result.Append("<BLUE>");
-                        else if (v.Substring(i + 4, 4) == "0300")
-                            result.Append("<BLACK>");
-                        else if (v.Substring(i + 4, 4) == "0600")
-                            result.Append("<GREEN>");
-                        else if (v.Substring(i + 4, 4) == "0400")
-                            result.Append("<RED>");
-                        else if (v.Substring(i + 4, 4) == "0700")
-                            result.Append("<PURPLE>");
-                        else if (v.Substring(i + 4, 4) == "0000")
-                            result.Append("<WHITE>");
-                        else
-                        {
-                            MessageBox.Show(Globals.strings[14] + ": FBFF" + v.Substring(i + 4, 4));
-                            result.Append("□□");
-                        }
+            List<string> fcarr = new List<string>();
+            foreach (string w in lib.Item2)
+                fcarr.Add(w.Substring(0, avgskip));
+            fcarr = fcarr.Distinct().ToList();
 
-                        found = true;
-                        i += 4;
-                    }
-                    else if (v.Substring(i, 4) == lib.Item2[q] && !found)
+            List<List<string>> arrg = new List<List<string>>();
+            foreach (string w in fcarr)
+                arrg.Add(new List<string>());
+
+            foreach (string w in lib.Item2)
+            {
+                int i = 0;
+                foreach (string match in fcarr)
+                {
+                    if (w.Substring(0, avgskip) == match)
+                        arrg[i].Add(w);
+                    i++;
+                }
+            }
+
+            for (int w = 0; w < arrg.Count; w++)
+            {
+                arrg[w] = arrg[w].OrderBy(x => x.Length).ToList();
+                arrg[w].Reverse();
+            }
+
+            //read
+            List<string> convarr = new List<string>();
+            string focus = "";
+            bool found = false;
+            int ind = -1;
+            for (int i = 0; i < s.Length; i++)
+            {
+                ind = -1;
+                found = false;
+                focus = s.Substring(i, 4);
+                int q = 0;
+                foreach (string w in fcarr)
+                {
+                    if (focus == w)
                     {
-                        result.Append(lib.Item1[q]);
                         found = true;
-                        //MessageBox.Show("hit");
+                        ind = q;
                     }
                     q++;
                 }
                 if (!found)
+                    continue;
+
+                foreach (string w in arrg[ind])
                 {
-                    MessageBox.Show(Globals.strings[14] + ": " + v.Substring(i, 4) + "\n" + result.ToString());
-                    result.Append("□");
+                    if (s.Substring(i).Length >= w.Length)
+                    {
+                        if (s.Substring(i, w.Length) == w)
+                        {
+                            convarr.Add(w);
+                            i += w.Length - 1;
+                        }
+                    }
                 }
             }
+
+            foreach (string w in convarr)
+            {
+                int i = 0;
+                foreach (string x in lib.Item2)
+                {
+                    if (x == w)
+                        result.Append(lib.Item1[i]);
+                    i++;
+                }
+            }
+
             return result.ToString();
         }
         private string match(string hex)
