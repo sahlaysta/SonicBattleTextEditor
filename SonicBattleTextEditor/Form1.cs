@@ -80,7 +80,7 @@ namespace SonicBattleTextEditor
             splitContainer1.SplitterDistance = splitd;
 
             readsblib();
-            d(parseSB("Gre<RED>at\\\\n Sonic going"));
+            d(readstring("34 00 48 00 41 00 54 00 07 00 53 00 00 00 49 00 54 00".Replace(" ", "")));
 
             //dark theme
             if (Globals.prefs[2] == "dark")
@@ -181,13 +181,38 @@ namespace SonicBattleTextEditor
             //read sb.lib file to tuple arrays
             readsblib();
 
-            StringBuilder rom = new StringBuilder();
-            foreach (char ch in File.ReadAllBytes(rompath))
-                rom.AppendFormat(Convert.ToInt32(ch).ToString("X2"));
             List<string> sbstringst = new List<string>();
             string endline = "FEFF";
-            foreach (var v in textobj)
-                sbstringst.AddRange(rom.ToString().Substring(2 * getloc(v.Item1), (2 * getloc((v.Item2 * 4) + int.Parse(v.Item1, System.Globalization.NumberStyles.HexNumber))) - (2 * getloc(v.Item1))).Split(new string[] { endline }, StringSplitOptions.RemoveEmptyEntries));
+            
+            foreach(var v in textobj)
+            {
+                List<int> locs = new List<int>();
+                string r = BitConverter.ToString(File.ReadAllBytes(rompath).Skip(int.Parse(v.Item1, System.Globalization.NumberStyles.HexNumber)).Take(v.Item2*4).ToArray()).Replace("-", "");
+                for (int i = 0; i < r.Length; i += 8)
+                    locs.Add(int.Parse(reversepointer(r.Substring(i, 6)), System.Globalization.NumberStyles.HexNumber) - int.Parse(reversepointer(r.Substring(0, 6)), System.Globalization.NumberStyles.HexNumber));
+                string txch = BitConverter.ToString(File.ReadAllBytes(rompath).Skip(getloc(v.Item1)).Take(locs[locs.Count-1]).ToArray()).Replace("-", "");
+                int q = 0;
+                foreach (var x in locs)
+                {
+                    if (q >= locs.Count-1)
+                        break;
+                    string go = txch.Substring(x * 2);
+                    sbstringst.Add(go.Substring(0, go.IndexOf(endline)));
+                    q++;
+                }
+
+                //add last
+                int pos = locs[locs.Count - 1] + int.Parse(reversepointer(r.Substring(0, 6)), System.Globalization.NumberStyles.HexNumber);
+                string read = "";
+                StringBuilder sb = new StringBuilder();
+                while (read != endline)
+                {
+                    read = BitConverter.ToString(File.ReadAllBytes(rompath).Skip(pos).Take(2).ToArray()).Replace("-", "");
+                    sb.Append(read);
+                    pos += 2;
+                }
+                sbstringst.Add(sb.ToString().Substring(0, sb.Length - endline.Length));
+            }
 
             //d(sbstrings.Aggregate((i, j) => i + j).Length);
             for (int i = 0; i < sbstringst.Count; i++)
@@ -425,7 +450,7 @@ namespace SonicBattleTextEditor
         private string parseSB(string v)
         {
             string s = (v.Replace("\r\n", "").Replace("\n", "").Replace("\r", ""));
-            s = replacen(s).Replace("\\\n", "\\\\n").Replace("\\\\", "\\");
+            //s = replacen(s).Replace("\\\n", "\\\\n").Replace("\\\\", "\\");
 
             StringBuilder result = new StringBuilder();
             List<string> fcarr = new List<string>();
@@ -489,7 +514,17 @@ namespace SonicBattleTextEditor
                     }
                 }
             }
-            d(string.Join("\n", convarr));
+
+            foreach(string w in convarr)
+            {
+                int i = 0;
+                foreach(string x in lib.Item1)
+                {
+                    if (x == w)
+                        result.Append(lib.Item2[i]);
+                    i++;
+                }
+            }
 
             return result.ToString() + "FEFF";
         }
@@ -503,7 +538,7 @@ namespace SonicBattleTextEditor
             string initial = p.Item1;
             for (int w = swritten; w < swritten + p.Item2; w++)
             {
-                current = parseSB(sbstrings[w]);
+                current = parseSB(sbstrings[w].Replace("\n", "\\\\n"));
                 result.Append(current);
                 points.Append(reversepointer(pos.ToString("X2")) + "08");
                 pos = pos + current.Length / 2;
