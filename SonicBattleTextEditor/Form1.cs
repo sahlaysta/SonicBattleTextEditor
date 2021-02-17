@@ -20,7 +20,7 @@ namespace SonicBattleTextEditor
         private ValueTuple<string[], string[]> lib = (new string[0], new string[0]);
         private BindingList<string> sbstrings = new BindingList<string>();
         private int previndex = -2;
-        private ValueTuple<string, int, int>[] textobj = new[] { ("EDFE8C", 2299, 0), ("EDCD88", 14, 0) };
+        private ValueTuple<string, int, int>[] textobj = new[] { ("EDFE8C", 2299, 0), ("EDCD7C", 17, 0) };
         private bool edited = false;
         private string problems = "";
         private int swritten = 0;
@@ -414,6 +414,7 @@ namespace SonicBattleTextEditor
         {
             if (listView1.SelectedIndices.Count > 0)
             {
+                tabPage1.Text = Globals.strings[46] + " " + (listView1.SelectedIndices[0] + 1);
                 if (previndex != listView1.SelectedIndices[0])
                 {
                     textBox1.Enabled = false;
@@ -482,17 +483,20 @@ namespace SonicBattleTextEditor
                 listView1.EndUpdate();
                 this.ActiveControl = textBox1;
             }
-            if (illegal(textBox1.Text))
+            if (listView1.SelectedIndices.Count > 0)
             {
-                listView1.Items[listView1.SelectedIndices[0]].ForeColor = Color.Red;
+                if (illegal(textBox1.Text))
+                {
+                    listView1.Items[listView1.SelectedIndices[0]].ForeColor = Color.Red;
+                }
+                else
+                {
+                    listView1.Items[listView1.SelectedIndices[0]].ForeColor = new System.Drawing.Color();
+                    problems = "";
+                }
+                label1.Text = problems;
+                label1.ForeColor = Color.Red;
             }
-            else
-            {
-                listView1.Items[listView1.SelectedIndices[0]].ForeColor = new System.Drawing.Color();
-                problems = "";
-            }
-            label1.Text = problems;
-            label1.ForeColor = Color.Red;
         }
         private string parseSB(string v)
         {
@@ -654,10 +658,8 @@ namespace SonicBattleTextEditor
                     textobj[i].Item3 = textobj[i].Item3 + q;
                 i++;
             }
-            foreach (var v in textobj)
-            {
-                d(v.Item1 + "\n" + v.Item2 + "\n" + v.Item3);
-            }
+            //foreach (var v in textobj)
+            //    d(v.Item1 + "\n" + v.Item2 + "\n" + v.Item3);
 
             this.Text = Globals.strings[5];
             edited = false;
@@ -757,7 +759,7 @@ namespace SonicBattleTextEditor
             List<string> export = new List<string>();
             for (int i = 0; i < listView1.Items.Count; i++)
             {
-                export.Add(listView1.Items[i].ToString());
+                export.Add(listView1.Items[i].Text);
             }
 
             System.IO.File.WriteAllLines(exportpath, export);
@@ -792,17 +794,19 @@ namespace SonicBattleTextEditor
                     return;
                 }
             }
-            string[] lines = File.ReadLines(exportpath).ToArray();
-            for (int i = 0; i < sbstrings.Count; i++)
-            {
-                sbstrings[i] = lines[i];
-            }
             foreach (ListViewItem i in listView1.SelectedItems)
             {
                 i.Selected = false;
             }
             textBox1.Enabled = false;
             textBox1.Text = "";
+
+            string[] lines = File.ReadLines(exportpath).ToArray();
+            for (int i = 0; i < sbstrings.Count; i++)
+            {
+                sbstrings[i] = lines[i];
+                listView1.Items[i].Text = lines[i];
+            }
             textBox1.Enabled = true;
             MessageBox.Show(Globals.strings[37]);
         }
