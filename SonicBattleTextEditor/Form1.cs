@@ -815,7 +815,7 @@ namespace SonicBattleTextEditor
             {
                 sbstrings[i] = lines[i];
                 listView1.Items[i].Text = lines[i];
-                if (illegal(listView1.Items[i].Text))
+                if (illegal(listView1.Items[i].Text.Replace("\\n", "")))
                     listView1.Items[i].ForeColor = Color.Red;
             }
             textBox1.Enabled = true;
