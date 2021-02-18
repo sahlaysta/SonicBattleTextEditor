@@ -79,14 +79,20 @@ namespace SonicBattleTextEditor
             settheme(SystemColors.ControlText, SystemColors.ControlDarkDark);
             settheme(SystemColors.Control, SystemColors.ControlText);
             this.listView1.Columns.Add("", -2);
-            this.StartPosition = FormStartPosition.Manual;
 
             readsblib();
 
-            stop = Int32.Parse(Globals.prefs[7]);
-            this.Top = stop;
-            sleft = Int32.Parse(Globals.prefs[8]);
-            this.Left = sleft;
+            if (Globals.prefs[7] != "-1")
+            {
+                this.StartPosition = FormStartPosition.Manual;
+                stop = Int32.Parse(Globals.prefs[7]);
+                this.Top = stop;
+            }
+            if (Globals.prefs[8] != "-1")
+            {
+                sleft = Int32.Parse(Globals.prefs[8]);
+                this.Left = sleft;
+            }
 
             formsize = new Size(Int32.Parse(Globals.prefs[4]), Int32.Parse(Globals.prefs[5]));
             this.Size = formsize;

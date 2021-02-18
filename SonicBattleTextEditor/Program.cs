@@ -45,7 +45,7 @@ namespace SonicBattleTextEditor
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            string[] defaultprefs = new string[] { "en-US", "|/", "light", "|/", "816", "495", "259", "500", "500" };
+            string[] defaultprefs = new string[] { "en-US", "|/", "light", "|/", "816", "495", "259", "-1", "-1" };
             
             if (Globals.prefsexists())
             {
