@@ -70,6 +70,8 @@ namespace SonicBattleTextEditor
                 ind.Add(i);
                 i++;
             }
+            if (listBox1.Items.Count > 0)
+                listBox1.SelectedIndex = 0;
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)

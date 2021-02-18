@@ -20,8 +20,8 @@ namespace SonicBattleTextEditor
         private ValueTuple<string[], string[]> lib = (new string[0], new string[0]);
         private BindingList<string> sbstrings = new BindingList<string>();
         private int previndex = -2;
-        private ValueTuple<string, int, int>[] textobj = new[] { ("EDFE8C", 2299, 0), ("EDCD7C", 17, 0), ("EDB9CC", 8, 0), ("EDBF60", 35, 0), ("EDD3B0", 16, 0),
-        ("EDC3FC", 9, 0), ("EDCFD0", 40, 0), ("ED9C2C", 309, 0), ("EDC9D0", 7, 0), ("EDD5D0", 8, 0) };
+        private ValueTuple<string, int, int>[] textobj = new[] { ("EDFE8C", 2299, 0), ("ED9C2C", 309, 0), ("EDCD7C", 17, 0), ("EDB9CC", 8, 0), ("EDBF60", 35, 0), ("EDD3B0", 16, 0),
+        ("EDC3FC", 9, 0), ("EDCFD0", 40, 0), ("EDC9D0", 7, 0), ("EDD5D0", 8, 0) };
         private bool edited = false;
         private string problems = "";
         private int swritten = 0;
