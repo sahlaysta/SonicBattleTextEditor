@@ -21,10 +21,11 @@ namespace SonicBattleTextEditor
         private BindingList<string> sbstrings = new BindingList<string>();
         private int previndex = -2;
         private ValueTuple<string, int, int>[] textobj = new[] { ("EDFE8C", 2299, 0), ("EDCD7C", 17, 0), ("EDB9CC", 8, 0), ("EDBF60", 35, 0), ("EDD3B0", 16, 0),
-        ("EDC3FC", 9, 0), ("EDCFD0", 40, 0), ("ED9C2C", 309, 0), ("EDC9D0", 7, 0) };
+        ("EDC3FC", 9, 0), ("EDCFD0", 40, 0), ("ED9C2C", 309, 0), ("EDC9D0", 7, 0), ("EDD5D0", 8, 0) };
         private bool edited = false;
         private string problems = "";
         private int swritten = 0;
+        private string name = "";
         //prefs
         private Size formsize = new Size(0, 0);
         private int splitd = -1;
@@ -35,7 +36,8 @@ namespace SonicBattleTextEditor
             InitializeComponent();
             Icon = Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
-            this.Text = Globals.strings[5];
+            name = Globals.strings[5];
+            this.Text = name;
             this.MinimumSize = new Size(200, 300);
             this.FormClosing += new FormClosingEventHandler(myForm_FormClosing);
             fileToolStripMenuItem.Text = Globals.strings[1];
@@ -63,6 +65,8 @@ namespace SonicBattleTextEditor
             toolStripMenuItem10.Enabled = false;
             toolStripMenuItem11.Enabled = false;
             toolStripMenuItem11.Text = Globals.strings[40];
+            toolStripMenuItem12.Text = Globals.strings[49];
+            toolStripMenuItem12.Enabled = false;
             listView1.Scrollable = true;
             listView1.View = View.Details;
             listView1.FullRowSelect = true;
@@ -78,7 +82,6 @@ namespace SonicBattleTextEditor
             this.StartPosition = FormStartPosition.Manual;
 
             readsblib();
-            Clipboard.SetText(parseSB("Captured"));
 
             stop = Int32.Parse(Globals.prefs[7]);
             this.Top = stop;
@@ -170,6 +173,16 @@ namespace SonicBattleTextEditor
         }
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (edited)
+            {
+                Form3 pr = new Form3(Globals.strings[2], Globals.strings[43], Globals.strings[35], Globals.strings[36]);
+                SystemSounds.Asterisk.Play();
+                pr.ShowDialog();
+                if (Globals.promptchoice == 0)
+                {
+                    return;
+                }
+            }
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 if (Globals.prefs[1] == "|/" || !Directory.Exists(Path.GetDirectoryName(Globals.prefs[1])))
@@ -183,8 +196,16 @@ namespace SonicBattleTextEditor
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
+                    try
+                    {
+                        var q = File.ReadAllBytes(openFileDialog.FileName).Skip(0).Take(1);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex + "");
+                        return;
+                    }
                     rompath = openFileDialog.FileName;
-                    listView1.Items.Add(Globals.strings[17]);
                     if (Globals.prefs[1] != rompath)
                     {
                         Globals.prefs[1] = rompath;
@@ -196,6 +217,9 @@ namespace SonicBattleTextEditor
                     return;
                 }
             }
+            listView1.Items.Clear();
+            listView1.Items.Add(Globals.strings[17]);
+            this.Enabled = false;
 
             textBox1.Enabled = false;
             textBox1.Text = "";
@@ -237,7 +261,9 @@ namespace SonicBattleTextEditor
 
             //d(sbstrings.Aggregate((i, j) => i + j).Length);
             for (int i = 0; i < sbstringst.Count; i++)
+            {
                 sbstringst[i] = readstring(sbstringst[i]);
+            }
 
             sbstrings = new BindingList<string>();
             foreach (string str in sbstringst)
@@ -246,15 +272,20 @@ namespace SonicBattleTextEditor
             }
             sToolStripMenuItem.Enabled = true;
             listView1.Items.Clear();
+
             foreach (string s in sbstrings)
                 listView1.Items.Add(s);
+
             textBox1.Enabled = true;
             toolStripMenuItem8.Enabled = true;
             toolStripMenuItem7.Enabled = true;
             toolStripMenuItem10.Enabled = true;
             toolStripMenuItem11.Enabled = true;
+            toolStripMenuItem12.Enabled = true;
             saToolStripMenuItem.Enabled = true;
-            this.Text = Globals.strings[5];
+            this.Enabled = true;
+            name = Globals.strings[5] + " - " + rompath;
+            this.Text = name;
             edited = false;
             foreach (ListViewItem i in listView1.SelectedItems)
                 i.Selected = false;
@@ -361,6 +392,33 @@ namespace SonicBattleTextEditor
 
             return result.ToString();
         }
+        private void problemupd()
+        {
+            List<string> errarr = new List<string>();
+            List<int> indexes = new List<int>();
+            for (int i = 0; i < listView1.Items.Count; i++)
+            {
+                if (listView1.Items[i].ForeColor == Color.Red)
+                {
+                    errarr.Add(listView1.Items[i].Text);
+                    indexes.Add(i);
+                } 
+            }
+
+            Form4 search = new Form4(errarr.ToArray());
+            search.Settext = Globals.strings[49];
+            search.ShowDialog();
+            if (search.ans == -1)
+                return;
+
+            foreach (ListViewItem i in listView1.SelectedItems)
+            {
+                i.Selected = false;
+            }
+            previndex = -2;
+            listView1.Items[indexes[search.ans]].Selected = true;
+            listView1.EnsureVisible(indexes[search.ans]);
+        }
         private string match(string hex)
         {
             int i = 0;
@@ -428,20 +486,21 @@ namespace SonicBattleTextEditor
                     textBox1.Enabled = false;
                     textBox1.Clear();
 
-                    StringBuilder s = new StringBuilder();
+                    StringBuilder sb = new StringBuilder();
                     char[] c = replacen(listView1.SelectedItems[0].Text.ToString()).Replace("\\\\", "\\").ToArray();
                     for (int i = 0; i < c.Length; i++)
                     {
                         if (c[i] == '\n')
                         {
                             if (c[i - 1] == '\\')
-                                textBox1.AppendText("n");
+                                sb.Append("n");
                             else
-                                textBox1.AppendText(Environment.NewLine);
+                                sb.Append(Environment.NewLine);
                         }
                         else
-                            textBox1.AppendText(c[i].ToString());
+                            sb.Append(c[i].ToString());
                     }
+                    textBox1.Text = sb.ToString();
                 }
                 textBox1.Enabled = true;
                 previndex = listView1.SelectedIndices[0];
@@ -637,8 +696,30 @@ namespace SonicBattleTextEditor
 
             return result.ToString().Length/2;
         }
+        private bool checkproblematic()
+        {
+            bool checkprob = false;
+            for (int i = 0; i < listView1.Items.Count; i++)
+            {
+                if (listView1.Items[i].ForeColor == Color.Red)
+                {
+                    checkprob = true;
+                    break;
+                }
+            }
+            if (checkprob)
+            {
+                SystemSounds.Asterisk.Play();
+                problemupd();
+            }          
+
+            return checkprob;
+        }
         private void sToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (checkproblematic())
+                return;
+
             saverom(true);
         }
         private void saverom(bool prompt)
@@ -669,7 +750,7 @@ namespace SonicBattleTextEditor
             //foreach (var v in textobj)
             //    d(v.Item1 + "\n" + v.Item2 + "\n" + v.Item3);
 
-            this.Text = Globals.strings[5];
+            this.Text = name;
             edited = false;
             swritten = 0;
             MessageBox.Show(Globals.strings[24]);
@@ -811,15 +892,21 @@ namespace SonicBattleTextEditor
             textBox1.Text = "";
 
             string[] lines = File.ReadLines(exportpath).ToArray();
+            bool showprob = false;
             for (int i = 0; i < sbstrings.Count; i++)
             {
                 sbstrings[i] = lines[i];
                 listView1.Items[i].Text = lines[i];
                 if (illegal(listView1.Items[i].Text.Replace("\\n", "")))
+                {
                     listView1.Items[i].ForeColor = Color.Red;
+                    showprob = true;
+                }
             }
             textBox1.Enabled = true;
             MessageBox.Show(Globals.strings[37]);
+            if (showprob)
+                problemupd();
         }
 
         private void toolStripMenuItem10_Click(object sender, EventArgs e)
@@ -870,6 +957,8 @@ namespace SonicBattleTextEditor
 
         private void saToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (checkproblematic())
+                return;
             string copy = "";
             using (SaveFileDialog openFileDialog = new SaveFileDialog())
             {
@@ -896,9 +985,22 @@ namespace SonicBattleTextEditor
                     return;
                 }
             }
-            File.Copy(rompath, copy);
+            try
+            {
+                File.Copy(rompath, copy, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex + "");
+                return;
+            }
             rompath = copy;
             saverom(false);
+        }
+
+        private void toolStripMenuItem12_Click(object sender, EventArgs e)
+        {
+            problemupd();
         }
     }
 }

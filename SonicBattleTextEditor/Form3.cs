@@ -24,6 +24,8 @@ namespace SonicBattleTextEditor
             this.MinimizeBox = false;
             this.MaximizeBox = false;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            label1.MaximumSize = new Size(230, 100);
+            label1.AutoSize = true;
             textBox1.MaxLength = 9;
             //dark theme
             if (Globals.prefs[2] == "dark")
@@ -34,6 +36,10 @@ namespace SonicBattleTextEditor
         public Form3()
         {
             startup();
+        }
+        public Form3(bool h)
+        {
+            
         }
 
         private void button1_Click(object sender, EventArgs e)

@@ -26,6 +26,7 @@ namespace SonicBattleTextEditor
             this.MinimumSize = new Size(200, 200);
             listBox1.HorizontalScrollbar = true;
             this.FormClosing += new FormClosingEventHandler(myForm_FormClosing);
+            listBox1.DoubleClick += new EventHandler(doubleclick);
             this.Text = Globals.strings[40];
             this.Size = new Size(350, 400);
             button1.Text = Globals.strings[45];
@@ -34,6 +35,17 @@ namespace SonicBattleTextEditor
             {
                 settheme(SystemColors.ControlText, SystemColors.ControlDarkDark);
             }
+        }
+        public string Settext
+        {
+            set
+            {
+                this.Text = value;
+            }
+        }
+        void doubleclick(object sender, EventArgs e)
+        {
+            button1.PerformClick();
         }
         void myForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -48,6 +60,7 @@ namespace SonicBattleTextEditor
         {
             array = a;
             startup();
+            label1.Text = Globals.strings[41] + " " + array.Length;
 
             ind.Clear();
             int i = 0;
@@ -74,7 +87,7 @@ namespace SonicBattleTextEditor
                 }
                 i++;
             }
-                
+            label1.Text = Globals.strings[41] + " " + ind.Count;
         }
         private bool contall(string x, string y)
         {
@@ -98,7 +111,8 @@ namespace SonicBattleTextEditor
         private void button1_Click(object sender, EventArgs e)
         {
             userclose = false;
-            this.Close();
+            if (listBox1.SelectedIndex != -1)
+                this.Close();
         }
         private void settheme(Color a, Color b)
         {

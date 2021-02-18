@@ -30,6 +30,7 @@ namespace SonicBattleTextEditor
 
             listBox1.DataSource = jsonlist;
             listBox1.SelectedIndex = -1;
+            listBox1.DoubleClick += new EventHandler(doubleclick);
 
             this.Text = Globals.strings[6];
             button1.Text = Globals.strings[8];
@@ -40,6 +41,10 @@ namespace SonicBattleTextEditor
             {
                 settheme(SystemColors.ControlText, SystemColors.ControlDarkDark);
             }
+        }
+        void doubleclick(object sender, EventArgs e)
+        {
+            button1.PerformClick();
         }
         private void settheme(Color a, Color b)
         {
