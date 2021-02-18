@@ -890,6 +890,11 @@ namespace SonicBattleTextEditor
             previndex = -2;
             textBox1.Enabled = false;
             textBox1.Text = "";
+            if (!edited)
+            {
+                edited = true;
+                this.Text = this.Text + "*";
+            }
 
             string[] lines = File.ReadLines(exportpath).ToArray();
             bool showprob = false;
