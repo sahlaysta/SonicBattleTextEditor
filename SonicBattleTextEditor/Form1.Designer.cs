@@ -51,6 +51,7 @@ namespace SonicBattleTextEditor
             this.listView1 = new System.Windows.Forms.ListView();
             this.label1 = new System.Windows.Forms.Label();
             this.saToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem12 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -132,7 +133,8 @@ namespace SonicBattleTextEditor
             // 
             this.toolStripMenuItem6.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem11,
-            this.toolStripMenuItem10});
+            this.toolStripMenuItem10,
+            this.toolStripMenuItem12});
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
             this.toolStripMenuItem6.Size = new System.Drawing.Size(31, 20);
             this.toolStripMenuItem6.Text = "50";
@@ -261,6 +263,7 @@ namespace SonicBattleTextEditor
             this.listView1.Size = new System.Drawing.Size(748, 251);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.List;
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged_1);
             // 
             // label1
@@ -282,6 +285,13 @@ namespace SonicBattleTextEditor
             this.saToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saToolStripMenuItem.Text = "sa";
             this.saToolStripMenuItem.Click += new System.EventHandler(this.saToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem12
+            // 
+            this.toolStripMenuItem12.Name = "toolStripMenuItem12";
+            this.toolStripMenuItem12.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem12.Text = "53";
+            this.toolStripMenuItem12.Click += new System.EventHandler(this.toolStripMenuItem12_Click);
             // 
             // Form1
             // 
@@ -333,6 +343,7 @@ namespace SonicBattleTextEditor
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem saToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem12;
     }
 }
 
