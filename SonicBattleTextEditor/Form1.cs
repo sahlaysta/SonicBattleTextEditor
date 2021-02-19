@@ -31,6 +31,11 @@ namespace SonicBattleTextEditor
         private int splitd = -1;
         private int stop = -1;
         private int sleft = -1;
+        //fcarr
+        private List<string> fcarr1 = new List<string>();
+        private List<List<string>> arrg1 = new List<List<string>>();
+        private List<string> fcarr2 = new List<string>();
+        private List<List<string>> arrg2 = new List<List<string>>();
         public Form1()
         {
             InitializeComponent();
@@ -48,6 +53,8 @@ namespace SonicBattleTextEditor
             textBox1.Enabled = false;
             textBox1.ScrollBars = ScrollBars.Vertical;
             textBox1.KeyPress += new KeyPressEventHandler(keypressed);
+            listView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.nx);
+            toolStripMenuItem13.Text = Globals.strings[13];
             sToolStripMenuItem.Text = Globals.strings[18];
             sToolStripMenuItem.Enabled = false;
             toolStripMenuItem2.Text = Globals.strings[19];
@@ -107,6 +114,17 @@ namespace SonicBattleTextEditor
             {
                 settheme(SystemColors.ControlText, SystemColors.ControlDarkDark);
                 thToolStripMenuItem.Checked = true;
+            }
+        }
+        private void nx(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var focusedItem = listView1.FocusedItem;
+                if (focusedItem != null && focusedItem.Bounds.Contains(e.Location))
+                {
+                    contextMenuStrip1.Show(Cursor.Position);
+                }
             }
         }
         void myForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -321,33 +339,7 @@ namespace SonicBattleTextEditor
         private string readstring(string v)
         {
             string s = v.Replace(" ", "").Replace("-", "");
-            int avgskip = 4;
             StringBuilder result = new StringBuilder();
-            List<string> fcarr = new List<string>();
-            foreach (string w in lib.Item2)
-                fcarr.Add(w.Substring(0, avgskip));
-            fcarr = fcarr.Distinct().ToList();
-
-            List<List<string>> arrg = new List<List<string>>();
-            foreach (string w in fcarr)
-                arrg.Add(new List<string>());
-
-            foreach (string w in lib.Item2)
-            {
-                int i = 0;
-                foreach (string match in fcarr)
-                {
-                    if (w.Substring(0, avgskip) == match)
-                        arrg[i].Add(w);
-                    i++;
-                }
-            }
-
-            for (int w = 0; w < arrg.Count; w++)
-            {
-                arrg[w] = arrg[w].OrderBy(x => x.Length).ToList();
-                arrg[w].Reverse();
-            }
 
             //read
             List<string> convarr = new List<string>();
@@ -360,7 +352,7 @@ namespace SonicBattleTextEditor
                 found = false;
                 focus = s.Substring(i, 4);
                 int q = 0;
-                foreach (string w in fcarr)
+                foreach (string w in fcarr1)
                 {
                     if (focus == w)
                     {
@@ -372,7 +364,7 @@ namespace SonicBattleTextEditor
                 if (!found)
                     continue;
 
-                foreach (string w in arrg[ind])
+                foreach (string w in arrg1[ind])
                 {
                     if (s.Substring(i).Length >= w.Length)
                     {
@@ -577,31 +569,6 @@ namespace SonicBattleTextEditor
             //s = replacen(s).Replace("\\\n", "\\\\n").Replace("\\\\", "\\");
 
             StringBuilder result = new StringBuilder();
-            List<string> fcarr = new List<string>();
-            foreach (string w in lib.Item1)
-                fcarr.Add(w[0].ToString());
-            fcarr = fcarr.Distinct().ToList();
-
-            List<List<string>> arrg = new List<List<string>>();
-            foreach (string w in fcarr)
-                arrg.Add(new List<string>());
-
-            foreach (string w in lib.Item1)
-            {
-                int i = 0;
-                foreach (string match in fcarr)
-                {
-                    if (w[0].ToString() == match)
-                        arrg[i].Add(w);
-                    i++;
-                }
-            }
-
-            for (int w = 0; w < arrg.Count; w++)
-            {
-                arrg[w] = arrg[w].OrderBy(x => x.Length).ToList();
-                arrg[w].Reverse();
-            }
 
             //read
             List<string> convarr = new List<string>();
@@ -614,7 +581,7 @@ namespace SonicBattleTextEditor
                 found = false;
                 focus = s.Substring(i, 1);
                 int q = 0;
-                foreach (string w in fcarr)
+                foreach (string w in fcarr2)
                 {
                     if (focus == w)
                     {
@@ -626,7 +593,7 @@ namespace SonicBattleTextEditor
                 if (!found)
                     continue;
 
-                foreach(string w in arrg[ind])
+                foreach(string w in arrg2[ind])
                 {
                     if (s.Substring(i).Length >= w.Length)
                     {
@@ -793,6 +760,60 @@ namespace SonicBattleTextEditor
             for (int i = 0; i < liblinesy.Length; i++)
                 liblinesy[i] = liblines[i * 2 + 1];
             lib = new ValueTuple<string[], string[]>(liblinesx, liblinesy);
+
+            //fcarr1
+            fcarr1 = new List<string>();
+            arrg1 = new List<List<string>>();
+            foreach (string w in lib.Item2)
+                fcarr1.Add(w.Substring(0, 4));
+            fcarr1 = fcarr1.Distinct().ToList();
+
+            foreach (string w in fcarr1)
+                arrg1.Add(new List<string>());
+
+            foreach (string w in lib.Item2)
+            {
+                int i = 0;
+                foreach (string match in fcarr1)
+                {
+                    if (w.Substring(0, 4) == match)
+                        arrg1[i].Add(w);
+                    i++;
+                }
+            }
+
+            for (int w = 0; w < arrg1.Count; w++)
+            {
+                arrg1[w] = arrg1[w].OrderBy(x => x.Length).ToList();
+                arrg1[w].Reverse();
+            }
+            //fcarr2
+            fcarr2 = new List<string>();
+            arrg2 = new List<List<string>>();
+            foreach (string w in lib.Item1)
+                fcarr2.Add(w[0].ToString());
+            fcarr2 = fcarr2.Distinct().ToList();
+
+            foreach (string w in fcarr2)
+                arrg2.Add(new List<string>());
+
+            foreach (string w in lib.Item1)
+            {
+                int i = 0;
+                foreach (string match in fcarr2)
+                {
+                    if (w[0].ToString() == match)
+                        arrg2[i].Add(w);
+                    i++;
+                }
+            }
+
+            for (int w = 0; w < arrg2.Count; w++)
+            {
+                arrg2[w] = arrg2[w].OrderBy(x => x.Length).ToList();
+                arrg2[w].Reverse();
+            }
+
         }
         private static byte[] StringToByteArray(string hex)
         {
@@ -904,8 +925,10 @@ namespace SonicBattleTextEditor
 
             string[] lines = File.ReadLines(exportpath).ToArray();
             bool showprob = false;
-            for (int i = 0; i < sbstrings.Count; i++)
+            for (int i = 0; i < lines.Length; i++)
             {
+                if (i >= sbstrings.Count)
+                    break;
                 sbstrings[i] = lines[i];
                 listView1.Items[i].Text = lines[i];
                 if (illegal(listView1.Items[i].Text.Replace("\\n", "")))
@@ -1012,6 +1035,13 @@ namespace SonicBattleTextEditor
         private void toolStripMenuItem12_Click(object sender, EventArgs e)
         {
             problemupd();
+        }
+
+        private void toolStripMenuItem13_Click(object sender, EventArgs e)
+        {
+            StringBuilder copy = new StringBuilder(parseSB(listView1.SelectedItems[0].Text));
+            copy.Length -= 4;
+            Clipboard.SetText(copy.ToString());
         }
     }
 }
