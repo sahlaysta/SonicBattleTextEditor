@@ -253,6 +253,7 @@ namespace SonicBattleTextEditor
             List<string> sbstringst = new List<string>();
             string endline = "FEFF";
             
+            //generate 
             foreach(var v in textobj)
             {
                 List<int> locs = new List<int>();
@@ -283,7 +284,6 @@ namespace SonicBattleTextEditor
                 sbstringst.Add(sb.ToString().Substring(0, sb.Length - endline.Length));
             }
 
-            //d(sbstrings.Aggregate((i, j) => i + j).Length);
             for (int i = 0; i < sbstringst.Count; i++)
             {
                 sbstringst[i] = readstring(sbstringst[i]);
@@ -383,7 +383,12 @@ namespace SonicBattleTextEditor
                 foreach (string x in lib.Item2)
                 {
                     if (x == w)
-                        result.Append(lib.Item1[i]);
+                    {
+                        if (lib.Item1[i] == "\\")
+                            result.Append("\\\\");
+                        else
+                            result.Append(lib.Item1[i]);
+                    }
                     i++;
                 }
             }
@@ -513,16 +518,17 @@ namespace SonicBattleTextEditor
             List<string> h = new List<string>();
             bool result = false;
             bool found = false;
+            int i = 0;
             foreach (char ch in s)
             {
                 found = false;
                 foreach(string q in lib.Item1)
                 {
-                    if (ch.ToString() == q)
+                    if (i + q.Length <= s.Length && s.Substring(i, q.Length) == q)
                     {
                         found = true;
                     }
-                    if (ch == '<' || ch == '>' || (int) ch == 13 || (int)ch == 10)
+                    if ((int) ch == 13 || (int)ch == 10)
                     {
                         found = true;
                     }
@@ -532,6 +538,7 @@ namespace SonicBattleTextEditor
                     result = true;
                     h.Add("'" + ch + "'");
                 }
+                i++;
             }
             problems = Globals.strings[14] + ": " + (string.Join(", ", h.Distinct().ToArray()));
             return result;
@@ -563,10 +570,22 @@ namespace SonicBattleTextEditor
                 label1.ForeColor = Color.Red;
             }
         }
+        private List<int> AllIndexesOf(string str, string value)
+        {
+            if (String.IsNullOrEmpty(value))
+                throw new ArgumentException("the string to find may not be empty", "value");
+            List<int> indexes = new List<int>();
+            for (int index = 0; ; index += value.Length)
+            {
+                index = str.IndexOf(value, index);
+                if (index == -1)
+                    return indexes;
+                indexes.Add(index);
+            }
+        }
         private string parseSB(string v)
         {
-            string s = (v.Replace("\r\n", "").Replace("\n", "").Replace("\r", ""));
-            //s = replacen(s).Replace("\\\n", "\\\\n").Replace("\\\\", "\\");
+            string s = v.Replace("\r\n", "").Replace("\n", "").Replace("\r", "");
 
             StringBuilder result = new StringBuilder();
 
@@ -606,7 +625,36 @@ namespace SonicBattleTextEditor
                 }
             }
 
-            foreach(string w in convarr)
+            int k = 0;
+            while(k < convarr.Count)
+            {
+                if (k > 0 && convarr[k] == "\\n")
+                {
+                    if (convarr[k - 1] == "\\")
+                    {
+                        convarr.RemoveAt(k);
+                        convarr.RemoveAt(k-1);
+                        convarr.Insert(k-1, "n");
+                        convarr.Insert(k-1, "\\");
+                    }
+                }
+                k++;
+            }
+
+            k = 0;
+            while (k < convarr.Count)
+            {
+                if (k > 0 && convarr[k] == "\\")
+                {
+                    if (convarr[k - 1] == "\\")
+                    {
+                        convarr.RemoveAt(k);
+                    }
+                }
+                k++;
+            }
+
+            foreach (string w in convarr)
             {
                 int i = 0;
                 foreach(string x in lib.Item1)
@@ -731,7 +779,7 @@ namespace SonicBattleTextEditor
 
         private void toolStripMenuItem5_Click(object sender, EventArgs e)
         {
-            string message = Globals.strings[22] + ": porog" + "\n" + Globals.strings[23] + ": https://github.com/sahlaysta/SonicBattleTextEditor" + "\n" + Globals.strings[33] + ": 2.2.2";
+            string message = Globals.strings[22] + ": porog" + "\n" + Globals.strings[23] + ": https://github.com/sahlaysta/SonicBattleTextEditor" + "\n" + Globals.strings[33] + ": 2.2.3";
             MessageBox.Show(message, Globals.strings[21], MessageBoxButtons.OK, MessageBoxIcon.None);
         }
         private void readsblib()
@@ -815,7 +863,7 @@ namespace SonicBattleTextEditor
             }
 
         }
-        private static byte[] StringToByteArray(string hex)
+        private byte[] StringToByteArray(string hex)
         {
             return Enumerable.Range(0, hex.Length)
                              .Where(x => x % 2 == 0)
