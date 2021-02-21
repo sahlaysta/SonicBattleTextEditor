@@ -20,7 +20,6 @@ namespace SonicBattleTextEditor
             Icon = Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetExecutingAssembly().Location);
             this.ShowIcon = false;
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.ShowInTaskbar = false;
             this.MinimizeBox = false;
             this.MaximizeBox = false;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -75,6 +74,13 @@ namespace SonicBattleTextEditor
             label1.Text = text;
             button1.Text = yes;
             button2.Text = no;
+        }
+        public void Msg()
+        {
+            button1.Visible = false;
+            button2.Visible = false;
+            this.ControlBox = false;
+            Globals.promptchoice = 1;
         }
         public Form3(string title, string text)
         {
