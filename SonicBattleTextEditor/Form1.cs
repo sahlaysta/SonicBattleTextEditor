@@ -16,6 +16,7 @@ namespace SonicBattleTextEditor
 {
     public partial class Form1 : Form
     {
+        byte[] readi = new byte[0]; //ROM
         private string rompath = "";
         private ValueTuple<string[], string[]> lib = (new string[0], new string[0]);
         private BindingList<string> sbstrings = new BindingList<string>();
@@ -85,6 +86,7 @@ namespace SonicBattleTextEditor
             saToolStripMenuItem.Enabled = false;
             settheme(SystemColors.ControlText, SystemColors.ControlDarkDark);
             settheme(SystemColors.Control, SystemColors.ControlText);
+            label3.Text = "";
             this.listView1.Columns.Add("", -2);
 
             readsblib();
@@ -222,7 +224,7 @@ namespace SonicBattleTextEditor
                 {
                     try
                     {
-                        var q = File.ReadAllBytes(openFileDialog.FileName).Skip(0).Take(1);
+                        readi = File.ReadAllBytes(openFileDialog.FileName);
                     }
                     catch (Exception ex)
                     {
@@ -251,37 +253,31 @@ namespace SonicBattleTextEditor
             readsblib();
 
             List<string> sbstringst = new List<string>();
-            string endline = "FEFF";
-            
-            //generate 
-            foreach(var v in textobj)
-            {
-                List<int> locs = new List<int>();
-                string r = BitConverter.ToString(File.ReadAllBytes(rompath).Skip(int.Parse(v.Item1, System.Globalization.NumberStyles.HexNumber)).Take(v.Item2*4).ToArray()).Replace("-", "");
-                for (int i = 0; i < r.Length; i += 8)
-                    locs.Add(int.Parse(reversepointer(r.Substring(i, 6)), System.Globalization.NumberStyles.HexNumber) - int.Parse(reversepointer(r.Substring(0, 6)), System.Globalization.NumberStyles.HexNumber));
-                string txch = BitConverter.ToString(File.ReadAllBytes(rompath).Skip(getloc(v.Item1)).Take(locs[locs.Count-1]).ToArray()).Replace("-", "");
-                int q = 0;
-                foreach (var x in locs)
-                {
-                    if (q >= locs.Count-1)
-                        break;
-                    string go = txch.Substring(x * 2);
-                    sbstringst.Add(go.Substring(0, go.IndexOf(endline)));
-                    q++;
-                }
+            byte[] endbyte = new byte[] { 0xFE, 0xFF };
 
-                //add last
-                int pos = locs[locs.Count - 1] + int.Parse(reversepointer(r.Substring(0, 6)), System.Globalization.NumberStyles.HexNumber);
-                string read = "";
-                StringBuilder sb = new StringBuilder();
-                while (read != endline)
+            //generate 
+            foreach (var v in textobj)
+            {
+                for (int m = 0; m < v.Item2; m++)
                 {
-                    read = BitConverter.ToString(File.ReadAllBytes(rompath).Skip(pos).Take(2).ToArray()).Replace("-", "");
-                    sb.Append(read);
-                    pos += 2;
+                    int focuspos = int.Parse(reversepointer(BitConverter.ToString(new byte[] {
+                        readi[(m * 4) + int.Parse(v.Item1, System.Globalization.NumberStyles.HexNumber)],
+                        readi[(m * 4) + int.Parse(v.Item1, System.Globalization.NumberStyles.HexNumber) + 1],
+                        readi[(m * 4) + int.Parse(v.Item1, System.Globalization.NumberStyles.HexNumber) + 2]
+                    }).Replace("-", string.Empty)), System.Globalization.NumberStyles.HexNumber);
+                    List<byte> op = new List<byte>();
+                    byte[] focusbyte = new byte[] { 0x00, 0x00 };
+                    int i = 0;
+                    while (true)
+                    {
+                        focusbyte = new byte[] { readi[focuspos + (i * 2)], readi[focuspos + (i * 2) + 1] };
+                        if (Enumerable.SequenceEqual(focusbyte, endbyte))
+                            break;
+                        op.AddRange(focusbyte);
+                        i++;
+                    }
+                    sbstringst.Add(BitConverter.ToString(op.ToArray()).Replace("-", string.Empty));
                 }
-                sbstringst.Add(sb.ToString().Substring(0, sb.Length - endline.Length));
             }
 
             for (int i = 0; i < sbstringst.Count; i++)
@@ -320,14 +316,6 @@ namespace SonicBattleTextEditor
         private void d(object v)
         {
             MessageBox.Show("" + v);
-        }
-        private int getloc(int v)
-        {
-            return int.Parse(reversepointer((File.ReadAllBytes(rompath).Skip(v).Take(2).ToArray()[0].ToString("X2") + File.ReadAllBytes(rompath).Skip(v + 1).Take(2).ToArray()[0].ToString("X2") + File.ReadAllBytes(rompath).Skip(v + 2).Take(2).ToArray()[0].ToString("X2"))), System.Globalization.NumberStyles.HexNumber);
-        }
-        private int getloc(string v)
-        {
-            return getloc(int.Parse(v, System.Globalization.NumberStyles.HexNumber));
         }
         private string reversepointer(string s)
         {
@@ -667,6 +655,11 @@ namespace SonicBattleTextEditor
 
             return result.ToString() + "FEFF";
         }
+        private void arrput(int pos, byte[] op)
+        {
+            for (int i = 0; i < op.Length; i++)
+                readi[pos + i] = op[i];
+        }
         private int write(ValueTuple<string, int, int> p)
         {
             StringBuilder result = new StringBuilder();
@@ -686,34 +679,9 @@ namespace SonicBattleTextEditor
 
             pos = p.Item3;
 
-            try
-            {
-                using (var fs = new FileStream(rompath, FileMode.Open, FileAccess.Write))
-                {
-                    fs.Seek(pos, SeekOrigin.Begin);
-                    fs.Write(StringToByteArray(result.ToString()), 0, StringToByteArray(result.ToString()).Length);
-                    //pos += StringToByteArray(result.ToString()).Length;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("" + ex);
-                return -1;
-            }
+            arrput(pos, StringToByteArray(result.ToString()));
 
-            try
-            {
-                using (var fs = new FileStream(rompath, FileMode.Open, FileAccess.Write))
-                {
-                    fs.Seek(int.Parse(p.Item1, System.Globalization.NumberStyles.HexNumber), SeekOrigin.Begin);
-                    fs.Write(StringToByteArray(points.ToString()), 0, StringToByteArray(points.ToString()).Length);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("" + ex);
-                return -1;
-            }
+            arrput(int.Parse(p.Item1, System.Globalization.NumberStyles.HexNumber), StringToByteArray(points.ToString()));
 
             return result.ToString().Length/2;
         }
@@ -753,12 +721,20 @@ namespace SonicBattleTextEditor
                 if (Globals.promptchoice == 0)
                     return;
             }
+            listView1.Hide();
+            label3.Text = Globals.strings[11];
+            this.Enabled = false;
             for (int w = 0; w < textobj.Length; w++)
             {
-                textobj[w].Item3 = getloc(textobj[w].Item1);
+                textobj[w].Item3 = int.Parse(reversepointer(BitConverter.ToString(new byte[] {
+                        readi[int.Parse(textobj[w].Item1, System.Globalization.NumberStyles.HexNumber)],
+                        readi[int.Parse(textobj[w].Item1, System.Globalization.NumberStyles.HexNumber) + 1],
+                        readi[int.Parse(textobj[w].Item1, System.Globalization.NumberStyles.HexNumber) + 2]
+                    }).Replace("-", string.Empty)), System.Globalization.NumberStyles.HexNumber);
             }
             int i = 0;
             int q = 0;
+
             foreach (var v in textobj)
             {
                 q = write(v);
@@ -768,18 +744,34 @@ namespace SonicBattleTextEditor
                     textobj[i].Item3 = textobj[i].Item3 + q;
                 i++;
             }
+            try
+            {
+                using (var fs = new FileStream(rompath, FileMode.Open, FileAccess.Write))
+                {
+                    fs.Write(readi, 0, readi.Length);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("" + ex);
+                return;
+            }
             //foreach (var v in textobj)
             //    d(v.Item1 + "\n" + v.Item2 + "\n" + v.Item3);
 
             this.Text = name;
             edited = false;
             swritten = 0;
+
+            listView1.Show();
+            label3.Text = "";
+            this.Enabled = true;
             MessageBox.Show(Globals.strings[24]);
         }
 
         private void toolStripMenuItem5_Click(object sender, EventArgs e)
         {
-            string message = Globals.strings[22] + ": porog" + "\n" + Globals.strings[23] + ": https://github.com/sahlaysta/SonicBattleTextEditor" + "\n" + Globals.strings[33] + ": 2.2.3";
+            string message = Globals.strings[22] + ": porog" + "\n" + Globals.strings[23] + ": https://github.com/sahlaysta/SonicBattleTextEditor" + "\n" + Globals.strings[33] + ": 2.2.4";
             MessageBox.Show(message, Globals.strings[21], MessageBoxButtons.OK, MessageBoxIcon.None);
         }
         private void readsblib()
