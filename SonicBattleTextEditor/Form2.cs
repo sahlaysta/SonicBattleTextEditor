@@ -94,7 +94,7 @@ namespace SonicBattleTextEditor
         private void button1_Click(object sender, EventArgs e)
         {
             bool restart = Globals.prefs[0] == "-1";
-            string targetlang = Path.GetFileNameWithoutExtension(langlist[listBox1.FindString(listBox1.SelectedItem.ToString())]);
+            string targetlang = Path.GetFileNameWithoutExtension(langlist[listBox1.FindString(listBox1.SelectedItem.ToString())]).Split('.')[0];
             Globals.prefs[0] = targetlang;
             Globals.saveprefs();
             if (restart)
