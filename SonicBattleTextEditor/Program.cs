@@ -15,7 +15,7 @@ namespace SonicBattleTextEditor
         public static string sysLang = CultureInfo.InstalledUICulture.Name;
         public static string proLang = "";
         public static string defaultLang = "en-US";
-        public static string langExt = ".json";
+        public static string langExt = ".lang.txt";
         public static string libn = "sb.lib";
         public static string[] strings = new string[] { "" };
         public static string[] prefs = new string[] { "" };
@@ -82,7 +82,7 @@ namespace SonicBattleTextEditor
                     if (!langcode.Contains('-'))
                     {
                         if (Directory.GetFiles(Globals.dir, langcode + "-*" + Globals.langExt).Length > 0)
-                            langcode = Path.GetFileNameWithoutExtension(Directory.GetFiles(Globals.dir, langcode + "-*" + Globals.langExt)[0]);
+                            langcode = Path.GetFileNameWithoutExtension(Directory.GetFiles(Globals.dir, langcode + "-*" + Globals.langExt)[0]).Split('.')[0];
                         else
                             langcode = "-1";
                     }
