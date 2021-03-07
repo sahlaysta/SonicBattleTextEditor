@@ -60,7 +60,7 @@ namespace SonicBattleTextEditor
         {
             array = a;
             startup();
-            label1.Text = Globals.strings[41] + " " + array.Length;
+            label1.Text = Globals.strings[41].Replace("[n]", "" + array.Length);
 
             ind.Clear();
             int i = 0;
@@ -89,7 +89,7 @@ namespace SonicBattleTextEditor
                 }
                 i++;
             }
-            label1.Text = Globals.strings[41] + " " + ind.Count;
+            label1.Text = Globals.strings[41].Replace("[n]", "" + ind.Count);
         }
         private bool contall(string x, string y)
         {

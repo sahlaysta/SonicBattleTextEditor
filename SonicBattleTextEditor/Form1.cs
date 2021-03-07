@@ -771,7 +771,7 @@ namespace SonicBattleTextEditor
 
         private void toolStripMenuItem5_Click(object sender, EventArgs e)
         {
-            string message = Globals.strings[22] + ": porog" + "\n" + Globals.strings[23] + ": https://github.com/sahlaysta/SonicBattleTextEditor" + "\n" + Globals.strings[33] + ": 2.2.6";
+            string message = Globals.strings[22] + ": porog" + "\n" + Globals.strings[23] + ": https://github.com/sahlaysta/SonicBattleTextEditor" + "\n" + Globals.strings[33] + ": 2.2.7";
             MessageBox.Show(message, Globals.strings[21], MessageBoxButtons.OK, MessageBoxIcon.None);
         }
         private void readsblib()
