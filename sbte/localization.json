@@ -1,6 +1,7 @@
 {
 	"en-*": {
 		"appName": "Sonic Battle Text Editor",
+		"textEdit": "Text edit",
 		"file": "File",
 		"open": "Open",
 		"fileType": "[v] files",

@@ -77,6 +77,7 @@ public class Main {
 		public JTextArea toJTextArea() { return (JTextArea) obj; }
 		public JList toJList() { return (JList) obj; }
 		public JSplitPane toJSplitPane() { return (JSplitPane) obj; }
+		public TitledBorder toTitledBorder() { return (TitledBorder) obj; }
 		public int toInt() { return (int) obj; }
 		public void setLang() {
 			if (k==null) return;
@@ -131,6 +132,7 @@ public class Main {
 			else { long arr[] = prefs.getLongArray("windowLocation"); sc.getByName("main").toJFrame().setLocation((int) arr[0], (int) arr[1]); }
 			
 			{//gui
+				sc.addControl(new JPanel(new GridLayout(0, 1, 1, 1)), "lpanel", null);
 				JPanel lpanel = new JPanel(new GridLayout(0, 1, 1, 1));
 				lpanel.setBorder(new TitledBorder(""));
 				{//list
@@ -183,26 +185,32 @@ public class Main {
 							propertiesGui(indexes.get(sel));
 					    }});
 						//Index index = indexes.get(sel);
-						rc.add(props);
-						rc.addSeparator();
+						//rc.add(props);
+						//rc.addSeparator();
 						rc.add(new D(indexes.get(sel).toString()));
 						rc.add(new D(stringLimit(sblines.get(indexes.get(sel).getGroup()).get(indexes.get(sel).getMember()).getMessage().toString(), 30)));
 						
 						rc.show(sc.getByName("list").toJList(), e.getX(), e.getY());
 					}}});
 					sc.getByName("list").toJList().addListSelectionListener(new ListSelectionListener() { public void valueChanged(ListSelectionEvent e) {
+					//on index change
 						if (!sc.getByName("list").toJList().isEnabled()) return;
 						if (((JList) e.getSource()).getSelectedIndex() < 0) return;
 						sc.getByName("ta").toJTextArea().setEnabled(false);
 						Index index = indexes.get(((JList) e.getSource()).getSelectedIndex());
+						lpanel.setBorder(new TitledBorder(index.toString()));
 						String content = sblines.get(index.getGroup()).get(index.getMember()).getMessage().getContent();
 						boolean prob = sblines.get(index.getGroup()).get(index.getMember()).getMessage().isProblematic();
-						if (!prob) sc.getByName("ta").toJTextArea().setText(content);
+						if (!prob) {
+							sc.getByName("ta").toJTextArea().setText(content);
+							blackTA();
+						}
 						else {
 							String s = dlm.get(((JList) e.getSource()).getSelectedIndex());
 							JSONObject j = null;
 							try { j = (JSONObject) new JSONParser().parse("{\"t\":\"" + s + "\"}"); } catch (ParseException e1) { e1.printStackTrace(); }
 							sc.getByName("ta").toJTextArea().setText(j.get("t").toString());
+							redTA();
 						}
 						sc.getByName("ta").toJTextArea().setEnabled(true);
 					}});
@@ -238,14 +246,14 @@ public class Main {
 									  sblines.get(index.getGroup()).get(index.getMember()).getMessage().set(bs.getByteArray());
 									  output = sblines.get(index.getGroup()).get(index.getMember()).getMessage().getDisplay();
 									  sblines.get(index.getGroup()).get(index.getMember()).getMessage().setProblematic(false);
-									  sc.getByName("ta").toJTextArea().setForeground(Color.BLACK);
+									  blackTA();
 								  }
 								  catch (Error ee) { //if line is problematic
 									  JSONObject j = new JSONObject();
 									  j.put("h", s);
 									  output = j.toString().substring(6).replaceFirst(".$","").replaceFirst(".$","");
 									  sblines.get(index.getGroup()).get(index.getMember()).getMessage().setProblematic(true);
-									  sc.getByName("ta").toJTextArea().setForeground(Color.RED);
+									  redTA();
 								  }
 								  
 								  if (output.equals("")) {
@@ -320,6 +328,12 @@ public class Main {
 			
 			setLang(guess);
 		}
+	}
+	public static void blackTA() {
+		sc.getByName("ta").toJTextArea().setForeground(Color.BLACK);
+	}
+	public static void redTA() {
+		sc.getByName("ta").toJTextArea().setForeground(Color.RED);
 	}
 	public static JPopupMenu copyMenu(boolean editable) {
 		class SelectAll extends TextAction
@@ -537,7 +551,9 @@ public class Main {
 			return lang.get("indexToString").toString().replace("[v1]", "" + (groupvar + 1)).replace("[v2]", "" + (membervar + 1));
 		}
 	}
+	
 	public static List<Index> indexes = new ArrayList<>();
+	
 	public static void openRomAction(File selectedFile, boolean pref) {
 		if (pref) prefs.put("lastOpened", selectedFile.getParent());
         prefs.save();
@@ -561,6 +577,8 @@ public class Main {
         }
 
         sc.getByName("list").toJList().setEnabled(true);
+        sc.getByName("list").toJList().setSelectedIndex(0);
+        sc.getByName("list").toJList().requestFocus();
 	}
 	public static void addToRecent(File f) {
 		int limit = 10;
