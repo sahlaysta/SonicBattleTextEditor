@@ -14,6 +14,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -78,6 +80,8 @@ public class Main {
 		public JList toJList() { return (JList) obj; }
 		public JSplitPane toJSplitPane() { return (JSplitPane) obj; }
 		public TitledBorder toTitledBorder() { return (TitledBorder) obj; }
+		public JPanel toJPanel() { return (JPanel) obj; }
+		public JCheckBoxMenuItem toJCheckBoxMenuItem() { return (JCheckBoxMenuItem) obj; }
 		public int toInt() { return (int) obj; }
 		public void setLang() {
 			if (k==null) return;
@@ -86,6 +90,7 @@ public class Main {
 			try { this.toJButton().setText(s); return; } catch (Exception e) {}
 			try { this.toJMenu().setText(s); return; } catch (Exception e) {}
 			try { this.toJMenuItem().setText(s); return; } catch (Exception e) {}
+			try { this.toJCheckBoxMenuItem().setText(s); return; } catch (Exception e) {}
 		}
 	}
 	public static class SC extends ArrayList<ObjectExt>{ //subscribe control to String
@@ -133,8 +138,7 @@ public class Main {
 			
 			{//gui
 				sc.addControl(new JPanel(new GridLayout(0, 1, 1, 1)), "lpanel", null);
-				JPanel lpanel = new JPanel(new GridLayout(0, 1, 1, 1));
-				lpanel.setBorder(new TitledBorder(""));
+				sc.getByName("lpanel").toJPanel().setBorder(new TitledBorder(""));
 				{//list
 					sc.addControl(new JList<>(dlm), "list", null);
 					sc.getByName("list").toJList().setEnabled(false);
@@ -152,6 +156,9 @@ public class Main {
 	                        	  }
 	                        	  else {
 		                        	  setBackground(Color.YELLOW);
+		                        	  if (sc.getByName("list").toJList().getBackground().equals(Color.BLACK)) {
+		                        		  setForeground(Color.BLACK);
+		                        	  }
 	                        	  }
 	                          }
 	                          if (sblines.get(indexes.get(index).getGroup()).get(indexes.get(index).getMember()).getMessage().isProblematic()) {
@@ -160,6 +167,9 @@ public class Main {
 	                        	  }
 	                        	  else {
 		                        	  setBackground(Color.RED);
+		                        	  if (sc.getByName("list").toJList().getBackground().equals(Color.BLACK)) {
+		                        		  setForeground(Color.BLACK);
+		                        	  }
 	                        	  }
 	                          }
 	                          
@@ -198,7 +208,7 @@ public class Main {
 						if (((JList) e.getSource()).getSelectedIndex() < 0) return;
 						sc.getByName("ta").toJTextArea().setEnabled(false);
 						Index index = indexes.get(((JList) e.getSource()).getSelectedIndex());
-						lpanel.setBorder(new TitledBorder(index.toString()));
+						sc.getByName("lpanel").toJPanel().setBorder(new TitledBorder(index.toString()));
 						String content = sblines.get(index.getGroup()).get(index.getMember()).getMessage().getContent();
 						boolean prob = sblines.get(index.getGroup()).get(index.getMember()).getMessage().isProblematic();
 						if (!prob) {
@@ -214,7 +224,7 @@ public class Main {
 						}
 						sc.getByName("ta").toJTextArea().setEnabled(true);
 					}});
-					lpanel.add(new JScrollPane(sc.getByName("list").toJList()));
+					sc.getByName("lpanel").toJPanel().add(new JScrollPane(sc.getByName("list").toJList()));
 				}
 				
 				JPanel tapanel = new JPanel(new GridLayout(1, 0, 1, 1));
@@ -253,6 +263,7 @@ public class Main {
 									  j.put("h", s);
 									  output = j.toString().substring(6).replaceFirst(".$","").replaceFirst(".$","");
 									  sblines.get(index.getGroup()).get(index.getMember()).getMessage().setProblematic(true);
+									  errors[sel] = ee.toString();
 									  redTA();
 								  }
 								  
@@ -276,7 +287,7 @@ public class Main {
 				sc.getByName("splitPane").toJSplitPane().setBorder(BorderFactory.createEmptyBorder(borderp,borderp,borderp,borderp));
 				sc.getByName("splitPane").toJSplitPane().setDividerLocation(splitter);
 				sc.getByName("splitPane").toJSplitPane().setOrientation(JSplitPane.VERTICAL_SPLIT);
-				sc.getByName("splitPane").toJSplitPane().setTopComponent(lpanel);
+				sc.getByName("splitPane").toJSplitPane().setTopComponent(sc.getByName("lpanel").toJPanel());
 				sc.getByName("splitPane").toJSplitPane().setBottomComponent(tapanel);
 				sc.getByName("main").toJFrame().add(sc.getByName("splitPane").toJSplitPane());
 			}
@@ -298,6 +309,27 @@ public class Main {
 				}
 				
 				{
+					//options
+					sc.addControl(new JMenu(), "options", "options");
+					sc.addControl(new JCheckBoxMenuItem(), "darkTheme", "darkTheme");
+					sc.getByName("darkTheme").toJMenuItem().addItemListener(new ItemListener() {
+					      public void itemStateChanged(ItemEvent e) {
+					        if (((JCheckBoxMenuItem) e.getSource()).isSelected()) {
+					        	setTheme(Color.LIGHT_GRAY, Color.BLACK);
+					        	prefs.put("darkTheme", true);
+					        	prefs.save();
+					        } else {
+					        	setTheme(Color.BLACK, Color.WHITE);
+					        	prefs.put("darkTheme", false);
+					        	prefs.save();
+					        }
+					      }
+					    });
+					
+					sc.getByName("options").toJMenu().add(sc.getByName("darkTheme").toJMenuItem());
+				}
+				
+				{
 					//help tab
 					sc.addControl(new JMenu(), "help", "help");
 					sc.addControl(new JMenuItem(), "about", "about");
@@ -308,7 +340,9 @@ public class Main {
 					
 					sc.getByName("help").toJMenu().add(sc.getByName("about").toJMenuItem());
 				}
+				
 				sc.getByName("bar").toJMenuBar().add(sc.getByName("file").toJMenu());
+				sc.getByName("bar").toJMenuBar().add(sc.getByName("options").toJMenu());
 				sc.getByName("bar").toJMenuBar().add(sc.getByName("help").toJMenu());
 				
 				sc.getByName("main").toJFrame().setJMenuBar(sc.getByName("bar").toJMenuBar());
@@ -321,6 +355,7 @@ public class Main {
 			}
 		}
 		//Locale.setDefault(new Locale("es", "UY"));
+		
 		{//localization
 			String guess;
 			if (prefs.isNull("language")) guess = Locale.getDefault().toLanguageTag();
@@ -328,12 +363,50 @@ public class Main {
 			
 			setLang(guess);
 		}
+
+		{//dark theme
+			if (!prefs.isNull("darkTheme")) {
+				if (prefs.getBoolean("darkTheme")) sc.getByName("darkTheme").toJMenuItem().setSelected(true);
+			}
+		}
 	}
+	
+	public static Color themeFore = Color.BLACK;
+	public static Color themeBack = Color.WHITE;
+	
+	public static void setTheme(Color foreground, Color background) {
+		themeFore = foreground;
+		themeBack = background;
+		sc.getByName("list").toJList().setForeground(themeFore);
+		sc.getByName("list").toJList().setBackground(themeBack);
+		sc.getByName("ta").toJTextArea().setBackground(themeBack);
+		if (!sc.getByName("ta").toJTextArea().getForeground().equals(Color.RED)) sc.getByName("ta").toJTextArea().setForeground(themeFore);
+		sc.getByName("ta").toJTextArea().setCaretColor(foreground);
+		sc.getByName("lpanel").toJPanel().setForeground(themeFore);
+		sc.getByName("lpanel").toJPanel().setBackground(themeBack);
+//		sc.getByName("bar").toJMenuBar().setForeground(themeFore);
+//		sc.getByName("bar").toJMenuBar().setBackground(themeBack);
+		
+		//set titledborder text color
+		TitledBorder tb = ((TitledBorder) sc.getByName("lpanel").toJPanel().getBorder());
+		if (!tb.getTitleColor().equals(Color.RED)) {
+			tb.setTitleColor(themeFore);
+			sc.getByName("lpanel").toJPanel().setBorder(tb);
+		}
+	}
+	
 	public static void blackTA() {
-		sc.getByName("ta").toJTextArea().setForeground(Color.BLACK);
+		sc.getByName("ta").toJTextArea().setForeground(themeFore);
+		TitledBorder tb = new TitledBorder(indexes.get(sc.getByName("list").toJList().getSelectedIndex()).toString());
+		tb.setTitleColor(themeFore);
+		sc.getByName("lpanel").toJPanel().setBorder(tb);
 	}
 	public static void redTA() {
 		sc.getByName("ta").toJTextArea().setForeground(Color.RED);
+		String s = errors[sc.getByName("list").toJList().getSelectedIndex()].replace("java.lang.Error: Unknown char: ", "");
+		TitledBorder tb = new TitledBorder(lang.get("invalidChar").toString().replace("[v]", s));
+		tb.setTitleColor(Color.RED);
+		sc.getByName("lpanel").toJPanel().setBorder(tb);
 	}
 	public static JPopupMenu copyMenu(boolean editable) {
 		class SelectAll extends TextAction
@@ -546,13 +619,19 @@ public class Main {
 		public int getMember() {
 			return membervar;
 		}
-		
 		public String toString() {
 			return lang.get("indexToString").toString().replace("[v1]", "" + (groupvar + 1)).replace("[v2]", "" + (membervar + 1));
+		}
+		public boolean equals(Index index) {
+			if (index.getGroup() != this.getGroup()) return false;
+			if (index.getMember() != this.getMember()) return false;
+			return true;
 		}
 	}
 	
 	public static List<Index> indexes = new ArrayList<>();
+	
+	public static String[] errors = new String[0];
 	
 	public static void openRomAction(File selectedFile, boolean pref) {
 		if (pref) prefs.put("lastOpened", selectedFile.getParent());
@@ -575,6 +654,7 @@ public class Main {
             	indexes.add(new Index(i, ii));
             }
         }
+        errors = new String[dlm.size()];
 
         sc.getByName("list").toJList().setEnabled(true);
         sc.getByName("list").toJList().setSelectedIndex(0);
