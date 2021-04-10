@@ -23,6 +23,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
@@ -304,8 +305,22 @@ public class Main {
 						openRom(null);
 				    }});
 					setRecent(sc.getByName("recent").toJMenu());
+					sc.addControl(new JMenuItem(), "save", "save");
+					sc.getByName("save").toJMenuItem().setAccelerator(KeyStroke.getKeyStroke('S', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
+					sc.getByName("save").toJMenuItem().addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){  
+						save(rompath);
+				    }});
+					sc.getByName("save").toJMenuItem().setEnabled(false);
+					sc.addControl(new JMenuItem(), "saveAs", "saveAs");
+					sc.getByName("saveAs").toJMenuItem().setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,java.awt.Event.CTRL_MASK | java.awt.Event.SHIFT_MASK));
+					sc.getByName("saveAs").toJMenuItem().addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){  
+						save(null);
+				    }});
+					sc.getByName("saveAs").toJMenuItem().setEnabled(false);
 					sc.getByName("file").toJMenu().add(sc.getByName("open").toJMenuItem());
 					sc.getByName("file").toJMenu().add(sc.getByName("recent").toJMenu());
+					sc.getByName("file").toJMenu().add(sc.getByName("save").toJMenuItem());
+					sc.getByName("file").toJMenu().add(sc.getByName("saveAs").toJMenuItem());
 				}
 				
 				{
@@ -659,6 +674,8 @@ public class Main {
         sc.getByName("list").toJList().setEnabled(true);
         sc.getByName("list").toJList().setSelectedIndex(0);
         sc.getByName("list").toJList().requestFocus();
+        sc.getByName("save").toJMenuItem().setEnabled(true);
+        sc.getByName("saveAs").toJMenuItem().setEnabled(true);
 	}
 	public static void addToRecent(File f) {
 		int limit = 10;
@@ -726,9 +743,12 @@ public class Main {
 		prefs.put("language", setKey);
 		prefs.save();
 	}
+	
+	public static File rompath = null;
+	
 	public static String setRom(URI u) {
 	 //read rom and parse lines
-		try { new Line(null).setRom(Files.readAllBytes(Paths.get(u))); } catch (IOException e) { return e.toString(); }
+		try { rom = Files.readAllBytes(Paths.get(u)); } catch (IOException e) { return e.toString(); }
 		
 		sblines.clear();
 		addLines(sblines, "edfe8c", 2299); //story mode
@@ -741,8 +761,80 @@ public class Main {
 		addLines(sblines, "EDCFD0", 40); //battle record menu lines
 		addLines(sblines, "EDC9D0", 7); //captured technique dialog lines
 		addLines(sblines, "EDD5D0", 8); //story mode episode select menu lines
+		rompath = new File(u);
 		return null;
 	}
+	
+	public static void save(File f) {
+		String line = "";
+		File savepath = null;
+		if (f == null) {
+			line = lang.get("saveAs").toString();
+			File defaultDir = new File(System.getProperty("user.dir"));
+			if (!prefs.isNull("lastOpened")) {
+				File dir = new File(prefs.getString("lastOpened"));
+				if (dir.exists()) defaultDir = dir;
+			}
+			
+			JFileChooser fileChooser = new NativeJFileChooser(defaultDir);
+			FileNameExtensionFilter fnefgba = new FileNameExtensionFilter(lang.get("fileType").toString().replace("[v]", "GBA"), "gba");
+			FileNameExtensionFilter fnefall = new FileNameExtensionFilter(lang.get("fileTypeAll").toString(), "*.*");
+			fileChooser.addChoosableFileFilter(fnefgba);
+			fileChooser.addChoosableFileFilter(fnefall);
+			
+			fileChooser.setFileFilter(fnefgba);
+			fileChooser.setDialogTitle(line);
+			int returnValue = fileChooser.showSaveDialog(null);
+			if (returnValue == JFileChooser.APPROVE_OPTION) {
+	            savepath = fileChooser.getSelectedFile();
+	        } else return;
+		} else {
+			line = lang.get("save").toString();
+			if (JOptionPane.showConfirmDialog(null, lang.get("overwrite").toString().replace("[v]", f.toString()), line,
+			        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+			    // yes option
+				savepath = f;
+			} else {
+			    // no option
+				return;
+			}
+		}
+		
+		class A{ //nested function
+			
+		}
+		
+		for (int i = 0; i < sblines.size(); i++){
+			List<Byte> l = new ArrayList<>();
+			List<Pointer> p = new ArrayList<>();
+			List<Pointer> pp = new ArrayList<>();
+			int position = sblines.get(i).get(0).getMessagePointer().getDec();
+			for (int ii = 0; ii < sblines.get(i).size(); ii++) {
+				p.add(new Pointer(position + l.size()));
+				pp.add(sblines.get(i).get(ii).getPointerPointer());
+				for (byte b:sblines.get(i).get(ii).getMessage().getByteArray()) l.add(b);
+				for (byte b:sblines.get(i).get(ii).getMessage().getEndline()) l.add(b);
+			}
+			
+			for (int iii = 0; iii < l.size(); iii++) {
+				rom[position + iii] = l.get(iii);
+			}
+			for (int iii = 0; iii < p.size(); iii++) {
+				int iiii = 0;
+				for (byte b: new ByteSequence(p.get(iii).reverse().getHex()).getByteArray()) {
+					rom[pp.get(iii).getDec() + iiii] = b;
+					iiii++;
+				}
+			}
+		}
+		
+		try (FileOutputStream stream = new FileOutputStream(savepath, false)) {
+		    stream.write(rom);
+		} catch (IOException e) { e.printStackTrace(); }
+		
+		JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), lang.get("saved").toString(), line, JOptionPane.INFORMATION_MESSAGE);
+	}
+	
 	public static void parseLib() {
 		//parse SonicBattleTextHEXtable.json for text conversion
 		try{
@@ -812,9 +904,10 @@ public class Main {
 //			return sb.toString();
 //		}
 	}
+	public static byte[] rom = null;
+	
 	public static class Line{
 //		private static int idcount = 0;
-		private static byte[] rom = new byte[0];
 		private static byte[] endline = new byte[] { (byte) 0xFE, (byte) 0xFF }; //FEFF is end of line
 		private Pointer pointerPointer = null;
 		private Pointer messagePointer = null;
@@ -894,9 +987,6 @@ public class Main {
 //		public void resetID() {
 //			idcount=0;
 //		}
-		public void setRom(byte[] b) {
-			rom = b;
-		}
 		public Message getMessage() {
 			return message;
 		}
