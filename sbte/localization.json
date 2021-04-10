@@ -10,6 +10,8 @@
 		"help": "Help",
 		"about": "About",
 		"credits": "Programmed by [v]",
+		"options": "Options",
+		"darkTheme": "Dark theme",
 		"error": "Error",
 		"cut": "Cut",
 		"copy": "Copy",
@@ -18,6 +20,7 @@
 		"properties": "Properties",
 		"propertiesOf": "[v] Properties",
 		"indexToString": "Group [v1], Member [v2]",
+		"invalidChar": "Invalid char: [v]",
 		"pointer": "Pointer",
 		"beforeSave": "Before save",
 		"afterSave": "After save"
@@ -32,6 +35,8 @@
 		"help": "Ayuda",
 		"about": "Acerca de",
 		"credits": "Programado por [v]",
+		"options": "Opciones",
+		"darkTheme": "Tema oscuro",
 		"error": "Error",
 		"cut": "Cortar",
 		"copy": "Copiar",
@@ -40,6 +45,7 @@
 		"properties": "Propiedades",
 		"propertiesOf": "[v] Propiedades",
 		"indexToString": "Grupo [v1], Miembro [v2]",
+		"invalidChar": "Carácter inválido: [v]",
 		"pointer": "Puntero",
 		"beforeSave": "Antes de guardar",
 		"afterSave": "Después de guardar"
