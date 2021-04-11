@@ -36,6 +36,7 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -209,7 +210,7 @@ public class Main {
 						if (((JList) e.getSource()).getSelectedIndex() < 0) return;
 						sc.getByName("ta").toJTextArea().setEnabled(false);
 						Index index = indexes.get(((JList) e.getSource()).getSelectedIndex());
-						sc.getByName("lpanel").toJPanel().setBorder(new TitledBorder(index.toString()));
+						sc.getByName("lpanel").toJPanel().setBorder(new TitledBorder(lang.get("selectedLine").toString().replace("[v]", "" + (((JList) e.getSource()).getSelectedIndex() + 1))));
 						String content = sblines.get(index.getGroup()).get(index.getMember()).getMessage().getContent();
 						boolean prob = sblines.get(index.getGroup()).get(index.getMember()).getMessage().isProblematic();
 						if (!prob) {
@@ -324,7 +325,7 @@ public class Main {
 				}
 				
 				{
-					//options
+					//view tab
 					sc.addControl(new JMenu(), "options", "options");
 					sc.addControl(new JCheckBoxMenuItem(), "darkTheme", "darkTheme");
 					sc.getByName("darkTheme").toJMenuItem().addItemListener(new ItemListener() {
@@ -356,7 +357,21 @@ public class Main {
 					sc.getByName("help").toJMenu().add(sc.getByName("about").toJMenuItem());
 				}
 				
+				{
+					//go to line tab
+					sc.addControl(new JMenu(), "search", "search");
+					sc.addControl(new JMenuItem(), "goTo", "goTo");
+					sc.getByName("goTo").toJMenuItem().setAccelerator(KeyStroke.getKeyStroke('G', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
+					sc.getByName("goTo").toJMenuItem().addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){  
+						goToGui();
+				    }});
+					
+					sc.getByName("search").toJMenu().add(sc.getByName("goTo").toJMenuItem());
+					sc.getByName("search").toJMenu().setEnabled(false);
+				}
+				
 				sc.getByName("bar").toJMenuBar().add(sc.getByName("file").toJMenu());
+				sc.getByName("bar").toJMenuBar().add(sc.getByName("search").toJMenu());
 				sc.getByName("bar").toJMenuBar().add(sc.getByName("options").toJMenu());
 				sc.getByName("bar").toJMenuBar().add(sc.getByName("help").toJMenu());
 				
@@ -412,7 +427,7 @@ public class Main {
 	
 	public static void blackTA() {
 		sc.getByName("ta").toJTextArea().setForeground(themeFore);
-		TitledBorder tb = new TitledBorder(indexes.get(sc.getByName("list").toJList().getSelectedIndex()).toString());
+		TitledBorder tb = new TitledBorder(lang.get("selectedLine").toString().replace("[v]", "" + (sc.getByName("list").toJList().getSelectedIndex() + 1)));
 		tb.setTitleColor(themeFore);
 		sc.getByName("lpanel").toJPanel().setBorder(tb);
 	}
@@ -463,6 +478,86 @@ public class Main {
         menu.add( selectAll );
         
 		return menu;
+	}
+	public static void goToGui() {
+		class IntOnlyTF extends JTextField{
+			boolean editing = false;
+			public IntOnlyTF() {
+				this.setComponentPopupMenu(copyMenu(true));
+				//cannot enter anything that isnt a number
+				this.getDocument().addDocumentListener(new DocumentListener() {
+					  public void changedUpdate(DocumentEvent e) {
+					  	  changed(e);
+					  }
+					  public void removeUpdate(DocumentEvent e) {
+						  changed(e);
+					  }
+					  public void insertUpdate(DocumentEvent e) {
+						  changed(e);
+					  }
+					  public void changed(DocumentEvent e) {
+						  if (editing) return;
+						  Runnable undo = new Runnable() {
+						        @Override
+						        public void run() {
+						        	editing = true;
+						        	StringBuilder sb = new StringBuilder();
+						        	for (char c: getText().toCharArray()) {
+						        		if (c == '0') sb.append(c);
+						        		else if (c == '1') sb.append(c);
+						        		else if (c == '2') sb.append(c);
+						        		else if (c == '3') sb.append(c);
+						        		else if (c == '4') sb.append(c);
+						        		else if (c == '5') sb.append(c);
+						        		else if (c == '6') sb.append(c);
+						        		else if (c == '7') sb.append(c);
+						        		else if (c == '8') sb.append(c);
+						        		else if (c == '9') sb.append(c);
+						        	}
+						        	setText(sb.toString());
+						        	editing = false;
+						        }
+						    };       
+						    SwingUtilities.invokeLater(undo);
+					  }
+				});
+			}
+		}
+		JDialog d = new JDialog(sc.getByName("main").toJFrame());
+		d.setModal(true);
+		d.setResizable(false);
+		d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		d.setTitle(lang.get("goTo").toString());
+		JPanel p = new JPanel();
+		p.setBorder(new EmptyBorder(5, 5, 5, 5));
+		
+		{
+			p.add(new JLabel(lang.get("line").toString()));
+			IntOnlyTF tf = new IntOnlyTF();
+			p.add(tf);
+			
+			p.add(new JLabel(""));
+			JButton go = new JButton(lang.get("go").toString());
+			go.addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){
+				int sel = -1 + Integer.parseInt(tf.getText());
+				sc.getByName("list").toJList().ensureIndexIsVisible(sel);
+				sc.getByName("list").toJList().setSelectedIndex(sel);
+				try { dlm.get(sel); } catch (Exception ee) {
+					JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), ee.toString(), lang.get("error").toString(), JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				d.dispose();
+			}});  
+			p.add(go);
+		}
+		
+		p.setLayout(new GridLayout(2, 2, 5, 5));
+		d.add(p);
+		d.pack();
+		d.setSize(d.getSize().width, d.getSize().height - 10);
+		
+		d.setLocationRelativeTo(sc.getByName("main").toJFrame());
+		d.setVisible(true);
 	}
 	public static void propertiesGui(Index index) {
 		class NoEditTF extends JTextField{
@@ -660,6 +755,7 @@ public class Main {
         
         sc.getByName("list").toJList().setEnabled(false);
         sc.getByName("ta").toJTextArea().setEnabled(false);
+        sc.getByName("ta").toJTextArea().setComponentPopupMenu(copyMenu(true));
         sc.getByName("ta").toJTextArea().setText("");
         sc.getByName("list").toJList().setSelectedIndex(2);
         dlm.clear();
@@ -676,6 +772,7 @@ public class Main {
         sc.getByName("list").toJList().requestFocus();
         sc.getByName("save").toJMenuItem().setEnabled(true);
         sc.getByName("saveAs").toJMenuItem().setEnabled(true);
+        sc.getByName("search").toJMenuItem().setEnabled(true);
 	}
 	public static void addToRecent(File f) {
 		int limit = 10;
@@ -800,10 +897,6 @@ public class Main {
 			}
 		}
 		
-		class A{ //nested function
-			
-		}
-		
 		for (int i = 0; i < sblines.size(); i++){
 			List<Byte> l = new ArrayList<>();
 			List<Pointer> p = new ArrayList<>();
@@ -830,7 +923,11 @@ public class Main {
 		
 		try (FileOutputStream stream = new FileOutputStream(savepath, false)) {
 		    stream.write(rom);
-		} catch (IOException e) { e.printStackTrace(); }
+		} catch (IOException e) { 
+			JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), e.toString(), lang.get("error").toString(), JOptionPane.ERROR_MESSAGE);
+		}
+		
+		rompath = savepath;
 		
 		JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), lang.get("saved").toString(), line, JOptionPane.INFORMATION_MESSAGE);
 	}
