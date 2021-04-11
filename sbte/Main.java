@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -16,6 +17,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -324,6 +326,22 @@ public class Main {
 					sc.getByName("file").toJMenu().add(sc.getByName("saveAs").toJMenuItem());
 				}
 				
+				{//edit tab
+					sc.addControl(new JMenu(), "edit", "edit");
+					sc.getByName("edit").toJMenu().setEnabled(false);
+					sc.addControl(new JMenuItem(), "export", "export");
+					sc.addControl(new JMenuItem(), "import", "import");
+					sc.getByName("export").toJMenuItem().addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){  
+						exportlines();
+				    }});
+					sc.getByName("import").toJMenuItem().addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){  
+						importlines();
+				    }});
+					
+					sc.getByName("edit").toJMenu().add(sc.getByName("export").toJMenuItem());
+					sc.getByName("edit").toJMenu().add(sc.getByName("import").toJMenuItem());
+				}
+				
 				{
 					//view tab
 					sc.addControl(new JMenu(), "options", "options");
@@ -342,7 +360,13 @@ public class Main {
 					      }
 					    });
 					
-					sc.getByName("options").toJMenu().add(sc.getByName("darkTheme").toJMenuItem());
+					sc.addControl(new JMenuItem(), "lang", "changeLang");
+					sc.getByName("lang").toJMenuItem().addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){  
+						langGui();
+				    }});
+					
+					sc.getByName("options").toJMenu().add(sc.getByName("lang").toJMenuItem());
+					sc.getByName("options").toJMenu().add(sc.getByName("darkTheme").toJCheckBoxMenuItem());
 				}
 				
 				{
@@ -351,26 +375,41 @@ public class Main {
 					sc.addControl(new JMenuItem(), "about", "about");
 					sc.getByName("about").toJMenuItem().setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
 					sc.getByName("about").toJMenuItem().addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){  
-						JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), lang.get("credits").toString().replace("[v]", "porog") + "\nhttps://github.com/sahlaysta/", lang.get("about").toString(), JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), "V3.0.0\n" + lang.get("credits").toString().replace("[v]", "porog") + "\nhttps://github.com/sahlaysta/", lang.get("about").toString(), JOptionPane.INFORMATION_MESSAGE);
 				    }});
 					
 					sc.getByName("help").toJMenu().add(sc.getByName("about").toJMenuItem());
 				}
 				
-				{
-					//go to line tab
+				{//search tab
+					//go to line
 					sc.addControl(new JMenu(), "search", "search");
 					sc.addControl(new JMenuItem(), "goTo", "goTo");
 					sc.getByName("goTo").toJMenuItem().setAccelerator(KeyStroke.getKeyStroke('G', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
 					sc.getByName("goTo").toJMenuItem().addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){  
 						goToGui();
 				    }});
+					//search
+					sc.addControl(new JMenuItem(), "searchMenu", "search");
+					sc.getByName("searchMenu").toJMenuItem().setAccelerator(KeyStroke.getKeyStroke('F', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
+					sc.getByName("searchMenu").toJMenuItem().addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){  
+						searchGui(dlm, false);
+				    }});
+					//problem lines
+					sc.addControl(new JMenuItem(), "prob", "prob");
+					sc.getByName("prob").toJMenuItem().addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){  
+						searchGui(dlm, true);
+				    }});
 					
+					sc.getByName("search").toJMenu().add(sc.getByName("searchMenu").toJMenuItem());
 					sc.getByName("search").toJMenu().add(sc.getByName("goTo").toJMenuItem());
+					sc.getByName("search").toJMenu().add(sc.getByName("prob").toJMenuItem());
+					
 					sc.getByName("search").toJMenu().setEnabled(false);
 				}
 				
 				sc.getByName("bar").toJMenuBar().add(sc.getByName("file").toJMenu());
+				sc.getByName("bar").toJMenuBar().add(sc.getByName("edit").toJMenu());
 				sc.getByName("bar").toJMenuBar().add(sc.getByName("search").toJMenu());
 				sc.getByName("bar").toJMenuBar().add(sc.getByName("options").toJMenu());
 				sc.getByName("bar").toJMenuBar().add(sc.getByName("help").toJMenu());
@@ -479,6 +518,288 @@ public class Main {
         
 		return menu;
 	}
+	public static void searchGui(DefaultListModel<String> si, boolean problematic) {
+		class A extends JLabel{
+			public String hits = lang.get("hits").toString();
+			public String oneHit = lang.get("oneHit").toString();
+			public void setFound(int i) {
+				if (i == 1) A.this.setText(oneHit.replace("[v]", i + ""));
+				else A.this.setText(hits.replace("[v]", i + ""));
+			}
+		}
+		JDialog d = new JDialog(sc.getByName("main").toJFrame());
+		d.setModal(true);
+		d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		if (problematic) d.setTitle(lang.get("prob").toString());
+		else d.setTitle(lang.get("search").toString());
+		d.setLayout(new BorderLayout(5, 5));
+		
+		JPanel tfp = new JPanel();
+		JTextField tf = new JTextField();
+		tf.add(copyMenu(true));
+		tfp.setBorder(new EmptyBorder(5,5,5,5));
+		tfp.setLayout(new GridLayout(1,1));
+		tfp.add(tf);
+		d.add(tfp, BorderLayout.PAGE_START);
+		
+		JPanel lp = new JPanel();
+		DefaultListModel m = new DefaultListModel<String>();
+		JList list = new JList(m);
+		List<Integer> index = new ArrayList<>();
+		for (int i = 0; i < si.getSize(); i++) {
+			if (problematic && !sblines.get(indexes.get(i).getGroup()).get(indexes.get(i).getMember()).getMessage().isProblematic()) continue;
+			m.addElement(si.get(i));
+			index.add(i);
+		}
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane sp = new JScrollPane(list);
+		//sp.setPreferredSize(new Dimension(200, 150));
+		lp.setBorder(new EmptyBorder(5,5,5,5));
+		lp.setLayout(new GridLayout(1,1));
+		lp.add(sp);
+		//list coloring
+		list.setCellRenderer(new DefaultListCellRenderer() {
+			//background color of list items
+                 @Override
+                 public Component getListCellRendererComponent(JList jlist, Object value, int jindex,
+                           boolean isSelected, boolean cellHasFocus) {
+                      Component c = super.getListCellRendererComponent(jlist, value, jindex, isSelected, cellHasFocus);
+                      if (hasLongLine(sblines.get(indexes.get(index.get(jindex)).getGroup()).get(indexes.get(index.get(jindex)).getMember()).getMessage().getContent(), 40)) {
+                    	  if (isSelected) {
+                    		  setForeground(Color.YELLOW);
+                    	  }
+                    	  else {
+                        	  setBackground(Color.YELLOW);
+                        	  if (list.getBackground().equals(Color.BLACK)) {
+                        		  setForeground(Color.BLACK);
+                        	  }
+                    	  }
+                      }
+                      if (sblines.get(indexes.get(index.get(jindex)).getGroup()).get(indexes.get(index.get(jindex)).getMember()).getMessage().isProblematic()) {
+                    	  if (isSelected) {
+                    		  setForeground(Color.RED);
+                    	  }
+                    	  else {
+                        	  setBackground(Color.RED);
+                        	  if (list.getBackground().equals(Color.BLACK)) {
+                        		  setForeground(Color.BLACK);
+                        	  }
+                    	  }
+                      }
+                      
+                      return c;
+                 }
+
+            });
+		d.add(lp, BorderLayout.CENTER);
+		
+
+		JPanel bottom = new JPanel();
+		bottom.setLayout(new GridLayout(1,2));
+		
+		JPanel buttonpanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		JButton b = new JButton(lang.get("go").toString());
+		buttonpanel.add(b);
+		
+		JPanel labelpanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		A l = new A();
+		l.setFound(m.size());
+		labelpanel.add(l, BorderLayout.SOUTH);
+
+		bottom.add(labelpanel);
+		bottom.add(buttonpanel);
+		d.add(bottom, BorderLayout.SOUTH);
+		
+		//update list on search
+		tf.getDocument().addDocumentListener(new DocumentListener() {
+			  public void changedUpdate(DocumentEvent e) {
+			  	  changed(e);
+			  }
+			  public void removeUpdate(DocumentEvent e) {
+				  changed(e);
+			  }
+			  public void insertUpdate(DocumentEvent e) {
+				  changed(e);
+			  }
+			  public void changed(DocumentEvent e) {
+				  if (tf.getText().length()==0) {
+					  m.clear();
+					  index.clear();
+					  for (int i = 0; i < si.getSize(); i++) {
+						  if (problematic && !sblines.get(indexes.get(i).getGroup()).get(indexes.get(i).getMember()).getMessage().isProblematic()) continue;
+						  m.addElement(si.get(i));
+						  index.add(i);
+					  }
+					  l.setFound(m.size());
+					  return;
+				  }
+				  
+				  m.clear();
+				  index.clear();
+				  for (int i = 0; i < si.getSize(); i++) {
+					  if (problematic && !sblines.get(indexes.get(i).getGroup()).get(indexes.get(i).getMember()).getMessage().isProblematic()) continue;
+					  if (containsAll(si.get(i).toLowerCase(), tf.getText().toLowerCase().split(" "))) {
+						  m.addElement(si.get(i));
+						  index.add(i);
+					  }
+				  }
+				  l.setFound(m.getSize());
+			  }
+		});
+		
+		//go to action
+		b.addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){
+			if (list.getSelectedIndex() < 0) return;
+			sc.getByName("list").toJList().ensureIndexIsVisible(index.get(list.getSelectedIndex()));
+			sc.getByName("list").toJList().setSelectedIndex(index.get(list.getSelectedIndex()));
+			d.dispose();
+		}});
+		
+		//double click option action
+		list.addMouseListener(new MouseAdapter() {
+		    public void mouseClicked(MouseEvent evt) {
+		        if (evt.getClickCount() == 2) {
+		            b.doClick();
+		        }
+		    }
+		});
+		
+		//on enter key
+		list.addKeyListener(new KeyAdapter(){
+			public void keyPressed(KeyEvent e){
+			    if (e.getKeyCode() == KeyEvent.VK_ENTER){
+			   b.doClick();
+			}
+			}
+			});
+		
+		d.pack();
+		d.setSize(200, d.getSize().height);
+		d.setLocationRelativeTo(sc.getByName("main").toJFrame());
+		d.setVisible(true);
+	}
+	public static boolean containsAll(String st, String[] sa) {
+		for (String s:sa) {
+			if (!st.contains(s)) return false;
+		}
+		return true;
+	}
+	public static void exportlines() {
+		File defaultDir = new File(System.getProperty("user.dir"));
+		if (!prefs.isNull("lastOpenedJSON")) {
+			File dir = new File(prefs.getString("lastOpenedJSON"));
+			if (dir.exists()) defaultDir = dir;
+		}
+		
+		JFileChooser fileChooser = new NativeJFileChooser(defaultDir);
+		FileNameExtensionFilter fnefgba = new FileNameExtensionFilter(lang.get("fileType").toString().replace("[v]", "JSON"), "json");
+		FileNameExtensionFilter fnefall = new FileNameExtensionFilter(lang.get("fileTypeAll").toString(), "*.*");
+		fileChooser.addChoosableFileFilter(fnefgba);
+		fileChooser.addChoosableFileFilter(fnefall);
+		
+		fileChooser.setFileFilter(fnefgba);
+		fileChooser.setDialogTitle(lang.get("export").toString());
+		int returnValue = fileChooser.showSaveDialog(null);
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			prefs.put("lastOpenedJSON", fileChooser.getSelectedFile().toString());
+			StringBuilder sb = new StringBuilder("{\r\n");
+			for (int i = 0; i < dlm.getSize(); i++) {
+				sb.append("	\"" + indexes.get(i).getGroup() + "," + indexes.get(i).getMember() + "\": \"" + dlm.get(i) + "\",\n");
+			}
+			sb.setLength(sb.length()-2);
+			sb.append("\n}");
+			try {
+				if (!fileChooser.getSelectedFile().exists()) {
+					fileChooser.getSelectedFile().createNewFile();
+				}
+				FileWriter fw = new FileWriter(fileChooser.getSelectedFile());
+				fw.write(sb.toString());
+				fw.close();
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), e.toString(), lang.get("error").toString(), JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), lang.get("exported").toString(), lang.get("export").toString(), JOptionPane.INFORMATION_MESSAGE);
+        } else return;
+	}
+	public static void importlines() {
+		
+	}
+	public static void importjson() {
+		int sel = sc.getByName("list").toJList().getSelectedIndex();
+		for (int i = 0; i < 2450; i++) {
+			String s = "h{" + i;
+			try{
+				sblines.get(indexes.get(i).getGroup()).get(indexes.get(i).getMember()).getMessage().set(sbtp.parseSB(s));
+			} catch (Error e) {
+				errors[i] = e.toString();
+				sblines.get(indexes.get(i).getGroup()).get(indexes.get(i).getMember()).getMessage().setProblematic(true);
+			}
+			dlm.set(i, s);
+		}
+		sc.getByName("list").toJList().clearSelection();
+		sc.getByName("list").toJList().setSelectedIndex(sel);
+	}
+	public static void langGui() {
+		JDialog d = new JDialog(sc.getByName("main").toJFrame());
+		d.setModal(true);
+		d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		d.setTitle(lang.get("changeLang").toString());
+		JSONObject j = null;
+		try { j = (JSONObject) new JSONParser().parse(getLocalization()); } catch (ParseException e) { e.printStackTrace(); }
+		{//list
+			JPanel p = new JPanel();
+			DefaultListModel<String> l = new DefaultListModel<>();  
+			List<String> langCode = new ArrayList<>();
+			for (Object o: j.keySet()) {
+				String s = o.toString();
+				langCode.add(s);
+				l.addElement(((JSONObject) j.get(s)).get("thisLang").toString());
+			}
+			JList<String> list = new JList<>(l);
+			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			p.add(list);
+			
+			d.add(p, BorderLayout.LINE_START);
+			
+			//button
+				JPanel pp = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+				JButton b = new JButton(lang.get("sel").toString());
+				b.addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){
+					setLang(langCode.get(list.getSelectedIndex()));
+					b.setText(lang.get("sel").toString());
+					d.setTitle(lang.get("changeLang").toString());
+				}});  
+				pp.add(b);
+				d.add(pp, BorderLayout.SOUTH);
+			
+			
+			//list double click
+			list.addMouseListener(new MouseAdapter() {
+			    public void mouseClicked(MouseEvent evt) {
+			        if (evt.getClickCount() == 2) {
+			            b.doClick();
+			        }
+			    }
+			});
+			
+			//list enter key
+			list.addKeyListener(new KeyAdapter(){
+				public void keyPressed(KeyEvent e){
+				    if (e.getKeyCode() == KeyEvent.VK_ENTER){
+				   b.doClick();
+				}
+				}
+				});
+		}
+		
+		d.pack();
+		d.setMinimumSize(new Dimension(d.getSize().width, d.getSize().height));
+		d.setSize(d.getSize().width + 50, d.getSize().height);
+		d.setLocationRelativeTo(sc.getByName("main").toJFrame());
+		d.setVisible(true);
+	}
 	public static void goToGui() {
 		class IntOnlyTF extends JTextField{
 			boolean editing = false;
@@ -539,16 +860,28 @@ public class Main {
 			p.add(new JLabel(""));
 			JButton go = new JButton(lang.get("go").toString());
 			go.addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){
+				if (tf.getText().length() <= 0) return;
 				int sel = -1 + Integer.parseInt(tf.getText());
-				sc.getByName("list").toJList().ensureIndexIsVisible(sel);
-				sc.getByName("list").toJList().setSelectedIndex(sel);
 				try { dlm.get(sel); } catch (Exception ee) {
-					JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), ee.toString(), lang.get("error").toString(), JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(d, ee.toString(), lang.get("error").toString(), JOptionPane.ERROR_MESSAGE);
 					return;
 				}
+				sc.getByName("list").toJList().ensureIndexIsVisible(sel);
+				sc.getByName("list").toJList().setSelectedIndex(sel);
 				d.dispose();
 			}});  
 			p.add(go);
+			
+			// on enter key press
+			Action action = new AbstractAction()
+			{
+			    @Override
+			    public void actionPerformed(ActionEvent e)
+			    {
+			        go.doClick();
+			    }
+			};
+			tf.addActionListener( action );
 		}
 		
 		p.setLayout(new GridLayout(2, 2, 5, 5));
@@ -755,7 +1088,6 @@ public class Main {
         
         sc.getByName("list").toJList().setEnabled(false);
         sc.getByName("ta").toJTextArea().setEnabled(false);
-        sc.getByName("ta").toJTextArea().setComponentPopupMenu(copyMenu(true));
         sc.getByName("ta").toJTextArea().setText("");
         sc.getByName("list").toJList().setSelectedIndex(2);
         dlm.clear();
@@ -773,6 +1105,7 @@ public class Main {
         sc.getByName("save").toJMenuItem().setEnabled(true);
         sc.getByName("saveAs").toJMenuItem().setEnabled(true);
         sc.getByName("search").toJMenuItem().setEnabled(true);
+        sc.getByName("edit").toJMenu().setEnabled(true);
 	}
 	public static void addToRecent(File f) {
 		int limit = 10;
@@ -808,10 +1141,17 @@ public class Main {
 		prefs.putArray("recentFiles", op);
 		setRecent(sc.getByName("recent").toJMenu());
 	}
+	public static String getLocalization() {
+		Scanner scanner = new Scanner(Main.class.getResourceAsStream("localization.json"), "UTF-8");
+		scanner.useDelimiter("\\A");
+		String s = scanner.next();
+		scanner.close();
+		return s;
+	}
 	public static void setLang(String si) {
 		String guess = si;
 		JSONObject j = null;
-		try { j = (JSONObject) new JSONParser().parse(new Scanner(Main.class.getResourceAsStream("localization.json"), "UTF-8").useDelimiter("\\A").next()); } catch (Exception e){ }
+		try { j = (JSONObject) new JSONParser().parse(getLocalization()); } catch (Exception e){ }
 		String[] langkeys = new String[j.size()];
 		{ int i = 0; for (Object o: j.keySet()) { langkeys[i] = o.toString(); i++; } }
 		String setKey = null;
@@ -839,6 +1179,21 @@ public class Main {
 		}
 		prefs.put("language", setKey);
 		prefs.save();
+		
+		taCopyMenu();
+		int sel = sc.getByName("list").toJList().getSelectedIndex();
+		sc.getByName("list").toJList().clearSelection();
+		sc.getByName("list").toJList().setSelectedIndex(sel);
+	}
+	
+	public static void taCopyMenu() {
+		sc.getByName("ta").toJTextArea().addMouseListener(new MouseAdapter() { public void mouseReleased(MouseEvent e) { if (e.isPopupTrigger()) {
+			if (!((JTextArea) e.getSource()).isEnabled()) return;
+			copyMenu(true).show((JTextArea) e.getSource(), e.getX(), e.getY());
+		}}});
+		
+		
+		//.setComponentPopupMenu(copyMenu(true));
 	}
 	
 	public static File rompath = null;
@@ -863,6 +1218,14 @@ public class Main {
 	}
 	
 	public static void save(File f) {
+		//check problematic lines
+		for (Index i: indexes) {
+			if (sblines.get(i.getGroup()).get(i.getMember()).getMessage().isProblematic()) {
+				searchGui(dlm, true);
+				return;
+			}
+		}
+		
 		String line = "";
 		File savepath = null;
 		if (f == null) {
@@ -896,6 +1259,8 @@ public class Main {
 				return;
 			}
 		}
+		
+		prefs.put("lastOpened", savepath.toString());
 		
 		for (int i = 0; i < sblines.size(); i++){
 			List<Byte> l = new ArrayList<>();
