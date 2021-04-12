@@ -6,13 +6,10 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
@@ -21,33 +18,58 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.BoundedRangeModel;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.TextAction;
@@ -713,9 +735,9 @@ public class Main {
 				if (!fileChooser.getSelectedFile().exists()) {
 					fileChooser.getSelectedFile().createNewFile();
 				}
-				FileWriter fw = new FileWriter(fileChooser.getSelectedFile());
-				fw.write(sb.toString());
-				fw.close();
+				BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileChooser.getSelectedFile(), true), StandardCharsets.UTF_8));
+				bw.append(sb.toString());
+				bw.close();
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), e.toString(), lang.get("error").toString(), JOptionPane.ERROR_MESSAGE);
 				return;
@@ -743,11 +765,12 @@ public class Main {
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			prefs.put("lastOpenedJSON", fileChooser.getSelectedFile().toString());
 			JSONObject j = null;
-			Scanner scanner = null;
-			try { scanner = new Scanner(fileChooser.getSelectedFile(), "UTF-8"); } catch (FileNotFoundException e) { JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), e.toString(), lang.get("error").toString(), JOptionPane.ERROR_MESSAGE); return; }
-			scanner.useDelimiter("\\A");
-			try { j = (JSONObject) new JSONParser().parse(scanner.next()); } catch (ParseException e) { JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), e.toString(), lang.get("error").toString(), JOptionPane.ERROR_MESSAGE); scanner.close(); return; }
-			scanner.close();
+			String contents = "";
+			try { 
+				List<String> join = Files.readAllLines(fileChooser.getSelectedFile().toPath());
+				contents = String.join("", join.toArray(new String[0]));
+			} catch (IOException e) { JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), e.toString(), lang.get("error").toString(), JOptionPane.ERROR_MESSAGE); return; }
+			try { j = (JSONObject) new JSONParser().parse(contents); } catch (ParseException e) { JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), e.toString(), lang.get("error").toString(), JOptionPane.ERROR_MESSAGE); return; }
 			
 			StringBuilder sb = new StringBuilder();
 			int listi = 0;
@@ -1430,14 +1453,6 @@ public class Main {
 			}
 			sbtp = new SonicBattleTextParser(sbtl);
 		} catch (ParseException e) { e.printStackTrace(); }
-	}
-	public static void createFile(File f, String s) {
-		try {
-			f.createNewFile();
-			FileWriter wr = new FileWriter(f);
-			wr.write(s);
-			wr.close();
-		} catch (IOException e) { e.printStackTrace(); }
 	}
 //	public static String linesToJSONString(List<LineGroup> sblines) {
 //		StringBuilder sb = new StringBuilder("{\r\n");
