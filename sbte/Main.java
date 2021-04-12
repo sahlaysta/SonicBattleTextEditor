@@ -78,9 +78,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import li.flor.nativejfilechooser.NativeJFileChooser;
-
-
 public class Main {
 	private static 	SonicBattleTextParser sbtp = null;
 	private static List<LineGroup> sblines = new ArrayList<>();
@@ -714,11 +711,10 @@ public class Main {
 			if (dir.exists()) defaultDir = dir;
 		}
 		
-		JFileChooser fileChooser = new NativeJFileChooser(defaultDir);
+		JFileChooser fileChooser = new JFileChooser(defaultDir);
 		FileNameExtensionFilter fnefgba = new FileNameExtensionFilter(lang.get("fileType").toString().replace("[v]", "JSON"), "json");
 		FileNameExtensionFilter fnefall = new FileNameExtensionFilter(lang.get("fileTypeAll").toString(), "*.*");
 		fileChooser.addChoosableFileFilter(fnefgba);
-		fileChooser.addChoosableFileFilter(fnefall);
 		
 		fileChooser.setFileFilter(fnefgba);
 		fileChooser.setDialogTitle(lang.get("export").toString());
@@ -753,11 +749,10 @@ public class Main {
 			if (dir.exists()) defaultDir = dir;
 		}
 		
-		JFileChooser fileChooser = new NativeJFileChooser(defaultDir);
+		JFileChooser fileChooser = new JFileChooser(defaultDir);
 		FileNameExtensionFilter fnefgba = new FileNameExtensionFilter(lang.get("fileType").toString().replace("[v]", "JSON"), "json");
 		FileNameExtensionFilter fnefall = new FileNameExtensionFilter(lang.get("fileTypeAll").toString(), "*.*");
 		fileChooser.addChoosableFileFilter(fnefgba);
-		fileChooser.addChoosableFileFilter(fnefall);
 		
 		fileChooser.setFileFilter(fnefgba);
 		fileChooser.setDialogTitle(lang.get("import").toString());
@@ -1177,11 +1172,10 @@ public class Main {
 				if (dir.exists()) defaultDir = dir;
 			}
 			
-			JFileChooser fileChooser = new NativeJFileChooser(defaultDir);
+			JFileChooser fileChooser = new JFileChooser(defaultDir);
 			FileNameExtensionFilter fnefgba = new FileNameExtensionFilter(lang.get("fileType").toString().replace("[v]", "GBA"), "gba");
-			FileNameExtensionFilter fnefall = new FileNameExtensionFilter(lang.get("fileTypeAll").toString(), "*.*");
+			FileNameExtensionFilter fnefall = new FileNameExtensionFilter(lang.get("fileTypeAll").toString(), "*");
 			fileChooser.addChoosableFileFilter(fnefgba);
-			fileChooser.addChoosableFileFilter(fnefall);
 			
 			fileChooser.setFileFilter(fnefgba);
 			fileChooser.setDialogTitle(lang.get("open").toString());
@@ -1380,11 +1374,10 @@ public class Main {
 				if (dir.exists()) defaultDir = dir;
 			}
 			
-			JFileChooser fileChooser = new NativeJFileChooser(defaultDir);
+			JFileChooser fileChooser = new JFileChooser(defaultDir);
 			FileNameExtensionFilter fnefgba = new FileNameExtensionFilter(lang.get("fileType").toString().replace("[v]", "GBA"), "gba");
 			FileNameExtensionFilter fnefall = new FileNameExtensionFilter(lang.get("fileTypeAll").toString(), "*.*");
 			fileChooser.addChoosableFileFilter(fnefgba);
-			fileChooser.addChoosableFileFilter(fnefall);
 			
 			fileChooser.setFileFilter(fnefgba);
 			fileChooser.setDialogTitle(line);
