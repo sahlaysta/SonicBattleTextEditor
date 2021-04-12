@@ -38,7 +38,7 @@ public class PrefManager {
 	}
 	public void save() {
 		if (!prefsFile.exists()) {
-			try { prefsFile.createNewFile(); BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(prefsFile, true), StandardCharsets.UTF_8)); bw.append("{\n\n}"); bw.close(); } catch (IOException e) { e.printStackTrace(); }
+			try { prefsFile.createNewFile(); BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(prefsFile, false), StandardCharsets.UTF_8)); bw.write("{\n\n}"); bw.close(); } catch (IOException e) { e.printStackTrace(); }
 		}
 		//do not save if equal
 		String wr = this.toString();
@@ -49,8 +49,8 @@ public class PrefManager {
 		if (j1.toString().equals(j2.toString())) { return; }
 		
 		try {
-			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(prefsFile, true), StandardCharsets.UTF_8));
-			bw.append(wr);
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(prefsFile, false), StandardCharsets.UTF_8));
+			bw.write(wr);
 			bw.close();
 		} catch (IOException e) { e.printStackTrace(); }
 	}
