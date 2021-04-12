@@ -25,6 +25,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -536,7 +537,7 @@ public class Main {
 		
 		JPanel tfp = new JPanel();
 		JTextField tf = new JTextField();
-		tf.add(copyMenu(true));
+		tf.setComponentPopupMenu(copyMenu(true));
 		tfp.setBorder(new EmptyBorder(5,5,5,5));
 		tfp.setLayout(new GridLayout(1,1));
 		tfp.add(tf);
@@ -724,7 +725,68 @@ public class Main {
         } else return;
 	}
 	public static void importlines() {
+		File defaultDir = new File(System.getProperty("user.dir"));
+		if (!prefs.isNull("lastOpenedJSON")) {
+			File dir = new File(prefs.getString("lastOpenedJSON"));
+			if (dir.exists()) defaultDir = dir;
+		}
 		
+		JFileChooser fileChooser = new NativeJFileChooser(defaultDir);
+		FileNameExtensionFilter fnefgba = new FileNameExtensionFilter(lang.get("fileType").toString().replace("[v]", "JSON"), "json");
+		FileNameExtensionFilter fnefall = new FileNameExtensionFilter(lang.get("fileTypeAll").toString(), "*.*");
+		fileChooser.addChoosableFileFilter(fnefgba);
+		fileChooser.addChoosableFileFilter(fnefall);
+		
+		fileChooser.setFileFilter(fnefgba);
+		fileChooser.setDialogTitle(lang.get("import").toString());
+		int returnValue = fileChooser.showOpenDialog(null);
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			prefs.put("lastOpenedJSON", fileChooser.getSelectedFile().toString());
+			JSONObject j = null;
+			Scanner scanner = null;
+			try { scanner = new Scanner(fileChooser.getSelectedFile(), "UTF-8"); } catch (FileNotFoundException e) { JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), e.toString(), lang.get("error").toString(), JOptionPane.ERROR_MESSAGE); return; }
+			scanner.useDelimiter("\\A");
+			try { j = (JSONObject) new JSONParser().parse(scanner.next()); } catch (ParseException e) { JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), e.toString(), lang.get("error").toString(), JOptionPane.ERROR_MESSAGE); scanner.close(); return; }
+			scanner.close();
+			
+			StringBuilder sb = new StringBuilder();
+			int listi = 0;
+			boolean error = false;
+			for (int i = 0; i < sblines.size(); i++) {
+				for (int ii = 0; ii < sblines.get(i).size(); ii++) {
+					String key = i + "," + ii;
+					String s = "";
+					try {
+						s = j.get(key).toString();
+					} catch (NullPointerException e) {
+						sb.append(key + "\n");
+						continue;
+					}
+					try{
+						sblines.get(i).get(ii).getMessage().set(sbtp.parseSB(s));
+					} catch (Error e) {
+						errors[listi] = e.toString();
+						sblines.get(i).get(ii).getMessage().setProblematic(true);
+						error = true;
+					}
+					JSONObject jo = new JSONObject();
+					jo.put("h", s);
+					String set = jo.toString().substring(6).replaceFirst(".$","").replaceFirst(".$","");
+					dlm.set(listi, set);
+					listi++;
+				}
+			}
+			int sel = sc.getByName("list").toJList().getSelectedIndex();
+			sc.getByName("list").toJList().clearSelection();
+			sc.getByName("list").toJList().setSelectedIndex(sel);
+			
+			JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), lang.get("imported").toString(), lang.get("import").toString(), JOptionPane.INFORMATION_MESSAGE);
+			if (sb.length() > 0) {
+				sb.setLength(sb.length()-1);
+				scrollMessage(lang.get("missingLines").toString(), sb.toString());
+			}
+			if (error) searchGui(dlm, true);
+        } else return;
 	}
 	public static void importjson() {
 		int sel = sc.getByName("list").toJList().getSelectedIndex();
@@ -892,54 +954,113 @@ public class Main {
 		d.setLocationRelativeTo(sc.getByName("main").toJFrame());
 		d.setVisible(true);
 	}
-	public static void propertiesGui(Index index) {
-		class NoEditTF extends JTextField{
-			boolean editing = false;
-			int caretPos = -1;
-			public NoEditTF(String s) {
-				setText(s);
-				this.setComponentPopupMenu(copyMenu(false));
-				//select all on focus
-				addFocusListener(new FocusListener() {
-
-		            @Override
-		            public void focusGained(FocusEvent e) {
-		                NoEditTF.this.select(0, getText().length());
-		            }
-
-		            @Override
-		            public void focusLost(FocusEvent e) {
-		                //NoEditTF.this.select(0, 0);
-		            }
-		        });
-				//uneditable
-				this.getDocument().addDocumentListener(new DocumentListener() {
-					  public void changedUpdate(DocumentEvent e) {
-					  	  changed(e);
-					  }
-					  public void removeUpdate(DocumentEvent e) {
-						  changed(e);
-					  }
-					  public void insertUpdate(DocumentEvent e) {
-						  changed(e);
-					  }
-					  public void changed(DocumentEvent e) {
-						  if (editing) return;
-						  caretPos = NoEditTF.this.getCaretPosition();
-						  Runnable undo = new Runnable() {
-						        @Override
-						        public void run() {
-						        	editing = true;
-						            NoEditTF.this.setText(s);
-						            NoEditTF.this.setCaretPosition(caretPos);
-						            editing = false;
-						        }
-						    };       
-						    SwingUtilities.invokeLater(undo);
-					  }
-				});
-			}
+	public static void scrollMessage(String title, String message) {
+		JDialog d = new JDialog(sc.getByName("main").toJFrame());
+		d.setTitle(title);
+		d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		d.setModal(true);
+		d.setSize(200, 200);
+		
+		JPanel p = new JPanel();
+		NoEditTA tf = new NoEditTA(message);
+		p.add(new JScrollPane(tf));
+		p.setLayout(new GridLayout(1,1,5,5));
+		p.setBorder(new EmptyBorder(5,5,5,5));
+		d.add(p, BorderLayout.CENTER);
+		
+		JPanel buttonp = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		JButton b = new JButton(lang.get("ok").toString());
+		b.addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){ d.dispose(); }});  
+		buttonp.add(b, BorderLayout.SOUTH);
+		d.add(buttonp, BorderLayout.SOUTH);
+		
+		d.setLocationRelativeTo(sc.getByName("main").toJFrame());
+		d.setVisible(true);
+		tf.setCaretPosition(0);
+	}
+	public static class NoEditTA extends JTextArea{
+		boolean editing = false;
+		int caretPos = -1;
+		public NoEditTA(String s) {
+			setText(s);
+			this.setComponentPopupMenu(copyMenu(false));
+			//uneditable
+			this.getDocument().addDocumentListener(new DocumentListener() {
+				  public void changedUpdate(DocumentEvent e) {
+				  	  changed(e);
+				  }
+				  public void removeUpdate(DocumentEvent e) {
+					  changed(e);
+				  }
+				  public void insertUpdate(DocumentEvent e) {
+					  changed(e);
+				  }
+				  public void changed(DocumentEvent e) {
+					  if (editing) return;
+					  caretPos = NoEditTA.this.getCaretPosition();
+					  Runnable undo = new Runnable() {
+					        @Override
+					        public void run() {
+					        	editing = true;
+					            NoEditTA.this.setText(s);
+					            editing = false;
+					            NoEditTA.this.setCaretPosition(caretPos);
+					        }
+					    };       
+					    SwingUtilities.invokeLater(undo);
+				  }
+			});
 		}
+	}
+	public static class NoEditTF extends JTextField{
+		boolean editing = false;
+		int caretPos = -1;
+		public NoEditTF(String s) {
+			setText(s);
+			this.setComponentPopupMenu(copyMenu(false));
+			//select all on focus
+			addFocusListener(new FocusListener() {
+
+	            @Override
+	            public void focusGained(FocusEvent e) {
+	                NoEditTF.this.select(0, getText().length());
+	            }
+
+	            @Override
+	            public void focusLost(FocusEvent e) {
+	                //NoEditTF.this.select(0, 0);
+	            }
+	        });
+			//uneditable
+			this.getDocument().addDocumentListener(new DocumentListener() {
+				  public void changedUpdate(DocumentEvent e) {
+				  	  changed(e);
+				  }
+				  public void removeUpdate(DocumentEvent e) {
+					  changed(e);
+				  }
+				  public void insertUpdate(DocumentEvent e) {
+					  changed(e);
+				  }
+				  public void changed(DocumentEvent e) {
+					  if (editing) return;
+					  caretPos = NoEditTF.this.getCaretPosition();
+					  Runnable undo = new Runnable() {
+					        @Override
+					        public void run() {
+					        	editing = true;
+					            NoEditTF.this.setText(s);
+					            editing = false;
+					            NoEditTF.this.setCaretPosition(caretPos);
+					        }
+					    };       
+					    SwingUtilities.invokeLater(undo);
+				  }
+			});
+		}
+	}
+	
+	public static void propertiesGui(Index index) {
 		Line l = sblines.get(index.getGroup()).get(index.getMember());
 		JDialog dialog = new JDialog(sc.getByName("main").toJFrame());
 		dialog.setTitle(lang.get("propertiesOf").toString().replace("[v]", "\"" + l.getMessage().getDisplay() + "\""));
