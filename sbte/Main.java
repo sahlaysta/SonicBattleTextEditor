@@ -735,8 +735,8 @@ public class Main {
 				if (!fileChooser.getSelectedFile().exists()) {
 					fileChooser.getSelectedFile().createNewFile();
 				}
-				BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileChooser.getSelectedFile(), true), StandardCharsets.UTF_8));
-				bw.append(sb.toString());
+				BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileChooser.getSelectedFile(), false), StandardCharsets.UTF_8));
+				bw.write(sb.toString());
 				bw.close();
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), e.toString(), lang.get("error").toString(), JOptionPane.ERROR_MESSAGE);
