@@ -1,12 +1,13 @@
 package sbte;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -37,7 +38,7 @@ public class PrefManager {
 	}
 	public void save() {
 		if (!prefsFile.exists()) {
-			try { prefsFile.createNewFile(); FileWriter wr = new FileWriter(prefsFile); wr.write("{\n\n}"); wr.close(); } catch (IOException e) { e.printStackTrace(); }
+			try { prefsFile.createNewFile(); BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(prefsFile, true), StandardCharsets.UTF_8)); bw.append("{\n\n}"); bw.close(); } catch (IOException e) { e.printStackTrace(); }
 		}
 		//do not save if equal
 		String wr = this.toString();
@@ -48,9 +49,9 @@ public class PrefManager {
 		if (j1.toString().equals(j2.toString())) { return; }
 		
 		try {
-			FileWriter myWriter = new FileWriter(prefsFile);
-			myWriter.write(wr);
-			myWriter.close();
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(prefsFile, true), StandardCharsets.UTF_8));
+			bw.append(wr);
+			bw.close();
 		} catch (IOException e) { e.printStackTrace(); }
 	}
 	public void put(String key, Object value) {
