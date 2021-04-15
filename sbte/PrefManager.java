@@ -38,6 +38,8 @@ public class PrefManager {
 	}
 	public void save() {
 		if (!prefsFile.exists()) {
+//			File parent = prefsFile.getParentFile();
+//			if (!parent.exists()) parent.mkdir();
 			try { prefsFile.createNewFile(); BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(prefsFile, false), StandardCharsets.UTF_8)); bw.write("{\n\n}"); bw.close(); } catch (IOException e) { e.printStackTrace(); }
 		}
 		//do not save if equal

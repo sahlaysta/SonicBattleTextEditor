@@ -16,6 +16,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -26,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -73,6 +75,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.TextAction;
+import javax.swing.undo.UndoManager;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -107,6 +110,7 @@ public class Main {
 		public JPanel toJPanel() { return (JPanel) obj; }
 		public JCheckBoxMenuItem toJCheckBoxMenuItem() { return (JCheckBoxMenuItem) obj; }
 		public int toInt() { return (int) obj; }
+		public Condition toCondition() { return (Condition) obj; }
 		public void setLang() {
 			if (k==null) return;
 			String s = (String) lang.get(k);
@@ -132,11 +136,20 @@ public class Main {
 			return null;
 		}
 	}
+	
 	public static DefaultListModel<String> dlm = new DefaultListModel<>();
 	public static SC sc = new SC();
-	public static PrefManager prefs = new PrefManager(new File(System.getProperty("user.dir"), "prefs.json"));
+	public static PrefManager prefs = null;
+	
+	public static File jarDir = null;
 	
 	public static void main(String[] args) {
+		try {
+			jarDir = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
+		} catch (URISyntaxException e) { e.printStackTrace(); }
+		
+		prefs = new PrefManager(new File(jarDir, "prefs.json"));
+		
 		parseLib();
 		
 		{//gui
@@ -164,7 +177,12 @@ public class Main {
 				sc.addControl(new JPanel(new GridLayout(0, 1, 1, 1)), "lpanel", null);
 				sc.getByName("lpanel").toJPanel().setBorder(new TitledBorder(""));
 				{//list
-					sc.addControl(new JList<>(dlm), "list", null);
+					JList list = new JList<>(dlm);
+					KeyListener[] lsnrs = list.getKeyListeners();
+					for (int i = 0; i < lsnrs.length; i++) {
+					    list.removeKeyListener(lsnrs[i]);
+					}
+					sc.addControl(list, "list", null);
 					sc.getByName("list").toJList().setEnabled(false);
 					sc.getByName("list").toJList().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					sc.getByName("list").toJList().setCellRenderer(new DefaultListCellRenderer() {
@@ -230,6 +248,8 @@ public class Main {
 					//on index change
 						if (!sc.getByName("list").toJList().isEnabled()) return;
 						if (((JList) e.getSource()).getSelectedIndex() < 0) return;
+						
+						taCopyMenu();
 						sc.getByName("ta").toJTextArea().setEnabled(false);
 						Index index = indexes.get(((JList) e.getSource()).getSelectedIndex());
 						sc.getByName("lpanel").toJPanel().setBorder(new TitledBorder(lang.get("selectedLine").toString().replace("[v]", "" + (((JList) e.getSource()).getSelectedIndex() + 1))));
@@ -272,6 +292,10 @@ public class Main {
 								  int sel = sc.getByName("list").toJList().getSelectedIndex();
 								  String s = sc.getByName("ta").toJTextArea().getText();
 								  Index index = indexes.get(sel);
+								  							  
+								  if (!written[sel]) undo.add(new Change(sel, sblines.get(index.getGroup()).get(index.getMember()).getMessage().getContent(), -1 + sc.getByName("ta").toJTextArea().getCaretPosition()));
+								  undo.add(new Change(sel, s, sc.getByName("ta").toJTextArea().getCaretPosition()));
+								  written[sel] = true;
 								  
 								  ByteSequence bs = null;
 								  String output = "";
@@ -395,7 +419,7 @@ public class Main {
 					sc.addControl(new JMenuItem(), "about", "about");
 					sc.getByName("about").toJMenuItem().setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
 					sc.getByName("about").toJMenuItem().addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){  
-						JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), "V3.0.0\n" + lang.get("credits").toString().replace("[v]", "porog") + "\nhttps://github.com/sahlaysta/", lang.get("about").toString(), JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), "V3.1.0\n" + lang.get("credits").toString().replace("[v]", "porog") + "\nhttps://github.com/sahlaysta/", lang.get("about").toString(), JOptionPane.INFORMATION_MESSAGE);
 				    }});
 					
 					sc.getByName("help").toJMenu().add(sc.getByName("about").toJMenuItem());
@@ -497,7 +521,8 @@ public class Main {
 		tb.setTitleColor(Color.RED);
 		sc.getByName("lpanel").toJPanel().setBorder(tb);
 	}
-	public static JPopupMenu copyMenu(boolean editable) {
+	
+	public static void copyMenu(JPopupMenu menu, boolean editable) {
 		class SelectAll extends TextAction
 	    {
 	        public SelectAll()
@@ -513,7 +538,7 @@ public class Main {
 	            component.requestFocusInWindow();
 	        }
 	    }
-		JPopupMenu menu = new JPopupMenu();
+		
 		menu.setFocusable(false);
 		
 		Action cut = new DefaultEditorKit.CutAction();
@@ -535,9 +560,16 @@ public class Main {
         
         Action selectAll = new SelectAll();
         menu.add( selectAll );
-        
-		return menu;
 	}
+	
+	public static class CopyMenu extends JPopupMenu{
+		public static final boolean WRITEABLE_COPY_MENU = true;
+		public static final boolean READ_ONLY_COPY_MENU = false;
+		public CopyMenu(boolean editable) {
+			copyMenu(CopyMenu.this, editable);
+		}
+	}
+	
 	public static void searchGui(DefaultListModel<String> si, boolean problematic) {
 		class A extends JLabel{
 			public String hits = lang.get("hits").toString();
@@ -555,8 +587,7 @@ public class Main {
 		d.setLayout(new BorderLayout(5, 5));
 		
 		JPanel tfp = new JPanel();
-		JTextField tf = new JTextField();
-		tf.setComponentPopupMenu(copyMenu(true));
+		UndoTF tf = new UndoTF();
 		tfp.setBorder(new EmptyBorder(5,5,5,5));
 		tfp.setLayout(new GridLayout(1,1));
 		tfp.add(tf);
@@ -705,7 +736,7 @@ public class Main {
 		return true;
 	}
 	public static void exportlines() {
-		File defaultDir = new File(System.getProperty("user.dir"));
+		File defaultDir = jarDir;
 		if (!prefs.isNull("lastOpenedJSON")) {
 			File dir = new File(prefs.getString("lastOpenedJSON"));
 			if (dir.exists()) defaultDir = dir;
@@ -743,7 +774,7 @@ public class Main {
         } else return;
 	}
 	public static void importlines() {
-		File defaultDir = new File(System.getProperty("user.dir"));
+		File defaultDir = jarDir;
 		if (!prefs.isNull("lastOpenedJSON")) {
 			File dir = new File(prefs.getString("lastOpenedJSON"));
 			if (dir.exists()) defaultDir = dir;
@@ -797,6 +828,7 @@ public class Main {
 			int sel = sc.getByName("list").toJList().getSelectedIndex();
 			sc.getByName("list").toJList().clearSelection();
 			sc.getByName("list").toJList().setSelectedIndex(sel);
+			startUndo();
 			
 			JOptionPane.showMessageDialog(sc.getByName("main").toJFrame(), lang.get("imported").toString(), lang.get("import").toString(), JOptionPane.INFORMATION_MESSAGE);
 			if (sb.length() > 0) {
@@ -805,6 +837,11 @@ public class Main {
 			}
 			if (error) searchGui(dlm, true);
         } else return;
+	}
+	public static void startUndo() {
+		written = new boolean[dlm.size()];
+        undo = new SBUndoManager();
+        for (int i = 0; i < written.length; i++) written[i] = false;
 	}
 	public static void importjson() {
 		int sel = sc.getByName("list").toJList().getSelectedIndex();
@@ -880,50 +917,55 @@ public class Main {
 		d.setLocationRelativeTo(sc.getByName("main").toJFrame());
 		d.setVisible(true);
 	}
-	public static void goToGui() {
-		class IntOnlyTF extends JTextField{
-			boolean editing = false;
-			public IntOnlyTF() {
-				this.setComponentPopupMenu(copyMenu(true));
-				//cannot enter anything that isnt a number
-				this.getDocument().addDocumentListener(new DocumentListener() {
-					  public void changedUpdate(DocumentEvent e) {
-					  	  changed(e);
-					  }
-					  public void removeUpdate(DocumentEvent e) {
-						  changed(e);
-					  }
-					  public void insertUpdate(DocumentEvent e) {
-						  changed(e);
-					  }
-					  public void changed(DocumentEvent e) {
-						  if (editing) return;
-						  Runnable undo = new Runnable() {
-						        @Override
-						        public void run() {
-						        	editing = true;
-						        	StringBuilder sb = new StringBuilder();
-						        	for (char c: getText().toCharArray()) {
-						        		if (c == '0') sb.append(c);
-						        		else if (c == '1') sb.append(c);
-						        		else if (c == '2') sb.append(c);
-						        		else if (c == '3') sb.append(c);
-						        		else if (c == '4') sb.append(c);
-						        		else if (c == '5') sb.append(c);
-						        		else if (c == '6') sb.append(c);
-						        		else if (c == '7') sb.append(c);
-						        		else if (c == '8') sb.append(c);
-						        		else if (c == '9') sb.append(c);
-						        	}
-						        	setText(sb.toString());
-						        	editing = false;
-						        }
-						    };       
-						    SwingUtilities.invokeLater(undo);
-					  }
-				});
+	public static class UndoTF extends JTextField{
+		boolean editing = false;
+		public UndoTF() {
+			UndoManager um = new UndoManager();
+			getDocument().addUndoableEditListener(um);
+			
+			//Control Z to undo
+			JMenuItem undo = new JMenuItem(lang.get("undo").toString());
+			Action undoAction = new AbstractAction()
+			{
+			    @Override
+			    public void actionPerformed(ActionEvent e)
+			    {
+			    	um.undo();
+			    }
+			};
+			KeyStroke ctrlZ = KeyStroke.getKeyStroke("control Z");
+			undo.addActionListener(undoAction);
+			undo.setAccelerator(ctrlZ);
+			getInputMap().put(ctrlZ, undoAction);
+			
+			//Control Y to redo
+			JMenuItem redo = new JMenuItem(lang.get("redo").toString());
+			Action redoAction = new AbstractAction()
+			{
+			    @Override
+			    public void actionPerformed(ActionEvent e)
+			    {
+			    	um.redo();
+			    }
+			};
+			KeyStroke ctrlY = KeyStroke.getKeyStroke("control Y");
+			redo.addActionListener(redoAction);
+			redo.setAccelerator(ctrlY);
+			getInputMap().put(ctrlY, redoAction);
+			
+			class UndoMenu extends JPopupMenu{
+				public UndoMenu() {
+					add(undo);
+					add(redo);
+					addSeparator();
+					
+					copyMenu(UndoMenu.this, CopyMenu.WRITEABLE_COPY_MENU);
+				}
 			}
+			this.setComponentPopupMenu(new UndoMenu());
 		}
+	}
+	public static void goToGui() {
 		JDialog d = new JDialog(sc.getByName("main").toJFrame());
 		d.setModal(true);
 		d.setResizable(false);
@@ -934,20 +976,25 @@ public class Main {
 		
 		{
 			p.add(new JLabel(lang.get("line").toString()));
-			IntOnlyTF tf = new IntOnlyTF();
+			UndoTF tf = new UndoTF();
 			p.add(tf);
 			
 			p.add(new JLabel(""));
 			JButton go = new JButton(lang.get("go").toString());
 			go.addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){
 				if (tf.getText().length() <= 0) return;
-				int sel = -1 + Integer.parseInt(tf.getText());
-				try { dlm.get(sel); } catch (Exception ee) {
-					JOptionPane.showMessageDialog(d, ee.toString(), lang.get("error").toString(), JOptionPane.ERROR_MESSAGE);
+				try {
+					int sel = -1 + Integer.parseInt(tf.getText());
+					try { dlm.get(sel); } catch (Exception ee) {
+						JOptionPane.showMessageDialog(d, ee.toString(), lang.get("error").toString(), JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					sc.getByName("list").toJList().ensureIndexIsVisible(sel);
+					sc.getByName("list").toJList().setSelectedIndex(sel);
+				} catch (NumberFormatException ee) {
+					JOptionPane.showMessageDialog(d, lang.get("invNum").toString() + ": " + tf.getText(), lang.get("error").toString(), JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				sc.getByName("list").toJList().ensureIndexIsVisible(sel);
-				sc.getByName("list").toJList().setSelectedIndex(sel);
 				d.dispose();
 			}});  
 			p.add(go);
@@ -1001,7 +1048,7 @@ public class Main {
 		int caretPos = -1;
 		public NoEditTA(String s) {
 			setText(s);
-			this.setComponentPopupMenu(copyMenu(false));
+			this.setComponentPopupMenu(new CopyMenu(false));
 			//uneditable
 			this.getDocument().addDocumentListener(new DocumentListener() {
 				  public void changedUpdate(DocumentEvent e) {
@@ -1035,7 +1082,7 @@ public class Main {
 		int caretPos = -1;
 		public NoEditTF(String s) {
 			setText(s);
-			this.setComponentPopupMenu(copyMenu(false));
+			this.setComponentPopupMenu(new CopyMenu(false));
 			//select all on focus
 			addFocusListener(new FocusListener() {
 
@@ -1166,7 +1213,7 @@ public class Main {
 	}
 	public static void openRom(File f) {
 		if (f == null) {
-			File defaultDir = new File(System.getProperty("user.dir"));
+			File defaultDir = jarDir;
 			if (!prefs.isNull("lastOpened")) {
 				File dir = new File(prefs.getString("lastOpened"));
 				if (dir.exists()) defaultDir = dir;
@@ -1229,13 +1276,16 @@ public class Main {
         sc.getByName("ta").toJTextArea().setText("");
         sc.getByName("list").toJList().setSelectedIndex(2);
         dlm.clear();
+        List<String> ogs = new ArrayList<>();
         for (int i = 0; i < sblines.size(); i++) {
             for (int ii = 0; ii < sblines.get(i).size(); ii++) {
             	dlm.addElement(sblines.get(i).get(ii).getMessage().getDisplay());
+            	ogs.add(sblines.get(i).get(ii).getMessage().getContent());
             	indexes.add(new Index(i, ii));
             }
         }
         errors = new String[dlm.size()];
+        startUndo();
 
         sc.getByName("list").toJList().setEnabled(true);
         sc.getByName("list").toJList().setSelectedIndex(0);
@@ -1318,16 +1368,163 @@ public class Main {
 		prefs.put("language", setKey);
 		prefs.save();
 		
-		taCopyMenu();
 		int sel = sc.getByName("list").toJList().getSelectedIndex();
+		//taCopyMenu(sel);
 		sc.getByName("list").toJList().clearSelection();
 		sc.getByName("list").toJList().setSelectedIndex(sel);
 	}
 	
-	public static void taCopyMenu() {
+	public static class Condition{
+		private boolean bool;
+		public Condition(boolean e) {
+			bool = e;
+		}
+		public void set(boolean e) {
+			bool = e;
+		}
+		public boolean isTrue() {
+			return bool;
+		}
+	}
+	
+	public static class Change{
+		private int indexvar;
+		private String stringvar;
+		private int caretpos;
+		public Change(int index, String string, int caretPosition){
+			indexvar = index;
+			stringvar = string;
+			caretpos = caretPosition;
+		}
+		public int getIndex() {
+			return indexvar;
+		}
+		public String getString() {
+			return stringvar;
+		}
+		public int getCaretPosition() {
+			return caretpos;
+		}
+	}
+
+	public static SBUndoManager undo = null;
+	
+	public static boolean[] written = null;
+	
+	public static class SBUndoManager extends ArrayList<Change>{
+		private boolean undoed = false;
+		private boolean editing = false;
+		private int focus = 0;
+	
+		public void undo() {
+			editing = true;
+			focus -= 1;
+			try {
+				sc.getByName("list").toJList().ensureIndexIsVisible(super.get(focus - 1).getIndex());
+				sc.getByName("list").toJList().setSelectedIndex(super.get(focus - 1).getIndex());
+				sc.getByName("ta").toJTextArea().setText(super.get(focus - 1).getString());
+				sc.getByName("ta").toJTextArea().requestFocus();
+				sc.getByName("ta").toJTextArea().setCaretPosition(super.get(focus - 1).getCaretPosition() + 1);
+			} catch (ArrayIndexOutOfBoundsException e) {
+				focus++;
+			}
+			print();
+			editing = false;
+			undoed = true;
+		}
+		
+		public void redo() {
+			if (!undoed) return;
+			editing = true;
+			int sel = super.get(focus).getIndex();
+			sc.getByName("list").toJList().ensureIndexIsVisible(sel);
+			sc.getByName("list").toJList().setSelectedIndex(sel);
+			sc.getByName("ta").toJTextArea().setText(super.get(focus).getString());
+			sc.getByName("ta").toJTextArea().requestFocus();
+			sc.getByName("ta").toJTextArea().setCaretPosition(super.get(focus).getCaretPosition() + 1);
+			focus += 1;
+			print();
+			editing = false;
+		}
+		
+		private void print() {
+			System.out.println(focus);
+		}
+		
+		@Override
+		public boolean add(Change e) {
+			if (editing) return false;
+			boolean output = super.add(e);
+			undoed = false;
+			focus = super.size();
+			print();
+			return output;
+		}
+	}
+	
+	public static void undo() {
+		undo.undo();
+	}
+	
+	public static void redo() {
+		undo.redo();
+	}
+	
+	public static void taCopyMenu() {		
+		Action undoAction = new AbstractAction()
+		{
+		    @Override
+		    public void actionPerformed(ActionEvent e)
+		    {
+		    	undo();
+		    }
+		};
+		sc.getByName("ta").toJTextArea().getInputMap().put(KeyStroke.getKeyStroke("control Z"), undoAction);
+		
+		Action redoAction = new AbstractAction()
+		{
+		    @Override
+		    public void actionPerformed(ActionEvent e)
+		    {
+		    	redo();
+		    }
+		};
+		sc.getByName("ta").toJTextArea().getInputMap().put(KeyStroke.getKeyStroke("control Y"), redoAction);
+		class UndoMenu extends JPopupMenu{
+			public UndoMenu() {
+				Action undoButton = new AbstractAction()
+				{
+				    @Override
+				    public void actionPerformed(ActionEvent e)
+				    {
+				    	undo();
+				    }
+				};
+		        undoButton.putValue(Action.NAME, lang.get("undo").toString());
+		        undoButton.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control Z"));
+		        add(undoButton);
+				
+		        Action redoButton = new AbstractAction()
+				{
+				    @Override
+				    public void actionPerformed(ActionEvent e)
+				    {
+				    	redo();
+				    }
+				};
+		        redoButton.putValue(Action.NAME, lang.get("redo").toString());
+		        redoButton.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control Y"));
+				add(redoButton);
+				
+				addSeparator();
+				
+				copyMenu(UndoMenu.this, CopyMenu.WRITEABLE_COPY_MENU);
+			}
+		}
+		
 		sc.getByName("ta").toJTextArea().addMouseListener(new MouseAdapter() { public void mouseReleased(MouseEvent e) { if (e.isPopupTrigger()) {
 			if (!((JTextArea) e.getSource()).isEnabled()) return;
-			copyMenu(true).show((JTextArea) e.getSource(), e.getX(), e.getY());
+			new UndoMenu().show((JTextArea) e.getSource(), e.getX(), e.getY());
 		}}});
 		
 		
@@ -1368,7 +1565,7 @@ public class Main {
 		File savepath = null;
 		if (f == null) {
 			line = lang.get("saveAs").toString();
-			File defaultDir = new File(System.getProperty("user.dir"));
+			File defaultDir = jarDir;
 			if (!prefs.isNull("lastOpened")) {
 				File dir = new File(prefs.getString("lastOpened"));
 				if (dir.exists()) defaultDir = dir;
@@ -1387,13 +1584,17 @@ public class Main {
 	        } else return;
 		} else {
 			line = lang.get("save").toString();
-			if (JOptionPane.showConfirmDialog(null, lang.get("overwrite").toString().replace("[v]", f.toString()), line,
-			        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-			    // yes option
+			if (!rompath.exists()) {
 				savepath = f;
 			} else {
-			    // no option
-				return;
+				if (JOptionPane.showConfirmDialog(null, lang.get("overwrite").toString().replace("[v]", f.toString()), line,
+				        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+				    // yes option
+					savepath = f;
+				} else {
+				    // no option
+					return;
+				}
 			}
 		}
 		
