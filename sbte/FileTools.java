@@ -25,6 +25,9 @@ public class FileTools {
 		writer.write(content);
 		writer.close();
 	}
+	public static String readResourceToString(String resource) {
+		return readInputStreamToString(Main.class.getResourceAsStream(resource));
+	}
 	public static String readInputStreamToString(InputStream is) {
 		String output = null;
 		try {

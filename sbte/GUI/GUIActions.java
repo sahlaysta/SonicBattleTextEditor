@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GUIActions {
-	public OpenROMEvent openRomListener = new OpenROMEvent();
+	public OpenROMEvent openROMListener = new OpenROMEvent();
+	
 	private GUI parent;
 	public GUIActions(GUI caller) {
 		parent = caller;
@@ -30,23 +31,28 @@ public class GUIActions {
 		else selection = file;
 		
         parent.menuBar.recentOpened.add(selection);
-        openRomListener.raiseROM(selection);
+        openROMListener.raiseOpenROM(selection);
     }
     
-    //custom listener to open a ROM
-    public interface OpenROMListener {
+    //custom listener ROM handler
+    public interface ROMListener {
 	    void ROMopened(File rom);
+	    void ROMsaved(File rom);
 	}
 	public static class OpenROMEvent {
-	    private List<OpenROMListener> listeners = new ArrayList<OpenROMListener>();
+	    private List<ROMListener> listeners = new ArrayList<ROMListener>();
 
-	    public void addListener(OpenROMListener toAdd) {
+	    public void addListener(ROMListener toAdd) {
 	        listeners.add(toAdd);
 	    }
 
-	    public void raiseROM(File rom) {
-	        for (OpenROMListener orl: listeners)
+	    public void raiseOpenROM(File rom) {
+	        for (ROMListener orl: listeners)
 	            orl.ROMopened(rom);
+	    }
+	    public void raiseSaveROM(File rom) {
+	        for (ROMListener orl: listeners)
+	            orl.ROMsaved(rom);
 	    }
 	}
 }

@@ -25,7 +25,7 @@ public class Localization {
 		return languageMap;
 	}
 	private static String getLocalizationFile() {
-		String output = FileTools.readInputStreamToString(Main.class.getResourceAsStream("Localization.json"));
+		String output = FileTools.readResourceToString("Localization.json");
 		return output;
 	}
 	private static JSONObject parseJsonString(String s) {
