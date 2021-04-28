@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import sbte.FileTools;
 import sbte.Main;
 
 public class Localization {
@@ -24,7 +25,7 @@ public class Localization {
 		return languageMap;
 	}
 	private static String getLocalizationFile() {
-		String output = Main.readInputStreamToString(Main.class.getResourceAsStream("Localization.json"));
+		String output = FileTools.readInputStreamToString(Main.class.getResourceAsStream("Localization.json"));
 		return output;
 	}
 	private static JSONObject parseJsonString(String s) {

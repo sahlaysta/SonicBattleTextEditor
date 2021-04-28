@@ -28,30 +28,22 @@ public class JSONTools {
 		
 		return prettyJsonString;
 	}
-	public static org.json.simple.JSONObject getPrefsJson() {
-		File prefsJson = new File(Main.getRunningDirectory(), "prefs.json");
+	
+	public static final File prefsJson = new File(FileTools.getRunningDirectory(), "prefs.json"); //location of the preferences file
+	public static org.json.simple.JSONObject getPrefsJson() throws ParseException {
 		if (!prefsJson.exists()) return new org.json.simple.JSONObject();
 		
 		String jsonToParse = null;
 		try {
-			jsonToParse = Main.readFileToString(prefsJson);
+			jsonToParse = FileTools.readFileToString(prefsJson);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		
-		org.json.simple.JSONObject output = null;
-		try {
-			output = (org.json.simple.JSONObject) new org.json.simple.parser.JSONParser().parse(jsonToParse);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		org.json.simple.JSONObject output = (org.json.simple.JSONObject) new org.json.simple.parser.JSONParser().parse(jsonToParse);
 		return output;
 	}
-	public static void savePrefsJson(org.json.simple.JSONObject jsonObject) {
-		File prefsJson = new File(Main.getRunningDirectory(), "prefs.json");
-		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(prefsJson), StandardCharsets.UTF_8)){
-			writer.write(formattedJSON(jsonObject));
-			writer.close();
-		} catch (IOException e) { e.printStackTrace(); }
+	public static void savePrefsJson(org.json.simple.JSONObject jsonObject) throws IOException {
+		FileTools.writeStringToFile(prefsJson, formattedJSON(jsonObject));
 	}
 }

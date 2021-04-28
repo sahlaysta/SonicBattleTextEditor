@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -172,7 +173,11 @@ public class Preferences extends JSONObject {
 	@Override
 	public Object put(Object key, Object value) {
 		Object output = super.put(key, value);
-		JSONTools.savePrefsJson(this);
+		try {
+			JSONTools.savePrefsJson(this);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return output;
 	}
 }
