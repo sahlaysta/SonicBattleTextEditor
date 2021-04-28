@@ -39,6 +39,7 @@ public class RecentlyOpenedMenu extends JMenu {
 			
 			for (int i = 0; i < limit; i++)
 				addElement(null);
+			
 			if (recentsPreference != null) {
 				for (int i = recentsPreference.size()-1; i >= 0; i--) {
 					addElement(recentsPreference.get(i));

@@ -6,7 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+
+import org.json.simple.parser.ParseException;
 
 import sbte.JSONTools;
 
@@ -20,7 +23,12 @@ public class GUI extends JFrame {
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		preferences = new Preferences(JSONTools.getPrefsJson());
+		try {
+			preferences = new Preferences(JSONTools.getPrefsJson());
+		} catch (ParseException e) {
+			showMsg("prefs.json", e.toString(), Msg.ERROR_MESSAGE);
+			System.exit(0);
+		}
 		preferences.applyWindowProperties(this);
 		addComponentListener(preferences.windowListener);
 		
@@ -52,7 +60,7 @@ public class GUI extends JFrame {
 		}
 	}
 	public void disabledBeforeOpen() {
-		for (Object element: getElements()) {
+		for (Object element: this.getElements()) {
 			if (!(element instanceof Component)) continue;
 			try {
 				String value = getComponentValue((Component)element, "disabledBeforeOpen");
@@ -96,4 +104,8 @@ public class GUI extends JFrame {
 	public void maximizeWindow() {
 		setExtendedState( getExtendedState()|JFrame.MAXIMIZED_BOTH );
 	}
+	public void showMsg(String title, String content, int arg) {
+		Msg.showMessageDialog(this, content, title, arg);
+	}
+	private class Msg extends JOptionPane {}
 }
