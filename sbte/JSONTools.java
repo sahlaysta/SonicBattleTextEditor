@@ -1,36 +1,30 @@
 package sbte;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.List;
 
-import org.json.simple.parser.ParseException;
-
+//makes use of Google's GSON and simple JSON
 public class JSONTools {
-	public static String toJSONValue(String string) { //the goal is to create the JSON file value of a String object
+	public static String toJSONValue(String string) {
 		org.json.simple.JSONObject j = new org.json.simple.JSONObject();
-		j.put("", string); //put an empty key with the String as the value in a json object. it will look like this {"":"foo"}
+		j.put("", string);
 		return
 		j.toString().
-		substring(5). //remove the first 4 characters. now it looks like foo"}
-		replaceFirst("..$",""); //remove the last 2 characters
+		substring(5).
+		replaceFirst("..$","");
 	}
-	public static String formattedJSON(org.json.simple.JSONObject e) { // return a formatted and styled JSON object to String
-		com.google.gson.JsonObject jsonObject = com.google.gson.JsonParser.parseString(e.toString()).getAsJsonObject(); //relies on Google's GSON for pretty-printing
+	public static String formattedJSON(org.json.simple.JSONObject e) {
+		com.google.gson.JsonObject jsonObject = com.google.gson.JsonParser.parseString(e.toString()).getAsJsonObject();
 		com.google.gson.Gson gson = new com.google.gson.GsonBuilder().setPrettyPrinting().create();
 		String prettyJsonString = gson.toJson(jsonObject);
 		
 		return prettyJsonString;
 	}
 	
+	public static final org.json.simple.parser.JSONParser jp = new org.json.simple.parser.JSONParser();
 	public static final File prefsJson = new File(FileTools.getRunningDirectory(), "prefs.json"); //location of the preferences file
-	public static org.json.simple.JSONObject getPrefsJson() throws ParseException {
+	public static org.json.simple.JSONObject getPrefsJson() throws org.json.simple.parser.ParseException {
 		if (!prefsJson.exists()) return new org.json.simple.JSONObject();
 		
 		String jsonToParse = null;
@@ -40,7 +34,7 @@ public class JSONTools {
 			e.printStackTrace();
 		}
 		
-		org.json.simple.JSONObject output = (org.json.simple.JSONObject) new org.json.simple.parser.JSONParser().parse(jsonToParse);
+		org.json.simple.JSONObject output = (org.json.simple.JSONObject) jp.parse(jsonToParse);
 		return output;
 	}
 	public static void savePrefsJson(org.json.simple.JSONObject jsonObject) throws IOException {
