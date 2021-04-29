@@ -117,7 +117,7 @@ public class Preferences extends JSONObject {
 			windowLocationX = 200;
 			windowLocationY = 200;
 			windowSizeX = 350;
-			windowSizeY = 250;
+			windowSizeY = 260;
 		}
 		public WindowProperties(boolean maximized, int locationX, int locationY, int sizeX, int sizeY) {
 			windowMaximized = maximized;
@@ -181,7 +181,7 @@ public class Preferences extends JSONObject {
 		if (super.containsKey(DIVIDER_LOCATION_KEY))
 			return objToInt(super.get(DIVIDER_LOCATION_KEY));
 		
-		return 115; //default divider location
+		return 130; //default divider location
 	}
 	public PropertyChangeListener dividerListener = new PropertyChangeListener() {
         @Override

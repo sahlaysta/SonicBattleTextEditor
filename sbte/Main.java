@@ -12,10 +12,10 @@ public class Main {
 		gui = new GUI();
 		gui.setVisible(true);
 		
-		gui.actions.openROMListener.addListener(new ROMEvent());
+		gui.actions.ROMListener.addListener(new ROMHandler());
 	}
 	
-	public static class ROMEvent implements ROMListener {
+	private static class ROMHandler implements ROMListener {
 		public void ROMopened(File rom) {
 			List<byte[]> sonicBattleByteArrays = null; //sonic battle lines
 			try {

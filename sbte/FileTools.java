@@ -36,7 +36,11 @@ public class FileTools {
 		
 		return output;
 	}
+	private static final File runningDirectory = retrieveRunningDirectory();
 	public static File getRunningDirectory() {
+		return runningDirectory;
+	}
+	private static File retrieveRunningDirectory() {
 		File dir = null;
 		try {
 			dir = Paths.get(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toFile().getParentFile();
