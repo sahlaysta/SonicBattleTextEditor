@@ -1,6 +1,5 @@
 package sbte.GUI;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JMenu;
@@ -8,10 +7,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import sbte.Main;
-
 public class GUIMenuBar extends JMenuBar {
-	private GUI parent;
+	private final GUI parent;
 	
 	public RecentlyOpenedMenu recentOpened;
 	private FileMenu fileMenu;
@@ -53,7 +50,7 @@ public class GUIMenuBar extends JMenuBar {
 	}
 	private class EditMenu extends JMenu{
 		public EditMenu() {
-			setName("json:edit");
+			setName("json:edit,disabledBeforeOpen:true");
 		}
 	}
 	private class ViewMenu extends JMenu{

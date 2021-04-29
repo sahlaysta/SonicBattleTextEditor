@@ -4,10 +4,14 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JSplitPane;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -28,6 +32,7 @@ public class Preferences extends JSONObject {
 	private static final String WINDOW_SIZE_KEY = "windowSize";
 	private static final String WINDOW_LOCATION_KEY = "windowLocation";
 	private static final String RECENT_FILES_KEY = "recentFiles";
+	private static final String DIVIDER_LOCATION_KEY = "dividerLocation";
 
 	public void applyWindowProperties(GUI gui) {
 		WindowProperties wp = getWindowProperties();
@@ -111,7 +116,7 @@ public class Preferences extends JSONObject {
 			windowMaximized = false;
 			windowLocationX = 200;
 			windowLocationY = 200;
-			windowSizeX = 400;
+			windowSizeX = 350;
 			windowSizeY = 250;
 		}
 		public WindowProperties(boolean maximized, int locationX, int locationY, int sizeX, int sizeY) {
@@ -169,6 +174,21 @@ public class Preferences extends JSONObject {
 		
 		put(RECENT_FILES_KEY, recentFiles);
 	}
+	public void saveDividerLocation(int e) {
+		put(DIVIDER_LOCATION_KEY, e);
+	}
+	public int getDividerLocation() {
+		if (super.containsKey(DIVIDER_LOCATION_KEY))
+			return objToInt(super.get(DIVIDER_LOCATION_KEY));
+		
+		return 115; //default divider location
+	}
+	public PropertyChangeListener dividerListener = new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent e) {
+        	saveDividerLocation(((JSplitPane)e.getSource()).getDividerLocation());
+        }
+	};
 	
 	@Override
 	public Object put(Object key, Object value) {
