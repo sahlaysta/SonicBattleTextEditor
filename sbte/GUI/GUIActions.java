@@ -9,7 +9,7 @@ import java.util.List;
 public class GUIActions {
 	public OpenROMEvent openROMListener = new OpenROMEvent();
 	
-	private GUI parent;
+	private final GUI parent;
 	public GUIActions(GUI caller) {
 		parent = caller;
 	}

@@ -15,7 +15,7 @@ import sbte.Main;
 public class RecentlyOpenedMenu extends JMenu {
 	public static final int RECENT_FILES_LIMIT = 10;
 	private RecentFiles rf = null;
-	private GUI parent;
+	private final GUI parent;
 	public RecentlyOpenedMenu(GUI caller, String name) {
 		parent = caller;
 		setName(name);

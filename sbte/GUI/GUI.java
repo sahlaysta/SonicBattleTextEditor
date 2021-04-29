@@ -1,32 +1,42 @@
 package sbte.GUI;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 
 import org.json.simple.parser.ParseException;
 
 import sbte.JSONTools;
+import sbte.SonicBattleTextParser;
 
 public class GUI extends JFrame {
 	public Preferences preferences;
 	public HashMap<String, String> localization;
 	public GUIMenuBar menuBar;
 	public GUIActions actions;
+	public ListModel listModel;
+	
+	public GUIList list;
+	public GUITextBox textBox;
+	public GUISplit splitPane;
+	
+	private final SonicBattleTextParser sbtp;
 	
 	public GUI() {
 		setLocationRelativeTo(null);
+		setMinimumSize(new Dimension(50, 120));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 		try {
 			preferences = new Preferences(JSONTools.getPrefsJson());
 		} catch (ParseException e) {
-			showMsg("prefs.json", e.toString(), Msg.ERROR_MESSAGE);
+			showMsg(JSONTools.prefsJson.getName(), e.toString(), Msg.ERROR_MESSAGE);
 			System.exit(0);
 		}
 		preferences.applyWindowProperties(this);
@@ -40,18 +50,33 @@ public class GUI extends JFrame {
 		menuBar = new GUIMenuBar(this);
 		setJMenuBar(menuBar);
 		
+		sbtp = new SonicBattleTextParser();
+		
+		listModel = new ListModel(sbtp);
+		list = new GUIList(this, listModel);
+		textBox = new GUITextBox();
+		splitPane = new GUISplit(JSplitPane.VERTICAL_SPLIT, list, textBox);
+		splitPane.setDividerLocation(preferences.getDividerLocation());
+		splitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, preferences.dividerListener);
+		add(splitPane);
+		
 		String language = "en-*";
 		setLocalization(language);
 		
 		disabledBeforeOpen(); //disables the components with this tag
 	}
 
+	public void open(List<byte[]> arg0) {
+		for (byte[] b: arg0)
+			listModel.add(b);
+		enableBeforeOpen();
+	}
 	public void setLocalization(String language) {
 		localization = Localization.getMap(language);
 		refreshGUIText();
 	}
 	public void refreshGUIText() {
-		for (Object element: getElements()) {
+		for (Object element: this.getElements()) {
 			if (!(element instanceof Component)) continue;
 			try {
 				String value = getComponentValue((Component)element, "json");
@@ -66,6 +91,16 @@ public class GUI extends JFrame {
 				String value = getComponentValue((Component)element, "disabledBeforeOpen");
 				boolean disable = Boolean.parseBoolean(value);
 				if (disable) ((Component) element).setEnabled(false);
+			} catch (GUIException e) { continue; }
+		}
+	}
+	public void enableBeforeOpen() {
+		for (Object element: this.getElements()) {
+			if (!(element instanceof Component)) continue;
+			try {
+				String value = getComponentValue((Component)element, "disabledBeforeOpen");
+				boolean disable = Boolean.parseBoolean(value);
+				if (disable) ((Component) element).setEnabled(true);
 			} catch (GUIException e) { continue; }
 		}
 	}
@@ -107,5 +142,5 @@ public class GUI extends JFrame {
 	public void showMsg(String title, String content, int arg) {
 		Msg.showMessageDialog(this, content, title, arg);
 	}
-	private class Msg extends JOptionPane {}
+	public static final class Msg extends JOptionPane {}
 }

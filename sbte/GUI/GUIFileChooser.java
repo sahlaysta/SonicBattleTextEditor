@@ -1,12 +1,7 @@
 package sbte.GUI;
 
-import java.awt.Container;
-import java.util.HashMap;
-
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import sbte.Main;
 
 public class GUIFileChooser extends JFileChooser {
 	public static final int OPEN_FILE_PROMPT = 0;
