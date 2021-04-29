@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.json.simple.parser.ParseException;
+
 //makes use of Google's GSON and simple JSON
 public class JSONTools {
 	public static String toJSONValue(String string) {
@@ -13,6 +15,14 @@ public class JSONTools {
 		j.toString().
 		substring(5).
 		replaceFirst("..$","");
+	}
+	public static String valueToString(String string) {
+		org.json.simple.JSONObject j = null;
+		try {
+			j = (org.json.simple.JSONObject) jp.parse("{\"a\":\"" + string + "\"}");
+		} catch (ParseException e) {}
+		
+		return j.get("a").toString();
 	}
 	public static String formattedJSON(org.json.simple.JSONObject e) {
 		com.google.gson.JsonObject jsonObject = com.google.gson.JsonParser.parseString(e.toString()).getAsJsonObject();

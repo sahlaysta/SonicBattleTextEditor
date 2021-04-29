@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GUIActions {
-	public OpenROMEvent openROMListener = new OpenROMEvent();
+	public ROMEvent ROMListener = new ROMEvent();
 	
 	private final GUI parent;
 	public GUIActions(GUI caller) {
@@ -31,7 +31,7 @@ public class GUIActions {
 		else selection = file;
 		
         parent.menuBar.recentOpened.add(selection);
-        openROMListener.raiseOpenROM(selection);
+        ROMListener.raiseOpenROM(selection);
     }
     
     //custom listener ROM handler
@@ -39,7 +39,7 @@ public class GUIActions {
 	    void ROMopened(File rom);
 	    void ROMsaved(File rom);
 	}
-	public static class OpenROMEvent {
+	public static class ROMEvent {
 	    private List<ROMListener> listeners = new ArrayList<ROMListener>();
 
 	    public void addListener(ROMListener toAdd) {
