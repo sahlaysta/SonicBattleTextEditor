@@ -41,7 +41,7 @@ public class SonicBattleTextParser {
 			if (!found) { //throw a styled error message
 				final int errorIndex = e.length() - sb.length();
 				final StringBuilder errorMsg = new StringBuilder(String.format("Bad sequence at index %s", errorIndex));
-				errorMsg.append("\n" + e + "\n");
+				errorMsg.append("\n" + e.replace("\n", " ") + "\n");
 				for (int i = 0; i < errorIndex; i++) errorMsg.append(" ");
 				errorMsg.append("^");
 				throw new IllegalArgumentException(errorMsg.toString());
