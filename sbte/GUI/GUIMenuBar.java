@@ -36,9 +36,9 @@ public class GUIMenuBar extends JMenuBar {
 			
 			MenuItem open, save, saveAs, close;
 			open = new MenuItem("json:open", "control O", parent.actions.open);
-			save = new MenuItem("json:save,disabledBeforeOpen:true", "control S", null);
-			saveAs = new MenuItem("json:saveAs,disabledBeforeOpen:true", "control shift S", null);
-			close = new MenuItem("json:close", null, null);
+			save = new MenuItem("json:save,disabledBeforeOpen:true", "control S", parent.actions.save);
+			saveAs = new MenuItem("json:saveAs,disabledBeforeOpen:true", "control shift S", parent.actions.saveAs);
+			close = new MenuItem("json:close", null, parent.actions.close);
 			
 			add(open);
 			add(recentOpened);

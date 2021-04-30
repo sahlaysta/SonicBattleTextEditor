@@ -34,6 +34,13 @@ public class ListModel extends DefaultListModel{
 		content.add(null);
 		textBoxDisplay.add(null);
 	}
+	public void clear() {
+		content = new ArrayList<>();
+		baseLines = new ArrayList<>();
+		textBoxDisplay = new ArrayList<>();
+		errors = new HashMap<>();
+		super.clear();
+	}
 	public void setContent(int index, String string) {
 		try { //successfully set
 			errors.remove(index);

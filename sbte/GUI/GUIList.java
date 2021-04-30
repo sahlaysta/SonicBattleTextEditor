@@ -17,13 +17,13 @@ import javax.swing.event.ListSelectionListener;
 public class GUIList extends JPanel {
 	private final TitledBorder title;
 	private final GUI parent;
-	private final List list;
+	private List list;
 	public GUIList(GUI caller, DefaultListModel e) {
 		parent = caller;
 		
 		setLayout(new GridLayout(1, 1, 0, 0));
 		
-		title = new TitledBorder("g");
+		title = new TitledBorder("");
 		setBorder(title);
 		
 		list = new List(e);
@@ -33,13 +33,18 @@ public class GUIList extends JPanel {
 	}
 	public void refreshTitle() {
 		int index = list.getSelectedIndex();
+		if (index < 0) {
+			 title.setTitle(parent.localization.get("textEdit"));
+			 repaint();
+			 return;
+		}
 		
 		String s = null;
-		if (!parent.listModel.isProblematic(index)) {
+		if (!parent.listModel.isProblematic(index)) { //normal ubtitle
 			title.setTitleColor(Color.BLACK);
 			s = parent.localization.get("selectedLine").replace("[v]", (1 + index) + "");
 		}
-		else {
+		else { //error subtitle
 			title.setTitleColor(Color.RED);
 			s = parent.listModel.errors.get(index);
 		}
@@ -52,6 +57,10 @@ public class GUIList extends JPanel {
 		refreshTitle();
 	}
 	public void setSelection(int index) {
+		if (index == -1) {
+			list.clearSelection();
+			return;
+		}
 		list.setSelectedIndex(index);
 	}
 	public class List extends JList {
@@ -71,6 +80,7 @@ public class GUIList extends JPanel {
 		public void valueChanged(ListSelectionEvent arg0) {
 			int index = ((JList)arg0.getSource()).getSelectedIndex();
 			refreshTitle();
+			if (index < 0) return;
 			
 			parent.textBox.setText(parent.listModel.textBoxDisplay.get(index).toString());
 			if (parent.listModel.isProblematic(index)) {

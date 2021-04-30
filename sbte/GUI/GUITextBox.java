@@ -12,7 +12,7 @@ import javax.swing.event.DocumentListener;
 
 public class GUITextBox extends JPanel {
 	private final GUI parent;
-	private final TextArea ta;
+	private TextArea ta;
 	public GUITextBox(GUI caller) {
 		parent = caller;
 		
@@ -33,6 +33,12 @@ public class GUITextBox extends JPanel {
 	}
 	public void unred() {
 		ta.setForeground(Color.BLACK);
+	}
+	public void clear() {
+		unred();
+		ta.programmaticEditing = true;
+		ta.setText("");
+		ta.programmaticEditing = false;
 	}
 	private class TextArea extends JTextArea{
 		public boolean programmaticEditing = false;
@@ -61,6 +67,7 @@ public class GUITextBox extends JPanel {
 	        	if (programmaticEditing) return;
 
 	        	parent.list.setText(GUITextBox.this.ta.getText());
+	        	if (parent.isSaved) parent.isSaved = false;
 	        }
 	    };
 	}

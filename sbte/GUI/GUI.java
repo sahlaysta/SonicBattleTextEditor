@@ -2,6 +2,7 @@ package sbte.GUI;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,16 +68,31 @@ public class GUI extends JFrame {
 		disabledBeforeOpen(); //disables the components with this tag
 	}
 
-	public void open(List<SonicBattleLine> arg0) {
+	public File openedRom = null;
+	public boolean isOpen = false;
+	public boolean isSaved = true;
+	public void open(File romPath, List<SonicBattleLine> arg0) {
+		openedRom = romPath;
 		for (SonicBattleLine b: arg0)
 			listModel.add(b);
 		enableBeforeOpen();
 		
 		list.setSelection(0);
+		isOpen = true;
+	}
+	public void close() {
+		list.setSelection(-1);
+		listModel.clear();
+		textBox.clear();
+		disabledBeforeOpen();
+		isOpen = false;
+		isSaved = true;
+		openedRom = null;
 	}
 	public void setLocalization(String language) {
 		localization = Localization.getMap(language);
 		refreshGUIText();
+		list.refreshTitle();
 	}
 	public void refreshGUIText() {
 		for (Object element: this.getElements()) {
@@ -144,6 +160,9 @@ public class GUI extends JFrame {
 	}
 	public void showMsg(String title, String content, int arg) {
 		Msg.showMessageDialog(this, content, title, arg);
+	}
+	public void showMsg(String title, String content) {
+		this.showMsg(title, content, Msg.PLAIN_MESSAGE);
 	}
 	public static final class Msg extends JOptionPane {}
 }

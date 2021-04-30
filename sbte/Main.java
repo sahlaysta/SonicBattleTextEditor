@@ -26,7 +26,8 @@ public class Main {
 				return;
 			}
 
-			gui.open(sonicBattleLines);
+			if (gui.isOpen) gui.close();
+			gui.open(rom, sonicBattleLines);
 		}
 
 		public void ROMsaved(File rom) {
