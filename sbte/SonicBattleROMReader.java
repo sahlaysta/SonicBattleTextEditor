@@ -2,6 +2,7 @@ package sbte;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +10,10 @@ import java.util.List;
 public class SonicBattleROMReader {
 	public static final byte[] delimiter = new byte[] { (byte) 0xFE, (byte) 0xFF }; //the end of line is FEFF
 	
-	public static List<byte[]> readUSAROM(File arg0) throws IOException {
+	public static List<SonicBattleLine> readUSAROM(File arg0) throws IOException {
 		ROM rom = new ROM(arg0);
 		
-		List<byte[]> output = new ArrayList<>();
+		List<SonicBattleLine> output = new ArrayList<>();
 		rom.addLines(output, "EDFE8C", 2299); //story mode
 		rom.addLines(output, "ED9C2C", 309); //Emerl card descriptions
 		rom.addLines(output, "EDCD7C", 17); //options menu lines
@@ -25,27 +26,56 @@ public class SonicBattleROMReader {
 		rom.addLines(output, "EDD5D0", 8); //story mode episode select menu lines
 		return output;
 	}
+	public static class SonicBattleLine{
+		public final byte[] content;
+		public final int pointer;
+		public final int position;
+		public final int group;
+		public final int member;
+		public SonicBattleLine(byte[] content, int pointer, int position, int group, int member) {
+			this.content = content;
+			this.pointer = pointer;
+			this.position = position;
+			this.group = group;
+			this.member = member;
+		}
+		public String toString() {
+			return
+			"Content: " + ByteTools.toHexString(content) + ByteTools.toHexString(delimiter) +
+			"\nROM Pointer: " + pointer +
+			"\nROM Location: " + position +
+			"\nGroup " + (1 + group) + ", Member " + (1 + member) + "\n";
+		}
+	}
 	private static class ROM {
 		public final byte[] rom;
+		
+		public int groupIndex = 0; //indexing
+		public int memberIndex = 0;
 		public ROM(File arg0) throws IOException {
 			rom = Files.readAllBytes(arg0.toPath());
 		}
-		public void addLines(List<byte[]> arg0, String arg1, int arg2) {
-			int pointer = ByteTools.hexToInt(arg1);
+		public void addLines(List<SonicBattleLine> arg0, String arg1, int arg2) {
+			int pos = ByteTools.hexToInt(arg1);
 			for (int i = 0; i < arg2; i++) {
-				byte[] b = getFromROM(pointer + (i * 4));
-				arg0.add(b);
+				int pointer = pos + (i * 4);
+				SonicBattleLine sbl = getFromROM(pointer);
+				memberIndex++;
+				arg0.add(sbl);
 			}
+			groupIndex++;
+			memberIndex = 0;
 		}
-		private byte[] getFromROM(int pointer) {
-			byte[] posPointer = new byte[3];
-			posPointer[2] = rom[pointer];
-			posPointer[1] = rom[pointer + 1];
-			posPointer[0] = rom[pointer + 2];
+		private SonicBattleLine getFromROM(int pointer) {
+			byte[] posPointer = new byte[] {
+					rom[pointer + 2],
+					rom[pointer + 1],
+					rom[pointer],
+			};
 			final int pos = ByteTools.hexToInt(ByteTools.toHexString(posPointer));
 			
 			List<Byte> bytes = new ArrayList<>();
-			f :for (int i = pos; ; i++) {
+			loop: for (int i = pos; ; i++) {
 				{//check if byte array equals delimiter
 					boolean end = true;
 					for (int ii = 0; ii < delimiter.length; ii++) {
@@ -53,7 +83,7 @@ public class SonicBattleROMReader {
 							end = false;
 							break;
 						}
-						if (end) break f;
+						if (end) break loop;
 					}
 				}
 				
@@ -63,7 +93,8 @@ public class SonicBattleROMReader {
 			byte[] output = new byte[bytes.size()];
 			for (int i = 0; i < output.length; i++)
 				output[i] = bytes.get(i);
-			return output;
+			
+			return new SonicBattleLine(output, pointer, pos, groupIndex, memberIndex);
 		}
 	}
 }

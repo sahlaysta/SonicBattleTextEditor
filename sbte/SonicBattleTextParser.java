@@ -24,7 +24,16 @@ public class SonicBattleTextParser {
 		List<Tuple> dictionary = parseDictionary(json);
 		this.populateHashMaps(dictionary);
 	}
-	public byte[] parseHexBinary(String e) throws IllegalArgumentException{
+	public class SonicBattleParseException extends IllegalArgumentException{
+		public final String source;
+		public final int index;
+		public SonicBattleParseException(String arg0, String arg1, int arg2) {
+			super(arg0);
+			source = arg1;
+			index = arg2;
+		}
+	}
+	public byte[] parseHexBinary(String e) throws SonicBattleParseException{
 		final List<Byte> bytes = new ArrayList<>();
 		final StringBuilder sb = new StringBuilder(e);
 		while (sb.length() > 0) {
@@ -44,7 +53,7 @@ public class SonicBattleTextParser {
 				errorMsg.append("\n" + e.replace("\n", " ") + "\n");
 				for (int i = 0; i < errorIndex; i++) errorMsg.append(" ");
 				errorMsg.append("^");
-				throw new IllegalArgumentException(errorMsg.toString());
+				throw new SonicBattleParseException(errorMsg.toString(), e, errorIndex);
 			}
 		}
 		
