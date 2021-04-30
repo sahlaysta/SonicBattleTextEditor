@@ -41,7 +41,7 @@ public class GUIList extends JPanel {
 		}
 		else {
 			title.setTitleColor(Color.RED);
-			s = parent.listModel.errors.get(index);;
+			s = parent.listModel.errors.get(index);
 		}
 		title.setTitle(s);
 		repaint();
@@ -50,6 +50,9 @@ public class GUIList extends JPanel {
 		int index = list.getSelectedIndex();
 		parent.listModel.setContent(index, e);
 		refreshTitle();
+	}
+	public void setSelection(int index) {
+		list.setSelectedIndex(index);
 	}
 	public class List extends JList {
 		public List(DefaultListModel e) {
@@ -78,7 +81,7 @@ public class GUIList extends JPanel {
 			}
 		}
 	}
-	private DefaultListCellRenderer colorList = new DefaultListCellRenderer() {
+	public DefaultListCellRenderer colorList = new DefaultListCellRenderer() {
 		//background color of list items
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {

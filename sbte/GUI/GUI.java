@@ -14,6 +14,7 @@ import javax.swing.UIManager;
 import org.json.simple.parser.ParseException;
 
 import sbte.JSONTools;
+import sbte.SonicBattleROMReader.SonicBattleLine;
 import sbte.SonicBattleTextParser;
 
 public class GUI extends JFrame {
@@ -66,10 +67,12 @@ public class GUI extends JFrame {
 		disabledBeforeOpen(); //disables the components with this tag
 	}
 
-	public void open(List<byte[]> arg0) {
-		for (byte[] b: arg0)
+	public void open(List<SonicBattleLine> arg0) {
+		for (SonicBattleLine b: arg0)
 			listModel.add(b);
 		enableBeforeOpen();
+		
+		list.setSelection(0);
 	}
 	public void setLocalization(String language) {
 		localization = Localization.getMap(language);

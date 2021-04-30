@@ -48,7 +48,7 @@
 		"member": "Member",
 		"line": "Line",
 		"selectedLine": "Line [v]",
-		"invalidChar": "Invalid char: [v]",
+		"invalidChar": "Invalid char: '[v]'",
 		"pointer": "Pointer",
 		"beforeSave": "Before save",
 		"afterSave": "After save"
@@ -101,7 +101,7 @@
 		"member": "Miembro",
 		"line": "Línea",
 		"selectedLine": "Línea [v]",
-		"invalidChar": "Carácter inválido: [v]",
+		"invalidChar": "Carácter inválido: '[v]'",
 		"pointer": "Puntero",
 		"beforeSave": "Antes de guardar",
 		"afterSave": "Después de guardar"

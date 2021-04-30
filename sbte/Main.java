@@ -3,6 +3,7 @@ package sbte;
 import java.io.File;
 import java.util.List;
 
+import sbte.SonicBattleROMReader.SonicBattleLine;
 import sbte.GUI.GUI;
 import sbte.GUI.GUIActions.ROMListener;
 
@@ -17,15 +18,15 @@ public class Main {
 	
 	private static class ROMHandler implements ROMListener {
 		public void ROMopened(File rom) {
-			List<byte[]> sonicBattleByteArrays = null; //sonic battle lines
+			List<SonicBattleLine> sonicBattleLines = null;
 			try {
-				sonicBattleByteArrays = SonicBattleROMReader.readUSAROM(rom);
+				sonicBattleLines = SonicBattleROMReader.readUSAROM(rom);
 			} catch (Exception e) {
 				gui.showMsg(gui.localization.get("error") + ": " + rom.toString(), e.toString(), GUI.Msg.ERROR_MESSAGE);
 				return;
 			}
 
-			gui.open(sonicBattleByteArrays);
+			gui.open(sonicBattleLines);
 		}
 
 		public void ROMsaved(File rom) {
