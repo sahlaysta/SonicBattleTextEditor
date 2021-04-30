@@ -1,5 +1,7 @@
 package sbte.GUI;
 
+import java.io.File;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -7,25 +9,26 @@ public class GUIFileChooser extends JFileChooser {
 	public static final int OPEN_FILE_PROMPT = 0;
 	public static final int SAVE_FILE_PROMPT = 1;
 	public static final int SAVE_AS_FILE_PROMPT = 2;
-	private int argsVal;
+	public static final String ROM_PATH_PREFERENCE = "romPath";
+	private final int args;
 	private boolean approve;
-	private GUI parentVal;
-	private String filterVal;
+	private GUI parent;
+	private final String filter;
 	
 	public GUIFileChooser(int args, String filter) {
-		argsVal = args;
-		filterVal = filter;
+		this.args = args;
+		this.filter = filter;
 	}
 	public void setParent(GUI caller) {
-		parentVal = caller;
+		parent = caller;
 		setDialogTitle();
-		setFilter(parentVal.localization.get("fileType"), filterVal);
+		setFilter(parent.localization.get("fileType"), filter);
 	}
 	private void setDialogTitle() {
 		String dialogTitle = null;
-		if (argsVal == OPEN_FILE_PROMPT) dialogTitle = parentVal.localization.get("open");
-		else if (argsVal == SAVE_FILE_PROMPT) dialogTitle = parentVal.localization.get("save");
-		else if (argsVal == SAVE_AS_FILE_PROMPT) dialogTitle = parentVal.localization.get("saveAs");
+		if (args == OPEN_FILE_PROMPT) dialogTitle = parent.localization.get("open");
+		else if (args == SAVE_FILE_PROMPT) dialogTitle = parent.localization.get("save");
+		else if (args == SAVE_AS_FILE_PROMPT) dialogTitle = parent.localization.get("saveAs");
 		if (dialogTitle != null) setDialogTitle(dialogTitle);
 	}
 	public void setFilter(String text, String filter) {
@@ -35,13 +38,36 @@ public class GUIFileChooser extends JFileChooser {
 		addChoosableFileFilter(fef);
 		setFileFilter(fef);
 	}
+	public String key;
+	public void setPreference(String key) {
+		this.key = key;
+		if (parent.preferences.containsKey(key)) {
+			setCurrentDirectory(new File(parent.preferences.get(key).toString()));
+		}
+	}
+	private void putPreference() {
+		parent.preferences.put(key, getSelectedFile().toString());
+	}
+	
+	@Override
+	public File getSelectedFile() { //smart-add extension
+		File output = super.getSelectedFile();
+		if (output == null || this.args == OPEN_FILE_PROMPT || output.exists()) return output;
+		if (!output.toString().contains(".")) {
+			File extension = new File(output.toString() + "." + filter.toLowerCase());
+			if (!extension.exists()) return extension;
+		}
+		return output;
+	}
 	public void show() {
-		if (argsVal == OPEN_FILE_PROMPT) {
-			approve = showOpenDialog(parentVal) == APPROVE_OPTION;
+		if (args == OPEN_FILE_PROMPT) {
+			approve = showOpenDialog(parent) == APPROVE_OPTION;
 		}
-		else if (argsVal == SAVE_FILE_PROMPT || argsVal == SAVE_AS_FILE_PROMPT) {
-			approve = showSaveDialog(parentVal) == APPROVE_OPTION;
+		else if (args == SAVE_FILE_PROMPT || args == SAVE_AS_FILE_PROMPT) {
+			approve = showSaveDialog(parent) == APPROVE_OPTION;
 		}
+		
+		if (approve) putPreference();
 	}
 	public boolean HasCanceled() {
 		return !approve;
