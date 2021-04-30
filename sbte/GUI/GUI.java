@@ -27,7 +27,7 @@ public class GUI extends JFrame {
 	public GUITextBox textBox;
 	public GUISplit splitPane;
 	
-	private final SonicBattleTextParser sbtp;
+	public final SonicBattleTextParser sbtp;
 	
 	public GUI() {
 		setLocationRelativeTo(null);
@@ -52,9 +52,9 @@ public class GUI extends JFrame {
 		
 		sbtp = new SonicBattleTextParser();
 		
-		listModel = new ListModel(sbtp);
+		listModel = new ListModel(this);
 		list = new GUIList(this, listModel);
-		textBox = new GUITextBox();
+		textBox = new GUITextBox(this);
 		splitPane = new GUISplit(JSplitPane.VERTICAL_SPLIT, list, textBox);
 		splitPane.setDividerLocation(preferences.getDividerLocation());
 		splitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, preferences.dividerListener);

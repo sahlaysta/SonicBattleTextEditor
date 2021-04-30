@@ -1,15 +1,21 @@
 package sbte.GUI;
 
+import java.awt.Color;
 import java.awt.GridLayout;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class GUITextBox extends JPanel {
+	private final GUI parent;
 	private final TextArea ta;
-	public GUITextBox() {
+	public GUITextBox(GUI caller) {
+		parent = caller;
+		
 		setLayout(new GridLayout(1, 1, 0, 0));
 		
 		ta = new TextArea();
@@ -22,10 +28,40 @@ public class GUITextBox extends JPanel {
 		ta.setText(text);
 		ta.programmaticEditing = false;
 	}
+	public void setRed() {
+		ta.setForeground(Color.RED);
+	}
+	public void unred() {
+		ta.setForeground(Color.BLACK);
+	}
 	private class TextArea extends JTextArea{
 		public boolean programmaticEditing = false;
 		public TextArea() {
 			setName("disabledBeforeOpen:true");
+			getDocument().addDocumentListener(textListener);
 		}
+		private DocumentListener textListener = new DocumentListener() {
+
+	        @Override
+	        public void removeUpdate(DocumentEvent e) {
+	        	changed(e);
+	        }
+
+	        @Override
+	        public void insertUpdate(DocumentEvent e) {
+	        	changed(e);
+	        }
+
+	        @Override
+	        public void changedUpdate(DocumentEvent e) {
+	        	changed(e);
+	        }
+	        
+	        void changed(DocumentEvent e) {
+	        	if (programmaticEditing) return;
+
+	        	parent.list.setText(GUITextBox.this.ta.getText());
+	        }
+	    };
 	}
 }
