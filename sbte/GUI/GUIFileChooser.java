@@ -10,11 +10,10 @@ public class GUIFileChooser extends JFileChooser {
 	public static final int SAVE_FILE_PROMPT = 1;
 	public static final int SAVE_AS_FILE_PROMPT = 2;
 	public static final String ROM_PATH_PREFERENCE = "romPath";
-	private final int args;
 	private boolean approve;
 	private GUI parent;
+	private final int args;
 	private final String filter;
-	
 	public GUIFileChooser(int args, String filter) {
 		this.args = args;
 		this.filter = filter;
@@ -46,6 +45,7 @@ public class GUIFileChooser extends JFileChooser {
 		}
 	}
 	private void putPreference() {
+		if (key == null) return;
 		parent.preferences.put(key, getSelectedFile().toString());
 	}
 	
