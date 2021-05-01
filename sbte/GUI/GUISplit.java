@@ -12,4 +12,7 @@ public class GUISplit extends JSplitPane {
 		setBorder(new EmptyBorder(0, 5, 5, 5));
 		setResizeWeight(1);
 	}
+	public void setDarkTheme() {
+		DarkTheme.setDarkSplitPane(this);
+	}
 }

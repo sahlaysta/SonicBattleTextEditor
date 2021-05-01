@@ -16,6 +16,7 @@ import javax.swing.event.ListSelectionListener;
 
 public class GUIList extends JPanel {
 	private final TitledBorder title;
+	private final JScrollPane scroll;
 	private final GUI parent;
 	private List list;
 	public GUIList(GUI caller, DefaultListModel e) {
@@ -27,7 +28,7 @@ public class GUIList extends JPanel {
 		setBorder(title);
 		
 		list = new List(e);
-		JScrollPane scroll = new JScrollPane(list);
+		scroll = new JScrollPane(list);
 		
 		add(scroll);
 	}
@@ -40,8 +41,9 @@ public class GUIList extends JPanel {
 		}
 		
 		String s = null;
-		if (!parent.listModel.isProblematic(index)) { //normal ubtitle
+		if (!parent.listModel.isProblematic(index)) { //normal subtitle
 			title.setTitleColor(Color.BLACK);
+			if (parent.isDarkTheme) DarkTheme.setDarkTitledBorder(title);
 			s = parent.localization.get("selectedLine").replace("[v]", (1 + index) + "");
 		}
 		else { //error subtitle
@@ -63,6 +65,12 @@ public class GUIList extends JPanel {
 		}
 		list.setSelectedIndex(index);
 	}
+	public void setDarkTheme() {
+		DarkTheme.setDarkScroll(scroll);
+		DarkTheme.setDarkList(list);
+		DarkTheme.setDarkPanel(this);
+		DarkTheme.setDarkTitledBorder(title);
+	}
 	public class List extends JList {
 		public List(DefaultListModel e) {
 			super(e);
@@ -72,7 +80,7 @@ public class GUIList extends JPanel {
 			setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			ListHandler lh = new ListHandler();
 			addListSelectionListener(lh);
-			setCellRenderer(colorList);
+			setCellRenderer(new ColorList());
 		}
 	}
 	private class ListHandler implements ListSelectionListener { //on list index changed
@@ -91,7 +99,7 @@ public class GUIList extends JPanel {
 			}
 		}
 	}
-	public DefaultListCellRenderer colorList = new DefaultListCellRenderer() {
+	public class ColorList extends DefaultListCellRenderer {
 		//background color of list items
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {

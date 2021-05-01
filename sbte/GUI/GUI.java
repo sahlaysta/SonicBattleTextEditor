@@ -66,6 +66,16 @@ public class GUI extends JFrame {
 		setLocalization(language);
 		
 		disabledBeforeOpen(); //disables the components with this tag
+		
+		setDarkTheme();
+	}
+	public boolean isDarkTheme = false;
+	public void setDarkTheme() {
+		list.setDarkTheme();
+		splitPane.setDarkTheme();
+		textBox.setDarkTheme();
+		
+		isDarkTheme = true;
 	}
 
 	public File openedRom = null;
@@ -92,7 +102,6 @@ public class GUI extends JFrame {
 	public void setLocalization(String language) {
 		localization = Localization.getMap(language);
 		refreshGUIText();
-		list.refreshTitle();
 	}
 	public void refreshGUIText() {
 		for (Object element: this.getElements()) {
@@ -102,6 +111,8 @@ public class GUI extends JFrame {
 				GUITools.setSwingObjectText(element, localization.get(value));
 			} catch (GUIException e) { continue; }
 		}
+
+		list.refreshTitle();
 	}
 	public void disabledBeforeOpen() {
 		for (Object element: this.getElements()) {
