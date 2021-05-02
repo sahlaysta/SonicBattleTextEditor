@@ -14,6 +14,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import sbte.ByteTools;
+
 public class GUIList extends JPanel {
 	private final TitledBorder title;
 	private final JScrollPane scroll;
@@ -43,7 +45,6 @@ public class GUIList extends JPanel {
 		String s = null;
 		if (!parent.listModel.isProblematic(index)) { //normal subtitle
 			title.setTitleColor(Color.BLACK);
-			if (parent.isDarkTheme) DarkTheme.setDarkTitledBorder(title);
 			s = parent.localization.get("selectedLine").replace("[v]", (1 + index) + "");
 		}
 		else { //error subtitle
@@ -64,12 +65,6 @@ public class GUIList extends JPanel {
 			return;
 		}
 		list.setSelectedIndex(index);
-	}
-	public void setDarkTheme() {
-		DarkTheme.setDarkScroll(scroll);
-		DarkTheme.setDarkList(list);
-		DarkTheme.setDarkPanel(this);
-		DarkTheme.setDarkTitledBorder(title);
 	}
 	public class List extends JList {
 		public List(DefaultListModel e) {

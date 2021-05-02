@@ -2,6 +2,7 @@ package sbte.GUI;
 
 import java.awt.event.ActionListener;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -67,6 +68,13 @@ public class GUIMenuBar extends JMenuBar {
 	//custom menuitem
 	private class MenuItem extends JMenuItem{
 		public MenuItem(String name, String shortcut, ActionListener action) {
+			setName(name);
+			if (shortcut != null) setAccelerator(KeyStroke.getKeyStroke(shortcut));
+			if (action != null) addActionListener(action);
+		}
+	}
+	private class CheckBoxMenuItem extends JCheckBoxMenuItem{
+		public CheckBoxMenuItem(String name, String shortcut, ActionListener action) {
 			setName(name);
 			if (shortcut != null) setAccelerator(KeyStroke.getKeyStroke(shortcut));
 			if (action != null) addActionListener(action);

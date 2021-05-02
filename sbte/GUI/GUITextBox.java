@@ -33,16 +33,12 @@ public class GUITextBox extends JPanel {
 	}
 	public void unred() {
 		ta.setForeground(Color.BLACK);
-		if (parent.isDarkTheme) setDarkTheme();
 	}
 	public void clear() {
 		unred();
 		ta.programmaticEditing = true;
 		ta.setText("");
 		ta.programmaticEditing = false;
-	}
-	public void setDarkTheme() {
-		DarkTheme.setDarkTextArea(ta);
 	}
 	private class TextArea extends JTextArea{
 		public boolean programmaticEditing = false;
