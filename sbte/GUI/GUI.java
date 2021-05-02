@@ -15,6 +15,7 @@ import javax.swing.UIManager;
 import org.json.simple.parser.ParseException;
 
 import sbte.JSONTools;
+import sbte.SonicBattleROMReader;
 import sbte.SonicBattleROMReader.SonicBattleLine;
 import sbte.SonicBattleTextParser;
 
@@ -66,18 +67,7 @@ public class GUI extends JFrame {
 		setLocalization(language);
 		
 		disabledBeforeOpen(); //disables the components with this tag
-		
-		setDarkTheme();
 	}
-	public boolean isDarkTheme = false;
-	public void setDarkTheme() {
-		list.setDarkTheme();
-		splitPane.setDarkTheme();
-		textBox.setDarkTheme();
-		
-		isDarkTheme = true;
-	}
-
 	public File openedRom = null;
 	public boolean isOpen = false;
 	public boolean isSaved = true;
@@ -98,6 +88,21 @@ public class GUI extends JFrame {
 		isOpen = false;
 		isSaved = true;
 		openedRom = null;
+	}
+	public byte[] getSonicBattleByteData() {
+		List<Byte> bytes = new ArrayList<>();
+		for (byte[] byteArray: listModel.content) {
+			for (byte b: byteArray) {
+				bytes.add(b);
+			}
+			for (byte b: SonicBattleROMReader.delimiter)
+				bytes.add(b);
+		}
+		
+		final byte[] output = new byte[bytes.size()];
+		for (int i = 0; i < output.length; i++)
+			output[i] = bytes.get(i);
+		return output;
 	}
 	public void setLocalization(String language) {
 		localization = Localization.getMap(language);

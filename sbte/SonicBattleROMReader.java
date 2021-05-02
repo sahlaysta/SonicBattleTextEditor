@@ -89,7 +89,7 @@ public class SonicBattleROMReader {
 				
 				bytes.add(rom[i]);
 			}
-			
+
 			byte[] output = new byte[bytes.size()];
 			for (int i = 0; i < output.length; i++)
 				output[i] = bytes.get(i);

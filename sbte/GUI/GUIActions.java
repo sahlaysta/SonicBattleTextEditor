@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JOptionPane;
 
 public class GUIActions {
@@ -52,7 +53,7 @@ public class GUIActions {
 		else selection = file;
 		
         parent.menuBar.recentOpened.add(selection);
-        ROMListener.raiseOpenROM(selection);
+        ROMListener.raiseOpenROM(new ROMArgs(selection, parent));
     }
     
     public void save(File file) {
@@ -73,7 +74,7 @@ public class GUIActions {
     		if (JOptionPane.showConfirmDialog(parent, parent.localization.get("overwrite").replace("[v]", selection.toString()), parent.localization.get("saveAs"), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) return;
     	}
     	
-    	ROMListener.raiseSaveROM(selection);
+    	ROMListener.raiseSaveROM(new ROMArgs(selection, parent));
     }
     
     public ActionListener close = new ActionListener() {
@@ -96,8 +97,8 @@ public class GUIActions {
     
     //custom listener ROM handler
     public interface ROMListener {
-	    void ROMopened(File rom);
-	    void ROMsaved(File rom);
+	    void ROMopened(ROMArgs args);
+	    void ROMsaved(ROMArgs args);
 	}
 	public static class ROMEvent {
 	    private List<ROMListener> listeners = new ArrayList<ROMListener>();
@@ -106,13 +107,21 @@ public class GUIActions {
 	        listeners.add(toAdd);
 	    }
 
-	    public void raiseOpenROM(File rom) {
+	    public void raiseOpenROM(ROMArgs args) {
 	        for (ROMListener orl: listeners)
-	            orl.ROMopened(rom);
+	            orl.ROMopened(args);
 	    }
-	    public void raiseSaveROM(File rom) {
+	    public void raiseSaveROM(ROMArgs args) {
 	        for (ROMListener orl: listeners)
-	            orl.ROMsaved(rom);
+	            orl.ROMsaved(args);
 	    }
+	}
+	public static class ROMArgs {
+		public final File romPath;
+		public final GUI source;
+		public ROMArgs(File romPath, GUI source) {
+			this.romPath = romPath;
+			this.source = source;
+		}
 	}
 }

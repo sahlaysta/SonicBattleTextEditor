@@ -52,7 +52,7 @@ public class GUIFileChooser extends JFileChooser {
 	@Override
 	public File getSelectedFile() { //smart-add extension
 		File output = super.getSelectedFile();
-		if (output == null || this.args == OPEN_FILE_PROMPT || output.exists()) return output;
+		if (output == null || this.args == OPEN_FILE_PROMPT || output.exists() || getFileFilter().toString().contains("AcceptAllFileFilter")) return output;
 		if (!output.toString().contains(".")) {
 			File extension = new File(output.toString() + "." + filter.toLowerCase());
 			if (!extension.exists()) return extension;

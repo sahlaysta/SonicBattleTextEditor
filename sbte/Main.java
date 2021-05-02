@@ -1,37 +1,36 @@
 package sbte;
 
-import java.io.File;
 import java.util.List;
 
 import sbte.SonicBattleROMReader.SonicBattleLine;
 import sbte.GUI.GUI;
+import sbte.GUI.GUIActions.ROMArgs;
 import sbte.GUI.GUIActions.ROMListener;
 
 public class Main {
-	private static GUI gui;
 	public static void main (String[] args) {
-		gui = new GUI();
+		GUI gui = new GUI();
 		gui.setVisible(true);
 		
 		gui.actions.ROMListener.addListener(new ROMHandler());
 	}
 	
 	private static class ROMHandler implements ROMListener {
-		public void ROMopened(File rom) {
+		public void ROMopened(ROMArgs args) {
 			List<SonicBattleLine> sonicBattleLines = null;
 			try {
-				sonicBattleLines = SonicBattleROMReader.readUSAROM(rom);
+				sonicBattleLines = SonicBattleROMReader.readUSAROM(args.romPath);
 			} catch (Exception e) {
-				gui.showMsg(gui.localization.get("error") + ": " + rom.toString(), e.toString(), GUI.Msg.ERROR_MESSAGE);
+				args.source.showMsg(args.source.localization.get("error") + ": " + args.source.toString(), e.toString(), GUI.Msg.ERROR_MESSAGE);
 				return;
 			}
 
-			if (gui.isOpen) gui.close();
-			gui.open(rom, sonicBattleLines);
+			if (args.source.isOpen) args.source.close();
+			args.source.open(args.romPath, sonicBattleLines);
 		}
 
-		public void ROMsaved(File rom) {
-			System.out.println(rom);
+		public void ROMsaved(ROMArgs args) {
+			SonicBattleROMSaver.saveToUSAROM(args.source.getSonicBattleByteData());
 		}
 	}
 }
