@@ -16,6 +16,7 @@ public class GUIMenuBar extends JMenuBar {
 	private EditMenu editMenu;
 	private SearchMenu searchMenu;
 	private ViewMenu viewMenu;
+	private HelpMenu helpMenu;
 	
 	public GUIMenuBar(GUI caller) {
 		parent = caller;
@@ -26,11 +27,13 @@ public class GUIMenuBar extends JMenuBar {
 		editMenu = new EditMenu();
 		searchMenu = new SearchMenu();
 		viewMenu = new ViewMenu();
+		helpMenu = new HelpMenu();
 		
 		add(fileMenu);
 		add(editMenu);
 		add(searchMenu);
 		add(viewMenu);
+		add(helpMenu);
 	}
 	
 	//Menus
@@ -55,6 +58,13 @@ public class GUIMenuBar extends JMenuBar {
 	private class EditMenu extends JMenu{
 		public EditMenu() {
 			setName("json:edit,disabledBeforeOpen:true");
+			
+			MenuItem importion, exportion; //cant name a variable import smh
+			importion = new MenuItem("json:import", null, parent.actions.importion);
+			exportion = new MenuItem("json:export", null, parent.actions.exportion);
+			
+			add(importion);
+			add(exportion);
 		}
 	}
 	private class SearchMenu extends JMenu{
@@ -79,6 +89,16 @@ public class GUIMenuBar extends JMenuBar {
 			changeLang = new MenuItem("json:changeLang", null, parent.actions.changeLanguage);
 			
 			add(changeLang);
+		}
+	}
+	private class HelpMenu extends JMenu{
+		public HelpMenu() {
+			setName("json:help");
+			
+			MenuItem about;
+			about = new MenuItem("json:about", "F1", parent.actions.about);
+			
+			add(about);
 		}
 	}
 	
