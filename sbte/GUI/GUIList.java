@@ -3,6 +3,7 @@ package sbte.GUI;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.event.KeyListener;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -66,6 +67,9 @@ public class GUIList extends JPanel {
 		}
 		list.setSelectedIndex(index);
 	}
+	public void ensureIndexIsVisible(int index) {
+		list.ensureIndexIsVisible(index);
+	}
 	public class List extends JList {
 		public List(DefaultListModel e) {
 			super(e);
@@ -75,7 +79,12 @@ public class GUIList extends JPanel {
 			setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			ListHandler lh = new ListHandler();
 			addListSelectionListener(lh);
-			setCellRenderer(new ColorList());
+			setCellRenderer(new ColorList(parent.listModel));
+			
+			//remove key click to change position
+			KeyListener[] lsnrs = getKeyListeners();
+			for (int i = 0; i < lsnrs.length; i++)
+			    removeKeyListener(lsnrs[i]);
 		}
 	}
 	private class ListHandler implements ListSelectionListener { //on list index changed
@@ -94,12 +103,16 @@ public class GUIList extends JPanel {
 			}
 		}
 	}
-	public class ColorList extends DefaultListCellRenderer {
+	public static class ColorList extends DefaultListCellRenderer {
+		private final ListModel lm;
+		public ColorList(ListModel e) {
+			lm = e;
+		}
 		//background color of list items
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         	Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            if (parent.listModel.isProblematic(index)){
+            if (lm.isProblematic(index)){
             	setForeground(Color.RED);
             }
                   

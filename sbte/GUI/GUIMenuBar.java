@@ -14,6 +14,7 @@ public class GUIMenuBar extends JMenuBar {
 	public RecentlyOpenedMenu recentOpened;
 	private FileMenu fileMenu;
 	private EditMenu editMenu;
+	private SearchMenu searchMenu;
 	private ViewMenu viewMenu;
 	
 	public GUIMenuBar(GUI caller) {
@@ -23,10 +24,12 @@ public class GUIMenuBar extends JMenuBar {
 
 		fileMenu = new FileMenu();
 		editMenu = new EditMenu();
+		searchMenu = new SearchMenu();
 		viewMenu = new ViewMenu();
 		
 		add(fileMenu);
 		add(editMenu);
+		add(searchMenu);
 		add(viewMenu);
 	}
 	
@@ -52,6 +55,18 @@ public class GUIMenuBar extends JMenuBar {
 	private class EditMenu extends JMenu{
 		public EditMenu() {
 			setName("json:edit,disabledBeforeOpen:true");
+		}
+	}
+	private class SearchMenu extends JMenu{
+		public SearchMenu() {
+			setName("json:search,disabledBeforeOpen:true");
+			
+			MenuItem goTo, search;
+			goTo = new MenuItem("json:goTo", "control G", parent.actions.goTo);
+			search = new MenuItem("json:search", "control S", parent.actions.search);
+			
+			add(goTo);
+			add(search);
 		}
 	}
 	private class ViewMenu extends JMenu{

@@ -6,7 +6,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JOptionPane;
 
 public class GUIActions {
@@ -15,6 +14,7 @@ public class GUIActions {
 	private final GUI parent;
 	public GUIActions(GUI caller) {
 		parent = caller;
+		ROMListener.addListener(new GUIHandler());
 	}
 
 	//menubar actions
@@ -25,12 +25,22 @@ public class GUIActions {
     };
     public ActionListener save = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-        	save(parent.openedRom);
+        	save(parent.rom.romPath);
         }
     };
     public ActionListener saveAs = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
         	save(null);
+        }
+    };
+    public ActionListener goTo = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+        	GUIGoTo.goToGUI(parent);
+        }
+    };
+    public ActionListener search = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+        	GUISearch.searchGUI(parent);
         }
     };
     
@@ -117,10 +127,10 @@ public class GUIActions {
 	    }
 	}
 	public static class ROMArgs {
-		public final File romPath;
+		public final File selectedPath;
 		public final GUI source;
-		public ROMArgs(File romPath, GUI source) {
-			this.romPath = romPath;
+		public ROMArgs(File selectedPath, GUI source) {
+			this.selectedPath = selectedPath;
 			this.source = source;
 		}
 	}
