@@ -10,9 +10,7 @@ import java.util.List;
 public class SonicBattleROMReader {
 	public static final byte[] delimiter = new byte[] { (byte) 0xFE, (byte) 0xFF }; //the end of line is FEFF
 	
-	public static List<SonicBattleLine> readUSAROM(File arg0) throws IOException {
-		ROM rom = new ROM(arg0);
-		
+	public static List<SonicBattleLine> readUSAROM(ROM rom) throws IOException {
 		List<SonicBattleLine> output = new ArrayList<>();
 		rom.addLines(output, "EDFE8C", 2299); //story mode
 		rom.addLines(output, "ED9C2C", 309); //Emerl card descriptions
@@ -39,6 +37,13 @@ public class SonicBattleROMReader {
 			this.group = group;
 			this.member = member;
 		}
+		public SonicBattleLine(byte[] content, int pointer) {
+			this.content = content;
+			this.pointer = pointer;
+			this.position = -1;
+			this.group = -1;
+			this.member = -1;
+		}
 		public String toString() {
 			return
 			"Content: " + ByteTools.toHexString(content) + ByteTools.toHexString(delimiter) +
@@ -47,13 +52,15 @@ public class SonicBattleROMReader {
 			"\nGroup " + (1 + group) + ", Member " + (1 + member) + "\n";
 		}
 	}
-	private static class ROM {
-		public final byte[] rom;
+	public static class ROM {
+		public final byte[] content;
+		public final File romPath;
 		
 		public int groupIndex = 0; //indexing
 		public int memberIndex = 0;
 		public ROM(File arg0) throws IOException {
-			rom = Files.readAllBytes(arg0.toPath());
+			romPath = arg0;
+			content = FileTools.readFileToByteArray(arg0);
 		}
 		public void addLines(List<SonicBattleLine> arg0, String arg1, int arg2) {
 			int pos = ByteTools.hexToInt(arg1);
@@ -68,9 +75,9 @@ public class SonicBattleROMReader {
 		}
 		private SonicBattleLine getFromROM(int pointer) {
 			byte[] posPointer = new byte[] {
-					rom[pointer + 2],
-					rom[pointer + 1],
-					rom[pointer],
+					content[pointer + 2],
+					content[pointer + 1],
+					content[pointer],
 			};
 			final int pos = ByteTools.hexToInt(ByteTools.toHexString(posPointer));
 			
@@ -79,15 +86,17 @@ public class SonicBattleROMReader {
 				{//check if byte array equals delimiter
 					boolean end = true;
 					for (int ii = 0; ii < delimiter.length; ii++) {
-						if (delimiter[ii] != rom[i + ii]) {
+						if (delimiter[ii] != content[i + ii]) {
 							end = false;
 							break;
 						}
-						if (end) break loop;
+						if (end) {
+							break loop;
+						}
 					}
 				}
 				
-				bytes.add(rom[i]);
+				bytes.add(content[i]);
 			}
 
 			byte[] output = new byte[bytes.size()];

@@ -16,6 +16,7 @@ import org.json.simple.parser.ParseException;
 
 import sbte.JSONTools;
 import sbte.SonicBattleROMReader;
+import sbte.SonicBattleROMReader.ROM;
 import sbte.SonicBattleROMReader.SonicBattleLine;
 import sbte.SonicBattleTextParser;
 
@@ -68,11 +69,11 @@ public class GUI extends JFrame {
 		
 		disabledBeforeOpen(); //disables the components with this tag
 	}
-	public File openedRom = null;
+	public ROM rom = null;
 	public boolean isOpen = false;
 	public boolean isSaved = true;
-	public void open(File romPath, List<SonicBattleLine> arg0) {
-		openedRom = romPath;
+	public void open(ROM rom, List<SonicBattleLine> arg0) {
+		this.rom = rom;
 		for (SonicBattleLine b: arg0)
 			listModel.add(b);
 		enableBeforeOpen();
@@ -87,22 +88,10 @@ public class GUI extends JFrame {
 		disabledBeforeOpen();
 		isOpen = false;
 		isSaved = true;
-		openedRom = null;
+		rom = null;
 	}
-	public byte[] getSonicBattleByteData() {
-		List<Byte> bytes = new ArrayList<>();
-		for (byte[] byteArray: listModel.content) {
-			for (byte b: byteArray) {
-				bytes.add(b);
-			}
-			for (byte b: SonicBattleROMReader.delimiter)
-				bytes.add(b);
-		}
-		
-		final byte[] output = new byte[bytes.size()];
-		for (int i = 0; i < output.length; i++)
-			output[i] = bytes.get(i);
-		return output;
+	public List<SonicBattleLine> getSonicBattleLines() {
+		return listModel.getSonicBattleLines();
 	}
 	public void setLocalization(String language) {
 		localization = Localization.getMap(language);

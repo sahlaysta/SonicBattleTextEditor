@@ -1,5 +1,6 @@
 {
-	"_comment": "Supports language addition. the asterisk for example in 'en-*' means it applies to all regions, en-US, en-UK, en-TT etc",
+	"_comment": "Supports language addition. the asterisk for example in 'en-*' means it applies to all regions of the language",
+	
 	"en-*": {
 		"thisLang": "English",
 		"appName": "Sonic Battle Text Editor",

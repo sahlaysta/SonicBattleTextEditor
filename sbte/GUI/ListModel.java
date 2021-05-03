@@ -72,6 +72,15 @@ public class ListModel extends DefaultListModel{
 		
 		return false;
 	}
+	public List<SonicBattleLine> getSonicBattleLines() {
+		List<SonicBattleLine> output = new ArrayList<>();
+		for (int i = 0; i < content.size(); i++) {
+			SonicBattleLine sbl = new SonicBattleLine(content.get(i), baseLines.get(i).pointer, -1, baseLines.get(i).group, baseLines.get(i).member);
+			output.add(sbl);
+		}
+		
+		return output;
+	}
 	
 	@Override
 	public void setElementAt(Object object, int index) {

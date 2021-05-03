@@ -12,6 +12,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,15 @@ public class FileTools {
 		} catch (UnsupportedEncodingException e) {}
 		
 		return output;
+	}
+	public static byte[] readFileToByteArray(File file) throws IOException {
+		return Files.readAllBytes(file.toPath());
+	}
+	public static void writeByteArrayToFile(File file, byte[] content) throws IOException {
+		try (FileOutputStream fos = new FileOutputStream(file)) {
+			   fos.write(content);
+			   fos.close();
+		}
 	}
 	private static final File runningDirectory = retrieveRunningDirectory();
 	public static File getRunningDirectory() {
