@@ -122,7 +122,7 @@
 		"close": "終了",
 		"closePrompt": "保存せずに終了しますか？",
 		"saved": "保存完了",
-		"overwrite": "'[v]'\nを上書きしますか？",
+		"overwrite": "「[v]」\nを上書きしますか？",
 		"fileType": "[v]ファイル",
 		"fileTypeAll": "全てのファイル",
 		"fileRecent": "最近のファイル",
@@ -161,7 +161,7 @@
 		"member": "メンバー",
 		"line": "行",
 		"selectedLine": "[v]行目",
-		"invalidChar": "無効な文字：　'[v]'",
+		"invalidChar": "無効な文字：「[v]」",
 		"pointer": "ポインター",
 		"beforeSave": "保存前",
 		"afterSave": "保存後"

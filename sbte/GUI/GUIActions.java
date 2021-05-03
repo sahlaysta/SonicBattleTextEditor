@@ -3,10 +3,19 @@ package sbte.GUI;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
+
+import sbte.FileTools;
+import sbte.JSONTools;
+import sbte.GUI.GUI.Msg;
 
 public class GUIActions {
 	public ROMEvent ROMListener = new ROMEvent();
@@ -33,6 +42,19 @@ public class GUIActions {
         	save(null);
         }
     };
+    public ActionListener close = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+        	if (parent.isOpen) {
+        		if (!parent.isSaved) {
+        			if (yesNoDialog("close") == JOptionPane.NO_OPTION) return;
+        		}
+        		parent.close();
+        		return;
+        	}
+        	
+        	System.exit(0);
+        }
+    };
     public ActionListener goTo = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
         	GUIGoTo.goToGUI(parent);
@@ -51,6 +73,21 @@ public class GUIActions {
     public ActionListener changeLanguage = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
         	GUIChangeLanguage.languageGUI(parent);
+        }
+    };
+    public ActionListener about = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+        	JOptionPane.showMessageDialog(parent, "V3.2.0\n" + parent.localization.get("credits").replace("[v]", "porog") + "\nhttps://github.com/sahlaysta/SonicBattleTextEditor", parent.localization.get("about"), JOptionPane.INFORMATION_MESSAGE);
+        }
+    };
+    public ActionListener importion = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+        	importion();
+        }
+    };
+    public ActionListener exportion = new ActionListener() {
+        public void actionPerformed(ActionEvent e) { //export all lines to json file
+        	exportion();
         }
     };
     
@@ -102,19 +139,76 @@ public class GUIActions {
     	ROMListener.raiseSaveROM(new ROMArgs(selection, parent));
     }
     
-    public ActionListener close = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-        	if (parent.isOpen) {
-        		if (!parent.isSaved) {
-        			if (yesNoDialog("close") == JOptionPane.NO_OPTION) return;
-        		}
-        		parent.close();
-        		return;
+    public void exportion() {
+    	GUIFileChooser gfc = new GUIFileChooser(GUIFileChooser.SAVE_FILE_PROMPT, "JSON");
+		gfc.setParent(parent);
+		gfc.setPreference(GUIFileChooser.LINES_FILE_PREFERENCE);
+		gfc.show();
+        if (gfc.HasCanceled()) return;
+        File selection = gfc.getSelectedFile();
+        if (selection.exists()) {
+    		if (JOptionPane.showConfirmDialog(parent, parent.localization.get("overwrite").replace("[v]", selection.toString()), parent.localization.get("saveAs"), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) return;
+    	}
+        
+    	StringBuilder sb = new StringBuilder("{\r\n");
+    	for (int i = 0; i < parent.listModel.getSize(); i++) {
+    		String key = parent.listModel.baseLines.get(i).group + "," + parent.listModel.baseLines.get(i).member;
+    		String value = parent.listModel.get(i).toString();
+    		String append = "	\"" + key + "\": \"" + value + "\",\n";
+    		sb.append(append);
+    	}
+    	sb.setLength(sb.length()-2);
+    	sb.append("\n}");
+    	
+    	try {
+			FileTools.writeStringToFile(selection, sb.toString());
+		} catch (IOException e) {
+			parent.showMsg(parent.localization.get("error") + ": " + selection.toString(), e.toString(), Msg.ERROR_MESSAGE);
+			return;
+		}
+    	
+    	parent.showMsg(parent.localization.get("export"), parent.localization.get("exported"), Msg.INFORMATION_MESSAGE);
+    }
+    
+    public void importion() {
+    	GUIFileChooser gfc = new GUIFileChooser(GUIFileChooser.OPEN_FILE_PROMPT, "JSON");
+		gfc.setParent(parent);
+		gfc.setPreference(GUIFileChooser.LINES_FILE_PREFERENCE);
+		gfc.show();
+        if (gfc.HasCanceled()) return;
+        File selection = gfc.getSelectedFile();
+        
+    	JSONObject json = null;
+        try {
+			String jsonFile = FileTools.readFileToString(selection);
+			json = (JSONObject) JSONTools.jp.parse(jsonFile);
+		} catch (FileNotFoundException e) {
+			parent.showMsg(parent.localization.get("error") + ": " + selection.toString(), e.toString(), Msg.ERROR_MESSAGE);
+			return;
+		} catch (ParseException e) {
+			parent.showMsg(parent.localization.get("error") + ": " + selection.toString(), e.toString(), Msg.ERROR_MESSAGE);
+		}
+        
+        StringBuilder missed = new StringBuilder();
+        for (int i = 0; i < parent.listModel.getSize(); i++) {
+        	String key = parent.listModel.baseLines.get(i).group + "," + parent.listModel.baseLines.get(i).member;
+        	if (json.containsKey(key)) {
+            	String value = json.get(key).toString();
+        		parent.listModel.setContent(i, value);
         	}
-        	
-        	System.exit(0);
+        	else {
+        		missed.append(key + "\r\n");
+        	}
         }
-    };
+        
+        parent.showMsg(parent.localization.get("import"), parent.localization.get("imported"), Msg.INFORMATION_MESSAGE);
+        if (parent.listModel.errors.size() > 0)
+        	GUISearch.problematicGUI(parent);
+        if (missed.length() > 0) {
+        	missed.setLength(missed.length() - 2);
+        	ScrollMessage.show(parent, parent.localization.get("missingLines"), missed.toString());
+        }
+    }
     
     private int yesNoDialog(String jsonTitle) {
     	return JOptionPane.showConfirmDialog(parent, parent.localization.get("closePrompt"), parent.localization.get(jsonTitle), JOptionPane.YES_NO_OPTION);

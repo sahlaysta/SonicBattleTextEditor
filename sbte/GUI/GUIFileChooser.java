@@ -10,6 +10,7 @@ public class GUIFileChooser extends JFileChooser {
 	public static final int SAVE_FILE_PROMPT = 1;
 	public static final int SAVE_AS_FILE_PROMPT = 2;
 	public static final String ROM_PATH_PREFERENCE = "romPath";
+	public static final String LINES_FILE_PREFERENCE = "jsonPath";
 	private boolean approve;
 	private GUI parent;
 	private final int args;
