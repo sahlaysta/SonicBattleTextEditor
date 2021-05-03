@@ -43,6 +43,16 @@ public class GUIActions {
         	GUISearch.searchGUI(parent);
         }
     };
+    public ActionListener problematicLines = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+        	GUISearch.problematicGUI(parent);
+        }
+    };
+    public ActionListener changeLanguage = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+        	GUIChangeLanguage.languageGUI(parent);
+        }
+    };
     
     public void open(File file) {
     	if (parent.isOpen) {
@@ -67,6 +77,11 @@ public class GUIActions {
     }
     
     public void save(File file) {
+    	if (parent.listModel.errors.size() > 0) {
+    		GUISearch.problematicGUI(parent);
+    		return;
+    	}
+    	
     	File selection = null;
     	if (file == null) {
 			GUIFileChooser gfc = new GUIFileChooser(GUIFileChooser.SAVE_FILE_PROMPT, "GBA");

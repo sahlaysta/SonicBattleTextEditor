@@ -7,14 +7,43 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import sbte.FileTools;
-import sbte.Main;
 
 public class Localization {
 	public static HashMap<String, String> getMap(String language) {
 		String jsonToParse = getLocalizationFile();
 		JSONObject json = parseJsonString(jsonToParse);
 		
-		JSONObject languageJson = (JSONObject) json.get(language);
+		String langKey = null;
+		for (Object o: json.keySet()) {
+			String key = o.toString();
+			if (key.equals(language)) {
+				langKey = key;
+				break;
+			}
+		}
+		
+		if (langKey == null) {
+			if (language.contains("-")) {
+				language = language.substring(0, language.indexOf("-"));
+				language += "-*";
+			} else {
+				language += "-*";
+			}
+		}
+		
+		for (Object o: json.keySet()) {
+			String key = o.toString();
+			if (key.equals(language)) {
+				langKey = key;
+				break;
+			}
+		}
+		
+		if (langKey == null) {
+			langKey = "en-*"; //default language
+		}
+
+		JSONObject languageJson = (JSONObject) json.get(langKey);
 		HashMap<String, String> languageMap = new HashMap<>();
 		for (Object o: languageJson.keySet()) {
 			String key = o.toString();
@@ -22,9 +51,11 @@ public class Localization {
 			languageMap.put(key, value);
 		}
 		
+		languageMap.put("thisKey", langKey);
+		
 		return languageMap;
 	}
-	private static String getLocalizationFile() {
+	public static String getLocalizationFile() {
 		String output = FileTools.readResourceToString("Localization.json");
 		return output;
 	}
