@@ -2,6 +2,7 @@ package sbte.GUI;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class GUI extends JFrame {
 	public GUI() {
 		setLocationRelativeTo(null);
 		setMinimumSize(new Dimension(50, 120));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		try {
 			preferences = new Preferences(JSONTools.getPrefsJson());
 		} catch (ParseException e) {
@@ -68,6 +69,8 @@ public class GUI extends JFrame {
 		setLocalization(language);
 		
 		disabledBeforeOpen(); //disables the components with this tag
+		
+		addWindowListener(new OnClose()); //save before close warning
 	}
 	public ROM rom = null;
 	public boolean isOpen = false;
@@ -90,6 +93,20 @@ public class GUI extends JFrame {
 		isSaved = true;
 		rom = null;
 	}
+	private class OnClose extends WindowAdapter { //close event
+		@Override
+	    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+	        if (isSaved == false &&
+	        	JOptionPane.showConfirmDialog(GUI.this, 
+	            localization.get("closePrompt"), localization.get("close"), 
+	            JOptionPane.YES_NO_OPTION,
+	            JOptionPane.QUESTION_MESSAGE) == JOptionPane.NO_OPTION) {
+	            return;
+	        }
+	        
+	        System.exit(0);
+	    }
+	};
 	public List<SonicBattleLine> getSonicBattleLines() {
 		return listModel.getSonicBattleLines();
 	}
