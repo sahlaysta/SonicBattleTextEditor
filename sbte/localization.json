@@ -162,7 +162,7 @@
 		"line": "行",
 		"selectedLine": "[v]行目",
 		"invalidChar": "無効な文字：　'[v]'",
-		"pointer": "ポインター別な",
+		"pointer": "ポインター",
 		"beforeSave": "保存前",
 		"afterSave": "保存後"
 	},
