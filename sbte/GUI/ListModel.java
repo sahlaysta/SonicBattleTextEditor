@@ -50,7 +50,7 @@ public class ListModel extends DefaultListModel{
 		} //error
 		catch (SonicBattleParseException e) {
 			char errorChar = e.source.charAt(e.index);
-			errors.put(index, parent.localization.get("invalidChar").replace("[v]", errorChar + ""));
+			errors.put(index, errorChar + "");
 			parent.textBox.setRed();
 		}
 		

@@ -50,7 +50,7 @@ public class GUIList extends JPanel {
 		}
 		else { //error subtitle
 			title.setTitleColor(Color.RED);
-			s = parent.listModel.errors.get(index);
+			s = parent.localization.get("invalidChar").replace("[v]", parent.listModel.errors.get(index) + "");
 		}
 		title.setTitle(s);
 		repaint();

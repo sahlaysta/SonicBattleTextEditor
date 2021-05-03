@@ -64,7 +64,7 @@ public class GUI extends JFrame {
 		splitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, preferences.dividerListener);
 		add(splitPane);
 		
-		String language = "en-*";
+		String language = preferences.getLanguage();
 		setLocalization(language);
 		
 		disabledBeforeOpen(); //disables the components with this tag
@@ -95,6 +95,7 @@ public class GUI extends JFrame {
 	}
 	public void setLocalization(String language) {
 		localization = Localization.getMap(language);
+		preferences.setLanguage(localization.get("thisKey"));
 		refreshGUIText();
 	}
 	public void refreshGUIText() {

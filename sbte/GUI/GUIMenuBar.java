@@ -61,12 +61,14 @@ public class GUIMenuBar extends JMenuBar {
 		public SearchMenu() {
 			setName("json:search,disabledBeforeOpen:true");
 			
-			MenuItem goTo, search;
+			MenuItem goTo, search, problematicLines;
 			goTo = new MenuItem("json:goTo", "control G", parent.actions.goTo);
 			search = new MenuItem("json:search", "control S", parent.actions.search);
+			problematicLines = new MenuItem("json:prob", null, parent.actions.problematicLines);
 			
 			add(goTo);
 			add(search);
+			add(problematicLines);
 		}
 	}
 	private class ViewMenu extends JMenu{
@@ -74,7 +76,7 @@ public class GUIMenuBar extends JMenuBar {
 			setName("json:options");
 			
 			MenuItem changeLang;
-			changeLang = new MenuItem("json:changeLang", null, null);
+			changeLang = new MenuItem("json:changeLang", null, parent.actions.changeLanguage);
 			
 			add(changeLang);
 		}

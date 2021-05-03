@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.JSplitPane;
 
@@ -33,6 +34,7 @@ public class Preferences extends JSONObject {
 	private static final String WINDOW_LOCATION_KEY = "windowLocation";
 	private static final String RECENT_FILES_KEY = "recentFiles";
 	private static final String DIVIDER_LOCATION_KEY = "dividerLocation";
+	private static final String LANGUAGE_KEY = "language";
 
 	public void applyWindowProperties(GUI gui) {
 		WindowProperties wp = getWindowProperties();
@@ -182,6 +184,15 @@ public class Preferences extends JSONObject {
 			return objToInt(super.get(DIVIDER_LOCATION_KEY));
 		
 		return 130; //default divider location
+	}
+	public String getLanguage() {
+		if (super.containsKey(LANGUAGE_KEY))
+			return super.get(LANGUAGE_KEY).toString();
+		
+		return Locale.getDefault().toLanguageTag(); //default language
+	}
+	public void setLanguage(String e) {
+		put(LANGUAGE_KEY, e);
 	}
 	public PropertyChangeListener dividerListener = new PropertyChangeListener() {
         @Override
