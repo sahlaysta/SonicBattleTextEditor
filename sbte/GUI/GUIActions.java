@@ -90,6 +90,16 @@ public class GUIActions {
         	exportion();
         }
     };
+    public ActionListener undo = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+        	parent.listModel.undo();
+        }
+    };
+    public ActionListener redo = new ActionListener() {
+        public void actionPerformed(ActionEvent e) { //export all lines to json file
+        	parent.listModel.redo();
+        }
+    };
     
     public void open(File file) {
     	if (parent.isOpen) {
@@ -200,6 +210,8 @@ public class GUIActions {
         		missed.append(key + "\r\n");
         	}
         }
+        
+        parent.listModel.resetUndoManager();
         
         parent.showMsg(parent.localization.get("import"), parent.localization.get("imported"), Msg.INFORMATION_MESSAGE);
         if (parent.listModel.errors.size() > 0)

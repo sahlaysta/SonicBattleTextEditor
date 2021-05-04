@@ -17,9 +17,12 @@ public class ListModel extends DefaultListModel{
 	public List<String> textBoxDisplay = new ArrayList<>();
 	public HashMap<Integer, String> errors = new HashMap<>();
 	
+	public SBUndoManager undo = null;
+	
 	private final GUI parent;
 	public ListModel(GUI caller) {
 		parent = caller;
+		resetUndoManager();
 	}
 	public void add(SonicBattleLine line) {
 		addContent(line.content);
@@ -39,7 +42,17 @@ public class ListModel extends DefaultListModel{
 		baseLines = new ArrayList<>();
 		textBoxDisplay = new ArrayList<>();
 		errors = new HashMap<>();
+		resetUndoManager();
 		super.clear();
+	}
+	public void undo() {
+		undo.undo();
+	}
+	public void redo() {
+		undo.redo();
+	}
+	public void resetUndoManager() {
+		undo = new SBUndoManager(parent);
 	}
 	public void setContent(int index, String string) {
 		try { //successfully set

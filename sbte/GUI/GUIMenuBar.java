@@ -59,12 +59,17 @@ public class GUIMenuBar extends JMenuBar {
 		public EditMenu() {
 			setName("json:edit,disabledBeforeOpen:true");
 			
-			MenuItem importion, exportion; //cant name a variable import smh
+			MenuItem importion, exportion, undo, redo; //cant name a variable import smh
 			importion = new MenuItem("json:import", null, parent.actions.importion);
 			exportion = new MenuItem("json:export", null, parent.actions.exportion);
+			undo = new MenuItem("json:undo", "control Z", parent.actions.undo);
+			redo = new MenuItem("json:redo", "control Y", parent.actions.redo);
 			
 			add(importion);
 			add(exportion);
+			addSeparator();
+			add(undo);
+			add(redo);
 		}
 	}
 	private class SearchMenu extends JMenu{
