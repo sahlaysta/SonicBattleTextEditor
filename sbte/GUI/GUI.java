@@ -3,7 +3,6 @@ package sbte.GUI;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +15,6 @@ import javax.swing.UIManager;
 import org.json.simple.parser.ParseException;
 
 import sbte.JSONTools;
-import sbte.SonicBattleROMReader;
 import sbte.SonicBattleROMReader.ROM;
 import sbte.SonicBattleROMReader.SonicBattleLine;
 import sbte.SonicBattleTextParser;

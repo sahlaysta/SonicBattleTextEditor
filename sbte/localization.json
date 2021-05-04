@@ -54,7 +54,9 @@
 		"invalidChar": "Invalid char: '[v]'",
 		"pointer": "Pointer",
 		"beforeSave": "Before save",
-		"afterSave": "After save"
+		"afterSave": "After save",
+		"upOne": "Move up one",
+		"downOne": "Move down one"
 	},
 	"es-*": {
 		"thisLang": "Español",
@@ -109,7 +111,9 @@
 		"invalidChar": "Carácter inválido: '[v]'",
 		"pointer": "Puntero",
 		"beforeSave": "Antes de guardar",
-		"afterSave": "Después de guardar"
+		"afterSave": "Después de guardar",
+		"upOne": "Subir una fila",
+		"downOne": "Bajar una fila"
 	},
 	"ja-*": {
 		"thisLang": "日本語",
@@ -164,6 +168,8 @@
 		"invalidChar": "無効な文字：「[v]」",
 		"pointer": "ポインター",
 		"beforeSave": "保存前",
-		"afterSave": "保存後"
+		"afterSave": "保存後",
+		"upOne": "１行上に移動",
+		"downOne": "１行下に移動"
 	},
 }

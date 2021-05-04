@@ -65,14 +65,12 @@ public class SBUndoManager {
 			um.undo();
 			um.undo(); //need to undo twice for some reason unsure why
 			history--;
-			System.out.println(history);
 			return jta.getText();
 		}
 		public String getRedo() {
 			um.redo();
 			um.redo();
 			history++;
-			System.out.println(history);
 			return jta.getText();
 		}
 		public boolean canUndo() {
