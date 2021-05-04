@@ -69,7 +69,7 @@ public class GUISearch {
 			setLayout(new BorderLayout(5, 5));
 			
 			JPanel tfp = new JPanel();
-			JTextField tf = new JTextField();
+			UndoTF tf = new UndoTF(parent);
 			tfp.setBorder(new EmptyBorder(5,5,5,5));
 			tfp.setLayout(new GridLayout(1,1));
 			tfp.add(tf);

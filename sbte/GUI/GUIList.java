@@ -73,6 +73,18 @@ public class GUIList extends JPanel {
 	public void ensureIndexIsVisible(int index) {
 		list.ensureIndexIsVisible(index);
 	}
+	public void upOne() {
+		int index = list.getSelectedIndex();
+		if (index <= 0) return;
+		setSelection(index - 1);
+		ensureIndexIsVisible(index - 1);
+	}
+	public void downOne() {
+		int index = list.getSelectedIndex();
+		if (index > parent.listModel.getSize() - 2) return;
+		setSelection(index + 1);
+		ensureIndexIsVisible(index + 1);
+	}
 	public class List extends JList {
 		public List(DefaultListModel e) {
 			super(e);

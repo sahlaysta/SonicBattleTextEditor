@@ -100,6 +100,16 @@ public class GUIActions {
         	parent.listModel.redo();
         }
     };
+    public ActionListener upOne = new ActionListener() {
+        public void actionPerformed(ActionEvent e) { //export all lines to json file
+        	parent.list.upOne();
+        }
+    };
+    public ActionListener downOne = new ActionListener() {
+        public void actionPerformed(ActionEvent e) { //export all lines to json file
+        	parent.list.downOne();
+        }
+    };
     
     public void open(File file) {
     	if (parent.isOpen) {
@@ -143,7 +153,7 @@ public class GUIActions {
     	}
     	
     	if (selection.exists()) {
-    		if (JOptionPane.showConfirmDialog(parent, parent.localization.get("overwrite").replace("[v]", selection.toString()), parent.localization.get("saveAs"), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) return;
+    		if (JOptionPane.showConfirmDialog(parent, parent.localization.get("overwrite").replace("[v]", selection.toString()), parent.localization.get("save"), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) return;
     	}
     	
     	ROMListener.raiseSaveROM(new ROMArgs(selection, parent));
@@ -157,7 +167,7 @@ public class GUIActions {
         if (gfc.HasCanceled()) return;
         File selection = gfc.getSelectedFile();
         if (selection.exists()) {
-    		if (JOptionPane.showConfirmDialog(parent, parent.localization.get("overwrite").replace("[v]", selection.toString()), parent.localization.get("saveAs"), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) return;
+    		if (JOptionPane.showConfirmDialog(parent, parent.localization.get("overwrite").replace("[v]", selection.toString()), parent.localization.get("export"), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) return;
     	}
         
     	StringBuilder sb = new StringBuilder("{\r\n");

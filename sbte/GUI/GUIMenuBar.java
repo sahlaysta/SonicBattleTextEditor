@@ -1,6 +1,8 @@
 package sbte.GUI;
 
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
@@ -59,17 +61,23 @@ public class GUIMenuBar extends JMenuBar {
 		public EditMenu() {
 			setName("json:edit,disabledBeforeOpen:true");
 			
-			MenuItem importion, exportion, undo, redo; //cant name a variable import smh
+			MenuItem importion, exportion, undo, redo, upOne, downOne; //cant name a variable import smh
 			importion = new MenuItem("json:import", null, parent.actions.importion);
 			exportion = new MenuItem("json:export", null, parent.actions.exportion);
 			undo = new MenuItem("json:undo", "control Z", parent.actions.undo);
 			redo = new MenuItem("json:redo", "control Y", parent.actions.redo);
+			upOne = new MenuItem("json:upOne", null, parent.actions.upOne);
+			upOne.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.CTRL_MASK));
+			downOne = new MenuItem("json:downOne", null, parent.actions.downOne);
+			downOne.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_MASK));
 			
 			add(importion);
 			add(exportion);
 			addSeparator();
 			add(undo);
 			add(redo);
+			add(upOne);
+			add(downOne);
 		}
 	}
 	private class SearchMenu extends JMenu{
