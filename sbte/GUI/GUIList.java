@@ -55,8 +55,11 @@ public class GUIList extends JPanel {
 		title.setTitle(s);
 		repaint();
 	}
-	public void setText(String e) {
+	public void setText(String e, boolean undo) {
 		int index = list.getSelectedIndex();
+		if (!undo) {
+			parent.listModel.undo.add(e, index, parent.listModel.textBoxDisplay.get(index));
+		}
 		parent.listModel.setContent(index, e);
 		refreshTitle();
 	}

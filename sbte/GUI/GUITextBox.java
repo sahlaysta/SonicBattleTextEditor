@@ -28,6 +28,11 @@ public class GUITextBox extends JPanel {
 		ta.setText(text);
 		ta.programmaticEditing = false;
 	}
+	public void setTextUnprogrammatically(String text) {
+		ta.unprogrammaticEditing = true;
+		ta.setText(text);
+		ta.unprogrammaticEditing = false;
+	}
 	public void setRed() {
 		ta.setForeground(Color.RED);
 	}
@@ -42,6 +47,7 @@ public class GUITextBox extends JPanel {
 	}
 	private class TextArea extends JTextArea{
 		public boolean programmaticEditing = false;
+		public boolean unprogrammaticEditing = false;
 		public TextArea() {
 			setName("disabledBeforeOpen:true");
 			getDocument().addDocumentListener(textListener);
@@ -66,7 +72,7 @@ public class GUITextBox extends JPanel {
 	        void changed(DocumentEvent e) {
 	        	if (programmaticEditing) return;
 
-	        	parent.list.setText(GUITextBox.this.ta.getText());
+	        	parent.list.setText(GUITextBox.this.ta.getText(), unprogrammaticEditing);
 	        	if (parent.isSaved) parent.isSaved = false;
 	        }
 	    };
