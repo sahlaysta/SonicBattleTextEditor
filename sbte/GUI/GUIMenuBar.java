@@ -86,7 +86,7 @@ public class GUIMenuBar extends JMenuBar {
 			
 			MenuItem goTo, search, problematicLines;
 			goTo = new MenuItem("json:goTo", "control G", parent.actions.goTo);
-			search = new MenuItem("json:search", "control S", parent.actions.search);
+			search = new MenuItem("json:search", "control F", parent.actions.search);
 			problematicLines = new MenuItem("json:prob", null, parent.actions.problematicLines);
 			
 			add(goTo);
