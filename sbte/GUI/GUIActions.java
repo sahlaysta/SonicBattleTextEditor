@@ -77,7 +77,7 @@ public class GUIActions {
     };
     public ActionListener about = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-        	JOptionPane.showMessageDialog(parent, "V3.2.2\n" + parent.localization.get("credits").replace("[v]", "porog") + "\nhttps://github.com/sahlaysta/SonicBattleTextEditor", parent.localization.get("about"), JOptionPane.INFORMATION_MESSAGE);
+        	JOptionPane.showMessageDialog(parent, "V3.2.3\n" + parent.localization.get("credits").replace("[v]", "porog") + "\nhttps://github.com/sahlaysta/SonicBattleTextEditor", parent.localization.get("about"), JOptionPane.INFORMATION_MESSAGE);
         }
     };
     public ActionListener importion = new ActionListener() {
@@ -226,6 +226,7 @@ public class GUIActions {
         		missed.append(key + "\r\n");
         	}
         }
+        parent.isSaved = false;
         
         parent.listModel.resetUndoManager();
         
