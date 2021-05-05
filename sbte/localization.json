@@ -10,6 +10,8 @@
 		"save": "Save",
 		"saveAs": "Save as",
 		"close": "Close",
+		"yes": "Yes",
+		"no": "No",
 		"closePrompt": "Leave without saving?",
 		"saved": "Saved successfully",
 		"overwrite": "Are you sure you want to overwrite\n'[v]'?",
@@ -67,6 +69,8 @@
 		"save": "Guardar",
 		"saveAs": "Guardar como",
 		"close": "Cerrar",
+		"yes": "Sí",
+		"no": "No",
 		"closePrompt": "¿Salir sin guardar?",
 		"saved": "Guardado exitosamente",
 		"overwrite": "¿Estás seguro de que quieres sobrescribir\n'[v]'?",
@@ -124,6 +128,8 @@
 		"save": "保存",
 		"saveAs": "別名で保存",
 		"close": "終了",
+		"yes": "はい",
+		"no": "いいえ",
 		"closePrompt": "保存せずに終了しますか？",
 		"saved": "保存完了",
 		"overwrite": "「[v]」\nを上書きしますか？",
@@ -171,5 +177,5 @@
 		"afterSave": "保存後",
 		"upOne": "１行上に移動",
 		"downOne": "１行下に移動"
-	},
+	}
 }

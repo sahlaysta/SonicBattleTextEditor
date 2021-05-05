@@ -94,12 +94,11 @@ public class GUI extends JFrame {
 	private class OnClose extends WindowAdapter { //close event
 		@Override
 	    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-	        if (isSaved == false &&
-	        	JOptionPane.showConfirmDialog(GUI.this, 
-	            localization.get("closePrompt"), localization.get("close"), 
-	            JOptionPane.YES_NO_OPTION,
-	            JOptionPane.QUESTION_MESSAGE) == JOptionPane.NO_OPTION) {
-	            return;
+	        if (!isSaved) {
+	        	Object[] options = { localization.get("yes"), localization.get("no") };
+    			if (JOptionPane.showOptionDialog(GUI.this, localization.get("closePrompt"), localization.get("close"),
+            	    JOptionPane.DEFAULT_OPTION, 3, null, 
+            	    options, options[0]) == JOptionPane.NO_OPTION) return;
 	        }
 	        
 	        System.exit(0);
