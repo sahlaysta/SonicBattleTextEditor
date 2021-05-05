@@ -77,7 +77,7 @@ public class GUIActions {
     };
     public ActionListener about = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-        	JOptionPane.showMessageDialog(parent, "V3.2.1\n" + parent.localization.get("credits").replace("[v]", "porog") + "\nhttps://github.com/sahlaysta/SonicBattleTextEditor", parent.localization.get("about"), JOptionPane.INFORMATION_MESSAGE);
+        	JOptionPane.showMessageDialog(parent, "V3.2.2\n" + parent.localization.get("credits").replace("[v]", "porog") + "\nhttps://github.com/sahlaysta/SonicBattleTextEditor", parent.localization.get("about"), JOptionPane.INFORMATION_MESSAGE);
         }
     };
     public ActionListener importion = new ActionListener() {
@@ -153,7 +153,10 @@ public class GUIActions {
     	}
     	
     	if (selection.exists()) {
-    		if (JOptionPane.showConfirmDialog(parent, parent.localization.get("overwrite").replace("[v]", selection.toString()), parent.localization.get("save"), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) return;
+    		Object[] options = { parent.localization.get("yes"), parent.localization.get("no") };
+    		if (JOptionPane.showOptionDialog(parent, parent.localization.get("overwrite").replace("[v]", selection.toString()), parent.localization.get("save"),
+            	    JOptionPane.DEFAULT_OPTION, 3, null, 
+            	    options, options[0]) == JOptionPane.NO_OPTION) return;
     	}
     	
     	ROMListener.raiseSaveROM(new ROMArgs(selection, parent));
@@ -167,7 +170,10 @@ public class GUIActions {
         if (gfc.HasCanceled()) return;
         File selection = gfc.getSelectedFile();
         if (selection.exists()) {
-    		if (JOptionPane.showConfirmDialog(parent, parent.localization.get("overwrite").replace("[v]", selection.toString()), parent.localization.get("export"), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) return;
+        	Object[] options = { parent.localization.get("yes"), parent.localization.get("no") };
+    		if (JOptionPane.showOptionDialog(parent, parent.localization.get("overwrite").replace("[v]", selection.toString()), parent.localization.get("export"),
+            	    JOptionPane.DEFAULT_OPTION, 3, null, 
+            	    options, options[0]) == JOptionPane.NO_OPTION) return;
     	}
         
     	StringBuilder sb = new StringBuilder("{\r\n");
@@ -233,7 +239,11 @@ public class GUIActions {
     }
     
     private int yesNoDialog(String jsonTitle) {
-    	return JOptionPane.showConfirmDialog(parent, parent.localization.get("closePrompt"), parent.localization.get(jsonTitle), JOptionPane.YES_NO_OPTION);
+    	Object[] options = { parent.localization.get("yes"), parent.localization.get("no") };
+    	int choice = JOptionPane.showOptionDialog(parent, parent.localization.get("closePrompt"), parent.localization.get(jsonTitle),
+        	    JOptionPane.DEFAULT_OPTION, 3, null, 
+        	    options, options[0]);
+    	return choice;
     }
     
     //custom listener ROM handler
