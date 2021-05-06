@@ -77,7 +77,7 @@ public class GUIActions {
     };
     public ActionListener about = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-        	JOptionPane.showMessageDialog(parent, "V3.2.3\n" + parent.localization.get("credits").replace("[v]", "porog") + "\nhttps://github.com/sahlaysta/SonicBattleTextEditor", parent.localization.get("about"), JOptionPane.INFORMATION_MESSAGE);
+        	JOptionPane.showMessageDialog(parent, "V3.2.4\n" + parent.localization.get("credits").replace("[v]", "porog") + "\nhttps://github.com/sahlaysta/SonicBattleTextEditor", parent.localization.get("about"), JOptionPane.INFORMATION_MESSAGE);
         }
     };
     public ActionListener importion = new ActionListener() {
@@ -179,7 +179,7 @@ public class GUIActions {
     	StringBuilder sb = new StringBuilder("{\r\n");
     	for (int i = 0; i < parent.listModel.getSize(); i++) {
     		String key = parent.listModel.baseLines.get(i).group + "," + parent.listModel.baseLines.get(i).member;
-    		String value = parent.listModel.get(i).toString();
+    		String value = JSONTools.toJSONValue(parent.listModel.textBoxDisplay.get(i));
     		String append = "	\"" + key + "\": \"" + value + "\",\n";
     		sb.append(append);
     	}
@@ -227,6 +227,8 @@ public class GUIActions {
         	}
         }
         parent.isSaved = false;
+        parent.list.setSelection(-1);
+        parent.list.setSelection(0);
         
         parent.listModel.resetUndoManager();
         
