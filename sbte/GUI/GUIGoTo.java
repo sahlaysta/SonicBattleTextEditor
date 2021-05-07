@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -17,6 +18,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 import javax.swing.undo.UndoManager;
 
 public class GUIGoTo {
@@ -37,6 +42,41 @@ public class GUIGoTo {
 				p.add(new JLabel(parent.localization.get("line")));
 				UndoTF tf = new UndoTF(parent);
 				p.add(tf);
+				class CustomDocumentFilter extends DocumentFilter {
+
+			        private Pattern regexCheck = Pattern.compile("[0-9]+");
+
+			        @Override
+			        public void insertString(FilterBypass fb, int offs, String str, AttributeSet a) throws BadLocationException {
+			            if (str == null) {
+			                return;
+			            }
+
+			            if (regexCheck.matcher(str).matches()) {
+			            	if (!valid(str)) return;
+			                super.insertString(fb, offs, str, a);
+			            }
+			        }
+
+			        @Override
+			        public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet attrs)
+			                throws BadLocationException {
+			            if (str == null) {
+			                return;
+			            }
+
+			            if (regexCheck.matcher(str).matches()) {
+			            	if (!valid(str)) return;
+			                fb.replace(offset, length, str, attrs);
+			            }
+			        }
+			        
+			        boolean valid(String str) {
+			        	if ((tf.getText().length() > ("" + parent.listModel.getSize()).length())) return false;
+			        	return true;
+			        }
+			    }
+				((AbstractDocument) tf.getDocument()).setDocumentFilter(new CustomDocumentFilter());
 				
 				p.add(new JLabel(""));
 				JButton go = new JButton(parent.localization.get("go"));
