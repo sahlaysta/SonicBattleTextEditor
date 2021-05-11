@@ -58,7 +58,8 @@
 		"beforeSave": "Before save",
 		"afterSave": "After save",
 		"upOne": "Move up one",
-		"downOne": "Move down one"
+		"downOne": "Move down one",
+		"textPreview": "Text preview"
 	},
 	"es-*": {
 		"thisLang": "Español",
@@ -117,7 +118,8 @@
 		"beforeSave": "Antes de guardar",
 		"afterSave": "Después de guardar",
 		"upOne": "Subir una fila",
-		"downOne": "Bajar una fila"
+		"downOne": "Bajar una fila",
+		"textPreview": "Vista previa del texto"
 	},
 	"ja-*": {
 		"thisLang": "日本語",
@@ -176,6 +178,7 @@
 		"beforeSave": "保存前",
 		"afterSave": "保存後",
 		"upOne": "１行上に移動",
-		"downOne": "１行下に移動"
+		"downOne": "１行下に移動",
+		"textPreview": "テキストプレビュー"
 	}
 }
