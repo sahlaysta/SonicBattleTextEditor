@@ -1,6 +1,7 @@
 package sbte.GUI;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import sbte.JSONTools;
 import sbte.SonicBattleROMReader.ROM;
 import sbte.SonicBattleROMReader.SonicBattleLine;
 import sbte.SonicBattleTextParser;
+import sbte.GUI.FontPreview.FontPreviewWindow;
 
 public class GUI extends JFrame {
 	public Preferences preferences;
@@ -29,6 +31,8 @@ public class GUI extends JFrame {
 	public GUIList list;
 	public GUITextBox textBox;
 	public GUISplit splitPane;
+	
+	public FontPreviewWindow textPreview;
 	
 	public final SonicBattleTextParser sbtp;
 	
@@ -104,19 +108,27 @@ public class GUI extends JFrame {
 	        System.exit(0);
 	    }
 	};
+	public void openTextPreview() {
+		textPreview = new FontPreviewWindow(this);
+		textPreview.setVisible(true);
+		refreshGUIText(textPreview);
+	}
 	public List<SonicBattleLine> getSonicBattleLines() {
 		return listModel.getSonicBattleLines();
 	}
 	public void setLocalization(String language) {
 		localization = Localization.getMap(language);
 		preferences.setLanguage(localization.get("thisKey"));
-		refreshGUIText();
+		refreshGUIText(this);
+		refreshGUIText(textPreview);
 	}
-	public void refreshGUIText() {
-		for (Object element: this.getElements()) {
+	public void refreshGUIText(Container c) {
+		if (c == null) return;
+		for (Object element: getElements(c)) {
 			if (!(element instanceof Component)) continue;
 			try {
 				String value = getComponentValue((Component)element, "json");
+				if (c instanceof javax.swing.JDialog) System.out.println(3);
 				GUITools.setSwingObjectText(element, localization.get(value));
 			} catch (GUIException e) { continue; }
 		}
@@ -124,7 +136,7 @@ public class GUI extends JFrame {
 		list.refreshTitle();
 	}
 	public void disabledBeforeOpen() {
-		for (Object element: this.getElements()) {
+		for (Object element: getElements(this)) {
 			if (!(element instanceof Component)) continue;
 			try {
 				String value = getComponentValue((Component)element, "disabledBeforeOpen");
@@ -134,7 +146,7 @@ public class GUI extends JFrame {
 		}
 	}
 	public void enableBeforeOpen() {
-		for (Object element: this.getElements()) {
+		for (Object element: getElements(this)) {
 			if (!(element instanceof Component)) continue;
 			try {
 				String value = getComponentValue((Component)element, "disabledBeforeOpen");
@@ -143,10 +155,10 @@ public class GUI extends JFrame {
 			} catch (GUIException e) { continue; }
 		}
 	}
-	public List<Object> getElements(){
+	public List<Object> getElements(Container c){
 		List<Object> elements = new ArrayList<>();
-		elements.addAll(GUITools.getAllComponents(this));
-		elements.add(this);
+		elements.addAll(GUITools.getAllComponents(c));
+		elements.add(c);
 		
 		return elements;
 	}
