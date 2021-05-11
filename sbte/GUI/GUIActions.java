@@ -113,8 +113,7 @@ public class GUIActions {
     };
     public ActionListener textPreview = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-        	FontPreviewWindow fpw = new FontPreviewWindow(parent);
-        	fpw.setVisible(true);
+        	parent.openTextPreview();
         }
     };
     
