@@ -16,6 +16,7 @@ import org.json.simple.parser.ParseException;
 import sbte.FileTools;
 import sbte.JSONTools;
 import sbte.GUI.GUI.Msg;
+import sbte.GUI.FontPreview.FontPreviewWindow;
 
 public class GUIActions {
 	public ROMEvent ROMListener = new ROMEvent();
@@ -96,18 +97,24 @@ public class GUIActions {
         }
     };
     public ActionListener redo = new ActionListener() {
-        public void actionPerformed(ActionEvent e) { //export all lines to json file
+        public void actionPerformed(ActionEvent e) {
         	parent.listModel.redo();
         }
     };
     public ActionListener upOne = new ActionListener() {
-        public void actionPerformed(ActionEvent e) { //export all lines to json file
+        public void actionPerformed(ActionEvent e) {
         	parent.list.upOne();
         }
     };
     public ActionListener downOne = new ActionListener() {
-        public void actionPerformed(ActionEvent e) { //export all lines to json file
+        public void actionPerformed(ActionEvent e) {
         	parent.list.downOne();
+        }
+    };
+    public ActionListener textPreview = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+        	FontPreviewWindow fpw = new FontPreviewWindow(parent);
+        	fpw.setVisible(true);
         }
     };
     

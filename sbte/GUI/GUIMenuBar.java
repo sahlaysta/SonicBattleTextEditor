@@ -98,10 +98,12 @@ public class GUIMenuBar extends JMenuBar {
 		public ViewMenu() {
 			setName("json:options");
 			
-			MenuItem changeLang;
+			MenuItem changeLang, textPreview;
 			changeLang = new MenuItem("json:changeLang", null, parent.actions.changeLanguage);
+			textPreview = new MenuItem("json:textPreview", null, parent.actions.textPreview);
 			
 			add(changeLang);
+			add(textPreview);
 		}
 	}
 	private class HelpMenu extends JMenu{
