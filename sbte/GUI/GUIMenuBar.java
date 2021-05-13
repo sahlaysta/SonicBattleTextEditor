@@ -14,11 +14,11 @@ public class GUIMenuBar extends JMenuBar {
 	private final GUI parent;
 	
 	public RecentlyOpenedMenu recentOpened;
-	private FileMenu fileMenu;
-	private EditMenu editMenu;
-	private SearchMenu searchMenu;
-	private ViewMenu viewMenu;
-	private HelpMenu helpMenu;
+	public FileMenu fileMenu;
+	public EditMenu editMenu;
+	public SearchMenu searchMenu;
+	public ViewMenu viewMenu;
+	public HelpMenu helpMenu;
 	
 	public GUIMenuBar(GUI caller) {
 		parent = caller;
@@ -39,11 +39,11 @@ public class GUIMenuBar extends JMenuBar {
 	}
 	
 	//Menus
-	private class FileMenu extends JMenu{
+	public class FileMenu extends JMenu{
+		public MenuItem open, save, saveAs, close;
 		public FileMenu() {
 			setName("json:file");
 			
-			MenuItem open, save, saveAs, close;
 			open = new MenuItem("json:open", "control O", parent.actions.open);
 			save = new MenuItem("json:save,disabledBeforeOpen:true", "control S", parent.actions.save);
 			saveAs = new MenuItem("json:saveAs,disabledBeforeOpen:true", "control shift S", parent.actions.saveAs);
@@ -57,11 +57,11 @@ public class GUIMenuBar extends JMenuBar {
 			add(close);
 		}
 	}
-	private class EditMenu extends JMenu{
+	public class EditMenu extends JMenu{
+		public MenuItem importion, exportion, undo, redo, upOne, downOne;
 		public EditMenu() {
 			setName("json:edit,disabledBeforeOpen:true");
 			
-			MenuItem importion, exportion, undo, redo, upOne, downOne; //cant name a variable import smh
 			importion = new MenuItem("json:import", null, parent.actions.importion);
 			exportion = new MenuItem("json:export", null, parent.actions.exportion);
 			undo = new MenuItem("json:undo", "control Z", parent.actions.undo);
@@ -80,11 +80,11 @@ public class GUIMenuBar extends JMenuBar {
 			add(downOne);
 		}
 	}
-	private class SearchMenu extends JMenu{
+	public class SearchMenu extends JMenu{
+		public MenuItem goTo, search, problematicLines;
 		public SearchMenu() {
 			setName("json:search,disabledBeforeOpen:true");
-			
-			MenuItem goTo, search, problematicLines;
+
 			goTo = new MenuItem("json:goTo", "control G", parent.actions.goTo);
 			search = new MenuItem("json:search", "control F", parent.actions.search);
 			problematicLines = new MenuItem("json:prob", null, parent.actions.problematicLines);
@@ -94,23 +94,24 @@ public class GUIMenuBar extends JMenuBar {
 			add(problematicLines);
 		}
 	}
-	private class ViewMenu extends JMenu{
+	public class ViewMenu extends JMenu{
+		public MenuItem changeLang;
+		public CheckBoxMenuItem textPreview;
 		public ViewMenu() {
 			setName("json:options");
 			
-			MenuItem changeLang, textPreview;
 			changeLang = new MenuItem("json:changeLang", null, parent.actions.changeLanguage);
-			textPreview = new MenuItem("json:textPreview", null, parent.actions.textPreview);
+			textPreview = new CheckBoxMenuItem("json:textPreview", null, parent.actions.textPreview);
 			
 			add(changeLang);
 			add(textPreview);
 		}
 	}
-	private class HelpMenu extends JMenu{
+	public class HelpMenu extends JMenu{
+		public MenuItem about;
 		public HelpMenu() {
 			setName("json:help");
 			
-			MenuItem about;
 			about = new MenuItem("json:about", "F1", parent.actions.about);
 			
 			add(about);
@@ -118,14 +119,14 @@ public class GUIMenuBar extends JMenuBar {
 	}
 	
 	//custom menuitem
-	private class MenuItem extends JMenuItem{
+	public class MenuItem extends JMenuItem{
 		public MenuItem(String name, String shortcut, ActionListener action) {
 			setName(name);
 			if (shortcut != null) setAccelerator(KeyStroke.getKeyStroke(shortcut));
 			if (action != null) addActionListener(action);
 		}
 	}
-	private class CheckBoxMenuItem extends JCheckBoxMenuItem{
+	public class CheckBoxMenuItem extends JCheckBoxMenuItem{
 		public CheckBoxMenuItem(String name, String shortcut, ActionListener action) {
 			setName(name);
 			if (shortcut != null) setAccelerator(KeyStroke.getKeyStroke(shortcut));

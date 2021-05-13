@@ -112,6 +112,16 @@ public class GUI extends JFrame {
 		textPreview = new FontPreviewWindow(this);
 		textPreview.setVisible(true);
 		refreshGUIText(textPreview);
+		menuBar.viewMenu.textPreview.setSelected(true);
+	}
+	public void closeTextPreview() {
+		textPreview.dispose();
+		textPreview = null;
+		menuBar.viewMenu.textPreview.setSelected(false);
+	}
+	public void setTextPreview(byte[] message) {
+		if (textPreview != null)
+			textPreview.setContent(message);
 	}
 	public List<SonicBattleLine> getSonicBattleLines() {
 		return listModel.getSonicBattleLines();
@@ -125,10 +135,9 @@ public class GUI extends JFrame {
 	public void refreshGUIText(Container c) {
 		if (c == null) return;
 		for (Object element: getElements(c)) {
-			if (!(element instanceof Component)) continue;
+			if (!(element instanceof Component)) { continue; }
 			try {
 				String value = getComponentValue((Component)element, "json");
-				if (c instanceof javax.swing.JDialog) System.out.println(3);
 				GUITools.setSwingObjectText(element, localization.get(value));
 			} catch (GUIException e) { continue; }
 		}
@@ -159,7 +168,7 @@ public class GUI extends JFrame {
 		List<Object> elements = new ArrayList<>();
 		elements.addAll(GUITools.getAllComponents(c));
 		elements.add(c);
-		
+
 		return elements;
 	}
 	public String getComponentValue(Component component, String key) throws GUIException {

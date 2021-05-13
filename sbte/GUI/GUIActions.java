@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JOptionPane;
 
 import org.json.simple.JSONObject;
@@ -78,7 +79,7 @@ public class GUIActions {
     };
     public ActionListener about = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-        	JOptionPane.showMessageDialog(parent, "V3.2.5\n" + parent.localization.get("credits").replace("[v]", "porog") + "\nhttps://github.com/sahlaysta/SonicBattleTextEditor", parent.localization.get("about"), JOptionPane.INFORMATION_MESSAGE);
+        	JOptionPane.showMessageDialog(parent, "V3.3.0\n" + parent.localization.get("credits").replace("[v]", "porog") + "\nhttps://github.com/sahlaysta/SonicBattleTextEditor", parent.localization.get("about"), JOptionPane.INFORMATION_MESSAGE);
         }
     };
     public ActionListener importion = new ActionListener() {
@@ -113,7 +114,12 @@ public class GUIActions {
     };
     public ActionListener textPreview = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-        	parent.openTextPreview();
+        	boolean ticked = ((JCheckBoxMenuItem)e.getSource()).isSelected();
+        	if (ticked) {
+        		parent.openTextPreview();
+        	} else {
+        		parent.closeTextPreview();
+        	}
         }
     };
     
