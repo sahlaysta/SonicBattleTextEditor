@@ -59,7 +59,9 @@
 		"afterSave": "After save",
 		"upOne": "Move up one",
 		"downOne": "Move down one",
-		"textPreview": "Text preview"
+		"textPreview": "Text preview",
+		"saveImage": "Save image",
+		"copyImage": "Copy image"
 	},
 	"es-*": {
 		"thisLang": "Español",
@@ -119,7 +121,9 @@
 		"afterSave": "Después de guardar",
 		"upOne": "Subir una fila",
 		"downOne": "Bajar una fila",
-		"textPreview": "Vista previa del texto"
+		"textPreview": "Vista previa del texto",
+		"saveImage": "Guardar imagen",
+		"copyImage": "Copiar imagen"
 	},
 	"ja-*": {
 		"thisLang": "日本語",
@@ -179,6 +183,8 @@
 		"afterSave": "保存後",
 		"upOne": "１行上に移動",
 		"downOne": "１行下に移動",
-		"textPreview": "テキストプレビュー"
+		"textPreview": "テキストプレビュー",
+		"saveImage": "イメージを保存",
+		"copyImage": "イメージをコピー"
 	}
 }

@@ -59,7 +59,9 @@ public class ListModel extends DefaultListModel{
 			errors.remove(index);
 			parent.textBox.unred();
 			
-			content.set(index, parent.sbtp.parseHexBinary(string));
+			byte[] message = parent.sbtp.parseHexBinary(string);
+			content.set(index, message);
+			parent.setTextPreview(message);
 		} //error
 		catch (SonicBattleParseException e) {
 			char errorChar = e.source.charAt(e.index);
