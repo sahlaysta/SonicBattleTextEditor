@@ -1,4 +1,4 @@
-package sbte.gui.FontPreview;
+package sbte.guicasetemp.FontPreview;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -39,9 +39,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
-import sbte.gui.GUI;
-import sbte.gui.GUIFileChooser;
-import sbte.gui.GUITools;
+import sbte.guicasetemp.GUI;
+import sbte.guicasetemp.GUIFileChooser;
+import sbte.guicasetemp.GUITools;
 import sbte.parser.SonicBattleTextParser.SonicBattleParseException;
 import sbte.utilities.ByteTools;
 
