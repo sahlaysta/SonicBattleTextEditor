@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.guicasetemp;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -15,7 +15,7 @@ import javax.swing.UIManager;
 
 import org.json.simple.parser.ParseException;
 
-import sbte.gui.FontPreview.FontPreviewWindow;
+import sbte.guicasetemp.FontPreview.FontPreviewWindow;
 import sbte.parser.SonicBattleTextParser;
 import sbte.parser.SonicBattleROMReader.ROM;
 import sbte.parser.SonicBattleROMReader.SonicBattleLine;

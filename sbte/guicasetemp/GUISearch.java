@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.guicasetemp;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

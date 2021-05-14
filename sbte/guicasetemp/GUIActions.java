@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.guicasetemp;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,8 +14,8 @@ import javax.swing.JOptionPane;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import sbte.gui.FontPreview.FontPreviewWindow;
-import sbte.gui.GUI.Msg;
+import sbte.guicasetemp.FontPreview.FontPreviewWindow;
+import sbte.guicasetemp.GUI.Msg;
 import sbte.utilities.FileTools;
 import sbte.utilities.JSONTools;
 

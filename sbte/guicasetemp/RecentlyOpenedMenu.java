@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.guicasetemp;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
