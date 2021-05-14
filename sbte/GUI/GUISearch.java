@@ -3,6 +3,7 @@ package sbte.GUI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -63,6 +64,7 @@ public class GUISearch {
 			
 			boolean problematic = (args == 1);
 			setModal(true);
+			setMinimumSize(new Dimension(150, 180));
 			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			if (problematic) setTitle(parent.localization.get("prob"));
 			else setTitle(parent.localization.get("search"));

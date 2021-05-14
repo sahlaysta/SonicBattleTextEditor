@@ -1,6 +1,9 @@
 package sbte.GUI.FontPreview;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -23,6 +26,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -30,7 +34,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingWorker;
+import javax.swing.border.EmptyBorder;
 
 import sbte.ByteTools;
 import sbte.SonicBattleTextParser.SonicBattleParseException;
@@ -46,13 +52,62 @@ public class FontPreviewWindow extends JDialog {
 		setProperties();
 		setContent(null);
 	}
+	private JPanel imagePanel;
+	private ButtonPanel buttonPanel;
+	private class ButtonPanel extends JPanel {
+		public JButton upButton, downButton;
+		private JLabel label;
+		public ButtonPanel() {
+			setLayout(new GridLayout(1,1,0,0));
+			setBorder(new EmptyBorder(0,0,0,0));
+			upButton = new JButton("▲");
+			downButton = new JButton("▼");
+			upButton.addActionListener(new ActionListener() {
+		        public void actionPerformed(ActionEvent e) {
+		        	setDisplay(displayIndex-1);
+		        }
+		    });
+			downButton.addActionListener(new ActionListener() {
+		        public void actionPerformed(ActionEvent e) {
+		        	setDisplay(displayIndex+1);
+		        }
+		    });
+		}
+		public void putButtons() {
+			JPanel buttons = new JPanel();
+			buttons.setLayout(new FlowLayout(FlowLayout.RIGHT));
+			buttons.setBorder(new EmptyBorder(0,0,0,0));
+			buttons.add(upButton);
+			buttons.add(downButton);
+			
+			JPanel labelPanel = new JPanel();
+			labelPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+			labelPanel.setBorder(new EmptyBorder(0,0,0,0));
+			this.label = new JLabel("");
+			labelPanel.add(label);
+			
+			add(labelPanel, BorderLayout.SOUTH);
+			add(buttons, BorderLayout.SOUTH);
+		}
+		public void setText(int index, int limit) {
+			label.setText((1 + index) + "/" + limit);
+		}
+	}
 	private void setProperties() {
 		super.setName("json:textPreview");
 		super.setLocationRelativeTo(null);
 		super.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		super.addWindowListener(new OnClose());
-		super.setLayout(new GridLayout(1,1,0,0));
 		super.setResizable(false);
+		
+		imagePanel = new JPanel();
+		imagePanel.setLayout(new GridLayout(1,1,0,0));
+		imagePanel.setBorder(new EmptyBorder(0,0,0,0));
+		super.add(imagePanel);
+		buttonPanel = new ButtonPanel();
+		buttonPanel.putButtons();
+		super.add(buttonPanel, BorderLayout.PAGE_END);
+		
 		this.setMenuBar();
 		this.setMagnification(0);
 	}
@@ -83,7 +138,7 @@ public class FontPreviewWindow extends JDialog {
 	        	if (gfc.HasCanceled()) return;
 	        	File selection = gfc.getSelectedFile();
 	        	try {
-					ImageIO.write(image, "png", selection);
+					ImageIO.write(rawImage, "png", selection);
 				} catch (IOException e2) {
 					JOptionPane.showMessageDialog(FontPreviewWindow.this, parent.localization.get("saveImage") + ": " + selection.toString(), e2.toString(), GUI.Msg.ERROR_MESSAGE);
 				}
@@ -94,7 +149,7 @@ public class FontPreviewWindow extends JDialog {
 		copyImage.setName("json:copyImage");
 		copyImage.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
-	        	new CopyImagetoClipBoard(image);
+	        	new CopyImagetoClipBoard(rawImage);
 	        }
 	    });
 		file.add(copyImage);
@@ -109,23 +164,6 @@ public class FontPreviewWindow extends JDialog {
 			jcbmi.addActionListener(getMagnificationMenuItemActionListener(i));
 			view.add(jcbmi);
 		}
-		JMenuItem moveDown = new JMenuItem();
-		moveDown.setName("json:moveDown");
-		JMenuItem moveUp = new JMenuItem();
-		moveUp.setName("json:moveUp");
-		view.addSeparator();
-		moveUp.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent e) {
-	        	setDisplay(displayIndex-1);
-	        }
-	    });
-		moveDown.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent e) {
-	        	setDisplay(displayIndex+1);
-	        }
-	    });
-		view.add(moveUp);
-		view.add(moveDown);
 		
 		menuBar.add(view);
 		setJMenuBar(menuBar);
@@ -221,6 +259,7 @@ public class FontPreviewWindow extends JDialog {
 		if (index >= content.size() || index < 0) return;
 		displayIndex = index;
 		this.display = content.get(displayIndex);
+		buttonPanel.setText(index, content.size());
 		resetDisplayText();
 	}
 	private static final byte[] LINE_BREAK_DELIMITER = new byte[] { (byte) 0xFD, (byte) 0xFF }; //FDFF is new line
@@ -356,13 +395,6 @@ public class FontPreviewWindow extends JDialog {
 		}
 		
 		return textFrame;
-	}
-	private void removeAllJLabels() {
-		for (Component comp: GUITools.getAllComponents(this)) {
-			if (comp instanceof JLabel) {
-				super.remove(comp);
-			}
-		}
 	}
 	private List<Object> parseMessage(byte[] arg0) throws ParseException{
 		List<Object> output = new ArrayList<>();
@@ -541,14 +573,14 @@ public class FontPreviewWindow extends JDialog {
 		} catch (ArrayIndexOutOfBoundsException e) {}
 	}
 	private int magnification;
-	public BufferedImage image; //raw image
+	private BufferedImage rawImage; //raw image
 	private void setTextFrame(BufferedImage buffImg) {
-		image = buffImg;
+		rawImage = buffImg;
 		BufferedImage img = enlargeImage(buffImg, magnification);
 		ImageIcon imgIco = new ImageIcon(img);
 		JLabel label = new JLabel(imgIco);
-		removeAllJLabels();
-		super.add(label);
+		removeAllJLabels(imagePanel);
+		imagePanel.add(label);
 		super.pack();
 	}
 	private BufferedImage enlargeImage(BufferedImage buffImg, int magnification) {
@@ -564,6 +596,16 @@ public class FontPreviewWindow extends JDialog {
 	    g2d.dispose();
 
 	    return dimg;
+	}
+	private void removeAllJLabels(Container c) {
+		for (Component comp: GUITools.getAllComponents(c)) {
+			if (comp instanceof JLabel) {
+				c.remove(comp);
+			}
+		}
+	}
+	public BufferedImage getImage() {
+		return rawImage;
 	}
 	
 	
