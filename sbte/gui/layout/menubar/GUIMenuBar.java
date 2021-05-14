@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.gui.layout.menubar;
 
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -9,6 +9,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+
+import sbte.gui.GUI;
 
 public class GUIMenuBar extends JMenuBar {
 	private final GUI parent;

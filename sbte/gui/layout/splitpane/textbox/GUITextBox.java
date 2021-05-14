@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.gui.layout.splitpane.textbox;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -18,6 +18,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultEditorKit;
+
+import sbte.gui.GUI;
+import sbte.gui.popupmenus.CopyContextMenu;
 
 public class GUITextBox extends JPanel {
 	private final GUI parent;

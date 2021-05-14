@@ -15,7 +15,16 @@ import javax.swing.UIManager;
 
 import org.json.simple.parser.ParseException;
 
-import sbte.gui.textpreview.TextPreviewWindow;
+import sbte.gui.layout.menubar.GUIMenuBar;
+import sbte.gui.layout.menubar.actions.GUIActions;
+import sbte.gui.layout.menubar.actions.windowmenus.textpreview.TextPreviewWindow;
+import sbte.gui.layout.splitpane.GUISplit;
+import sbte.gui.layout.splitpane.list.GUIList;
+import sbte.gui.layout.splitpane.list.ListModel;
+import sbte.gui.layout.splitpane.textbox.GUITextBox;
+import sbte.gui.utilities.GUITools;
+import sbte.gui.utilities.Localization;
+import sbte.gui.utilities.Preferences;
 import sbte.parser.SonicBattleTextParser;
 import sbte.parser.SonicBattleROMReader.ROM;
 import sbte.parser.SonicBattleROMReader.SonicBattleLine;

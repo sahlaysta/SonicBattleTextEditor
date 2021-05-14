@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.gui.layout.menubar.actions.windowmenus;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -29,6 +29,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import sbte.gui.GUI;
+import sbte.gui.layout.menubar.actions.utilities.UndoTF;
 
 public class GUISearch {
 	public static void searchGUI(GUI caller) {

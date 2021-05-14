@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.gui.layout.menubar.actions.windowmenus;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -22,6 +22,8 @@ import javax.swing.ListSelectionModel;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
+import sbte.gui.GUI;
+import sbte.gui.utilities.Localization;
 import sbte.utilities.JSONTools;
 
 public class GUIChangeLanguage {

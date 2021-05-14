@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.gui.layout.splitpane.list;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -15,6 +15,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import sbte.gui.GUI;
 import sbte.utilities.ByteTools;
 
 public class GUIList extends JPanel {

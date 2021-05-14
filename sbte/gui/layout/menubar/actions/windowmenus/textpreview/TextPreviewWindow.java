@@ -1,4 +1,4 @@
-package sbte.gui.textpreview;
+package sbte.gui.layout.menubar.actions.windowmenus.textpreview;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -40,8 +40,8 @@ import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
 import sbte.gui.GUI;
-import sbte.gui.GUIFileChooser;
-import sbte.gui.GUITools;
+import sbte.gui.layout.menubar.actions.utilities.GUIFileChooser;
+import sbte.gui.utilities.GUITools;
 import sbte.parser.SonicBattleTextParser.SonicBattleParseException;
 import sbte.utilities.ByteTools;
 

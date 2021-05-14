@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.gui.layout.menubar.actions.windowmenus;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -18,6 +18,8 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.DocumentFilter.FilterBypass;
+
+import sbte.gui.GUI;
 
 public class ScrollMessage {
 	public static void show(GUI caller, String title, String message) {
