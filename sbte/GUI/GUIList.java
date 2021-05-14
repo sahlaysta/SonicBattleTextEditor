@@ -70,6 +70,9 @@ public class GUIList extends JPanel {
 		}
 		list.setSelectedIndex(index);
 	}
+	public int getSelection() {
+		return list.getSelectedIndex();
+	}
 	public void ensureIndexIsVisible(int index) {
 		list.ensureIndexIsVisible(index);
 	}
@@ -110,6 +113,7 @@ public class GUIList extends JPanel {
 			if (index < 0) return;
 			
 			parent.textBox.setText(parent.listModel.textBoxDisplay.get(index).toString());
+			parent.setTextPreview(parent.listModel.content.get(index));
 			if (parent.listModel.isProblematic(index)) {
 				parent.textBox.setRed();
 			}

@@ -101,7 +101,7 @@ public class GUIMenuBar extends JMenuBar {
 			setName("json:options");
 			
 			changeLang = new MenuItem("json:changeLang", null, parent.actions.changeLanguage);
-			textPreview = new CheckBoxMenuItem("json:textPreview", null, parent.actions.textPreview);
+			textPreview = new CheckBoxMenuItem("json:textPreview,disabledBeforeOpen:true", null, parent.actions.textPreview);
 			
 			add(changeLang);
 			add(textPreview);
