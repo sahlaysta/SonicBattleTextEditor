@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -32,8 +33,9 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 import sbte.ByteTools;
-import sbte.SonicBattleROMReader;
+import sbte.SonicBattleTextParser.SonicBattleParseException;
 import sbte.GUI.GUI;
+import sbte.GUI.GUIFileChooser;
 import sbte.GUI.GUITools;
 
 public class FontPreviewWindow extends JDialog {
@@ -63,7 +65,7 @@ public class FontPreviewWindow extends JDialog {
 	private JMenuBar menuBar;
 	private JMenu file, view;
 	private JMenuItem saveImage, copyImage;
-	private static final int MAXIMUM_MAGNIFICATION = 4;
+	private static final int MAXIMUM_MAGNIFICATION = 4; //the number of magnification options there are e.g. 1x, 2x
 	private static final String MAGNIFICATION_MENU_ITEM_NAME = "mag";
 	private void setMenuBar() { //menubar
 		menuBar = new JMenuBar();
@@ -72,9 +74,29 @@ public class FontPreviewWindow extends JDialog {
 		file.setName("json:file");
 		saveImage = new JMenuItem();
 		saveImage.setName("json:saveImage");
+		saveImage.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) { //save image
+	        	GUIFileChooser gfc = new GUIFileChooser(GUIFileChooser.SAVE_AS_FILE_PROMPT, "PNG");
+	        	gfc.setParent(parent);
+	        	gfc.setPreference("pngPath");
+	        	gfc.show();
+	        	if (gfc.HasCanceled()) return;
+	        	File selection = gfc.getSelectedFile();
+	        	try {
+					ImageIO.write(image, "png", selection);
+				} catch (IOException e2) {
+					JOptionPane.showMessageDialog(FontPreviewWindow.this, parent.localization.get("saveImage") + ": " + selection.toString(), e2.toString(), GUI.Msg.ERROR_MESSAGE);
+				}
+	        }
+	    });
 		file.add(saveImage);
 		copyImage = new JMenuItem();
 		copyImage.setName("json:copyImage");
+		copyImage.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	        	new CopyImagetoClipBoard(image);
+	        }
+	    });
 		file.add(copyImage);
 
 		menuBar.add(file);
@@ -91,12 +113,11 @@ public class FontPreviewWindow extends JDialog {
 		menuBar.add(view);
 		setJMenuBar(menuBar);
 	}
-	private ActionListener getMagnificationMenuItemActionListener(int arg0) {
+	private ActionListener getMagnificationMenuItemActionListener(int arg0) { //when clicked
 		final int magnification = arg0;
 		ActionListener action = new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
 	        	setMagnification(magnification);
-	        	resetDisplayText();
 	        }
 	    };
 	    return action;
@@ -104,6 +125,7 @@ public class FontPreviewWindow extends JDialog {
 	private void setMagnification(int arg0) {
 		this.magnification = arg0;
 		setMagnificationOption(arg0);
+    	resetDisplayText();
 	}
 	private void setMagnificationOption(int arg0) {
 		JMenuItem[] options = getMagnificationMenuItems(view);
@@ -130,11 +152,13 @@ public class FontPreviewWindow extends JDialog {
 			output[i] = array.get(i);
 		return output;
 	}
-	private BufferedImage textFrame = getResource("frame.png");
+	
+	
+	private final BufferedImage textFrame = getResource("frame.png");
 	private BufferedImage getTextFrame() {
 		return copyImage(textFrame);
 	}
-	private BufferedImage copyImage(BufferedImage buffImg){ //deep copy image
+	private BufferedImage copyImage(BufferedImage buffImg){ //deep copy a bufferedimage object
 	    BufferedImage output = new BufferedImage(buffImg.getWidth(), buffImg.getHeight(), BufferedImage.TYPE_INT_ARGB);
 	    for (int i = 0; i < buffImg.getWidth(); i++) {
 			for (int ii = 0; ii < buffImg.getHeight(); ii++) {
@@ -150,24 +174,33 @@ public class FontPreviewWindow extends JDialog {
 			InputStream is = FontPreviewWindow.class.getResourceAsStream(resourceName);
 			if (is == null) break setResource;
 			output = ImageIO.read(is);
-		} catch (IOException e) {}
+		} catch (IOException e) {}//impossible
 		return output;
 	}
 	
-	private static final int BLACK = -16777216; //new Color(0, 0, 0, 255).getRGB();
+	
+	private static final int BLACK = -16777216; //rgb colors
+	private static final int GREEN = -16734136;
+	private static final int BLUE = -16777008;
+	private static final int PURPLE = -7327528;
+	private static final int RED = -524240;
+	private static final int WHITE = BLACK;
+	
 	private static final Point defaultFontPos = new Point(15, 5); //default font draw position
 	
 	private List<byte[]> content;
 	private byte[] display;
 	public void setContent(byte[] arg0) {
 		content = splitLineBreaks(arg0);
-		this.display = arg0;
+		this.display = content.get(0);
 		resetDisplayText();
 	}
 	private static final byte[] LINE_BREAK_DELIMITER = new byte[] { (byte) 0xFD, (byte) 0xFF }; //FDFF is new line
+	private static final int LINE_BREAK_LIMIT = 2; //2 lines per scroll
 	private List<byte[]> splitLineBreaks(byte[] message){
 		List<byte[]> output = new ArrayList<>();
 		List<Byte> addition = new ArrayList<>();
+		int lineBreaks = 0;
 		for (int i = 0; i < message.length; i++) {
 			boolean isDelimiter = true;
 			for (int ii = 0; ii < LINE_BREAK_DELIMITER.length; ii++) {
@@ -176,24 +209,35 @@ public class FontPreviewWindow extends JDialog {
 					break;
 				}
 			}
-			if (isDelimiter) {
-				byte[] array = new byte[addition.size()];
-				for (int ii = 0; ii < array.length; ii++)
-					array[ii] = addition.get(ii);
-				output.add(array);
+			delimiterAction: if (isDelimiter) {
+				if (lineBreaks % LINE_BREAK_LIMIT == 0) {
+					for (byte b: LINE_BREAK_DELIMITER)
+						addition.add(b);
+					break delimiterAction;
+				}
+				output.add(byteListToArray(addition));
 				addition.clear();
+			}
+			if (isDelimiter) {
+				lineBreaks++;
+				i += -1 + LINE_BREAK_DELIMITER.length;
+				continue;
 			}
 			
 			addition.add(message[i]);
 		}
-		for (byte[] b: output)
-			System.out.println(ByteTools.toHexString(b));
-		
-		return null;
+		output.add(byteListToArray(addition));
+		return output;
+	}
+	private byte[] byteListToArray(List<Byte> arg0) {
+		byte[] output = new byte[arg0.size()];
+		for (int i = 0; i < output.length; i++)
+			output[i] = arg0.get(i);
+		return output;
 	}
 	private List<PaintWorker> workers = new ArrayList<>();
 	private void resetDisplayText() {
-		Thread newThread = new Thread(() -> {
+		Thread newThread = new Thread(() -> { //do in background (stops UI lag)
 			while (workers.size() > 0) {
 				try {
 					Thread.sleep(1);
@@ -228,32 +272,57 @@ public class FontPreviewWindow extends JDialog {
 		
 	}
 	private BufferedImage paintFrame() {
-		BufferedImage textFrame = getTextFrame();
-		String hex = ByteTools.toHexString(display);
+		final BufferedImage textFrame = getTextFrame();
 		List<Object> msg = null;
 		try {
-			msg = parseMessage(hex);
+			msg = parseMessage(display);
 		}
 		catch (ParseException e) {
 			try {
-				msg = parseMessage(ByteTools.toHexString(parent.sbtp.parseHexBinary("Error")));
+				msg = parseMessage(parent.sbtp.parseHexBinary("Error"));
 			} catch (ParseException e2) {}
 		}
-		int drawPosX = defaultFontPos.x, drawPosY = defaultFontPos.y; //default position
+		int drawPosX = defaultFontPos.x, drawPosY = defaultFontPos.y;
+		int color = BLACK;
 		for (Object obj: msg) {
-			if (obj instanceof NamedImage) { //Letter
+			if (obj instanceof NamedImage) {
 				NamedImage nimg = (NamedImage)obj;
 				BufferedImage bimg = nimg.image;
 				
-				drawLetter(textFrame, drawPosX, drawPosY, bimg);
+				drawLetter(textFrame, drawPosX, drawPosY, color, bimg);
 				drawPosX += 1 + bimg.getWidth();
 			}
-			else if (obj instanceof SpecialChar) { //special character
+			else special: if (obj instanceof SpecialChar) {
 				SpecialChar sc = (SpecialChar)obj;
 				
 				if (sc.arg == FontArg.LINE_BREAK) {
 					drawPosX = defaultFontPos.x;
 					drawPosY += 16;
+					break special;
+				}
+				if (sc.arg == FontArg.BLUE) {
+					color = BLUE;
+					break special;
+				}
+				if (sc.arg == FontArg.BLACK) {
+					color = BLACK;
+					break special;
+				}
+				if (sc.arg == FontArg.GREEN) {
+					color = GREEN;
+					break special;
+				}
+				if (sc.arg == FontArg.PURPLE) {
+					color = PURPLE;
+					break special;
+				}
+				if (sc.arg == FontArg.RED) {
+					color = RED;
+					break special;
+				}
+				if (sc.arg == FontArg.WHITE) {
+					color = WHITE;
+					break special;
 				}
 			}
 		}
@@ -267,17 +336,23 @@ public class FontPreviewWindow extends JDialog {
 			}
 		}
 	}
-	private List<Object> parseMessage(String string) throws ParseException{
+	private List<Object> parseMessage(byte[] arg0) throws ParseException{
 		List<Object> output = new ArrayList<>();
 		
-		String hex = new String(string);
-		while (hex.length() > 0) {
-			Object obj = getFirstOccurrence(hex);
-			if (obj == null) throw new ParseException(string);
-			output.add(obj);
-			hex = hex.substring(obj.toString().length());
+		List<byte[]> splitHex = null;
+		try {
+			splitHex = parent.sbtp.splitBytes(arg0);
+		}
+		catch (SonicBattleParseException e) {
+			throw new ParseException(e.toString());
 		}
 		
+		for (byte[] barr: splitHex) {
+			Object part = getPart(barr);
+			if (part == null) throw new ParseException("err");
+			output.add(part);
+		}
+
 		return output;
 	}
 	private class ParseException extends Exception {
@@ -285,40 +360,102 @@ public class FontPreviewWindow extends JDialog {
 			super(arg0);
 		}
 	}
-	private Object getFirstOccurrence(String hex) {
-		StringBuilder target = new StringBuilder(hex);
-		for (int i = target.length(); i > 0; i = removeLastLetter(target).length() ) {
-			String focus = target.toString();
-			SpecialChar sc = SpecialChar.fromString(focus);
-			if (!sc.isUnnamed()) {
-				return sc;
-			}
-			BufferedImage bimg = getResource("SonicBattleFont/" + focus + ".png");
-			if (bimg == null) continue;
-			return new NamedImage(focus, bimg);
+	private Object getPart(byte[] sequence) {
+		final String hex = ByteTools.toHexString(sequence);
+		
+		SpecialChar sc = SpecialChar.fromString(hex);
+		if (!sc.isUnnamed()) return sc;
+		
+		BufferedImage bimg = getSBResource(hex);
+		if (bimg != null) {
+			NamedImage nimg = new NamedImage(hex, bimg);
+			return nimg;
 		}
+		
+		//variable sequences
+		final BufferedImage placeHolder = getSBResource("2000"); //at sign as placeholder
+		if (hex.equals("FBFF0300F9FF0200FBFF0100")) {
+			NamedImage nimg = new NamedImage(hex, placeHolder);
+			return nimg;
+		}
+		if (hex.equals("F9FFED00")) {
+			NamedImage nimg = new NamedImage(hex, placeHolder);
+			return nimg;
+		}
+		if (hex.equals("F9FF0000")) {
+			NamedImage nimg = new NamedImage(hex, placeHolder);
+			return nimg;
+		}
+		if (hex.equals("F9FFCA00")) {
+			NamedImage nimg = new NamedImage(hex, placeHolder);
+			return nimg;
+		}
+		if (hex.equals("F9FF")) {
+			NamedImage nimg = new NamedImage(hex, placeHolder);
+			return nimg;
+		}
+		
 		return null;
 	}
-	private StringBuilder removeLastLetter(StringBuilder sb) {
-		sb.setLength(sb.length()-1);
-		return sb;
+	private BufferedImage getSBResource(String arg0) {
+		return getResource("SonicBattleFont/" + arg0 + ".png");
 	}
 	private static class SpecialChar {
 		public final int arg;
 		public final String name;
-		private static final int NULL_ARG = 0;
+		private static final int NULL_ARG = -1;
 		private static final String NULL_NAME = null;
 		
 		public static SpecialChar fromString(String substring) {
 			return new SpecialChar(substring);
 		}
 		private static final String LINE_BREAK = "FDFF";
+		private static final String BLUE = "FBFF0500";
+		private static final String BLACK = "FBFF0300";
+		private static final String GREEN = "FBFF0600";
+		private static final String PURPLE = "FBFF0700";
+		private static final String RED = "FBFF0400";
+		private static final String WHITE = "FBFF0000";
 		private SpecialChar(String substring) {
 			int arg = NULL_ARG;
 			String name = NULL_NAME;
-			if (substring.equals(LINE_BREAK)) {
-				name = LINE_BREAK;
-				arg = FontArg.LINE_BREAK;
+			
+			findMatch: {
+				if (substring.equals(LINE_BREAK)) {
+					name = LINE_BREAK;
+					arg = FontArg.LINE_BREAK;
+					break findMatch;
+				}
+				if (substring.equals(BLUE)) {
+					name = BLUE;
+					arg = FontArg.BLUE;
+					break findMatch;
+				}
+				if (substring.equals(BLACK)) {
+					name = BLACK;
+					arg = FontArg.BLACK;
+					break findMatch;
+				}
+				if (substring.equals(GREEN)) {
+					name = GREEN;
+					arg = FontArg.GREEN;
+					break findMatch;
+				}
+				if (substring.equals(PURPLE)) {
+					name = PURPLE;
+					arg = FontArg.PURPLE;
+					break findMatch;
+				}
+				if (substring.equals(RED)) {
+					name = RED;
+					arg = FontArg.RED;
+					break findMatch;
+				}
+				if (substring.equals(WHITE)) {
+					name = WHITE;
+					arg = FontArg.WHITE;
+					break findMatch;
+				}
 			}
 			
 			this.name = name;
@@ -333,6 +470,12 @@ public class FontPreviewWindow extends JDialog {
 	}
 	private class FontArg {
 		public static final int LINE_BREAK = 0;
+		public static final int BLUE = 1;
+		public static final int BLACK = 2;
+		public static final int GREEN = 3;
+		public static final int PURPLE = 4;
+		public static final int WHITE = 5;
+		public static final int RED = 6;
 	}
 	private class NamedImage { //bufferedimage + string tuple
 		public final BufferedImage image;
@@ -345,7 +488,7 @@ public class FontPreviewWindow extends JDialog {
 			return name;
 		}
 	}
-	private void drawLetter(BufferedImage frame, int x, int y, BufferedImage letter) {
+	private void drawLetter(BufferedImage frame, int x, int y, int color, BufferedImage letter) {
 		for (int i = 0; i <= letter.getWidth(); i++) {
 			for (int ii = 0; ii <= letter.getHeight(); ii++) {
 				final int xx = x + i;
@@ -353,7 +496,7 @@ public class FontPreviewWindow extends JDialog {
 				int pixel = getRGBSafely(letter, i, ii);
 				if (pixel != BLACK) continue;
 				
-				setRGBSafely(frame, xx, yy, BLACK);
+				setRGBSafely(frame, xx, yy, color);
 			}
 		}
 	}
@@ -370,7 +513,9 @@ public class FontPreviewWindow extends JDialog {
 		} catch (ArrayIndexOutOfBoundsException e) {}
 	}
 	private int magnification;
+	public BufferedImage image; //raw image
 	private void setTextFrame(BufferedImage buffImg) {
+		image = buffImg;
 		BufferedImage img = enlargeImage(buffImg, magnification);
 		ImageIcon imgIco = new ImageIcon(img);
 		JLabel label = new JLabel(imgIco);
