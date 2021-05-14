@@ -1,4 +1,4 @@
-package sbte.guicasetemp;
+package sbte.gui;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -15,7 +15,7 @@ import javax.swing.UIManager;
 
 import org.json.simple.parser.ParseException;
 
-import sbte.guicasetemp.FontPreview.FontPreviewWindow;
+import sbte.gui.textpreview.TextPreviewWindow;
 import sbte.parser.SonicBattleTextParser;
 import sbte.parser.SonicBattleROMReader.ROM;
 import sbte.parser.SonicBattleROMReader.SonicBattleLine;
@@ -32,7 +32,7 @@ public class GUI extends JFrame {
 	public GUITextBox textBox;
 	public GUISplit splitPane;
 	
-	public FontPreviewWindow textPreview;
+	public TextPreviewWindow textPreview;
 	
 	public final SonicBattleTextParser sbtp;
 	
@@ -110,7 +110,7 @@ public class GUI extends JFrame {
 	    }
 	};
 	public void openTextPreview() {
-		textPreview = new FontPreviewWindow(this);
+		textPreview = new TextPreviewWindow(this);
 		textPreview.setVisible(true);
 		refreshGUIText(textPreview);
 		menuBar.viewMenu.textPreview.setSelected(true);

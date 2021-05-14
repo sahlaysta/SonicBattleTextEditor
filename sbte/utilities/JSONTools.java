@@ -19,7 +19,7 @@ public class JSONTools {
 	public static String valueToString(String string) {
 		org.json.simple.JSONObject j = null;
 		try {
-			j = (org.json.simple.JSONObject) jp.parse("{\"a\":\"" + string + "\"}");
+			j = (org.json.simple.JSONObject) parser.parse("{\"a\":\"" + string + "\"}");
 		} catch (ParseException e) {}
 		
 		return j.get("a").toString();
@@ -32,7 +32,7 @@ public class JSONTools {
 		return prettyJsonString;
 	}
 	
-	public static final org.json.simple.parser.JSONParser jp = new org.json.simple.parser.JSONParser();
+	public static final org.json.simple.parser.JSONParser parser = new org.json.simple.parser.JSONParser();
 	public static final File prefsJson = new File(FileTools.getRunningDirectory(), "prefs.json"); //location of the preferences file
 	public static org.json.simple.JSONObject getPrefsJson() throws org.json.simple.parser.ParseException {
 		if (!prefsJson.exists()) return new org.json.simple.JSONObject();
@@ -44,7 +44,7 @@ public class JSONTools {
 			e.printStackTrace();
 		}
 		
-		org.json.simple.JSONObject output = (org.json.simple.JSONObject) jp.parse(jsonToParse);
+		org.json.simple.JSONObject output = (org.json.simple.JSONObject) parser.parse(jsonToParse);
 		return output;
 	}
 	public static void savePrefsJson(org.json.simple.JSONObject jsonObject) throws IOException {

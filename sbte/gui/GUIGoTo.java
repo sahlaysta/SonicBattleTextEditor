@@ -1,4 +1,4 @@
-package sbte.guicasetemp;
+package sbte.gui;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
