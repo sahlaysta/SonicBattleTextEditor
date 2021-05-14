@@ -44,7 +44,7 @@ public class FontPreviewWindow extends JDialog {
 		super(caller);
 		parent = caller;
 		setProperties();
-		setContent(parent.sbtp.parseHexBinary(""));
+		setContent(null);
 	}
 	private void setProperties() {
 		super.setName("json:textPreview");
@@ -109,6 +109,23 @@ public class FontPreviewWindow extends JDialog {
 			jcbmi.addActionListener(getMagnificationMenuItemActionListener(i));
 			view.add(jcbmi);
 		}
+		JMenuItem moveDown = new JMenuItem();
+		moveDown.setName("json:moveDown");
+		JMenuItem moveUp = new JMenuItem();
+		moveUp.setName("json:moveUp");
+		view.addSeparator();
+		moveUp.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	        	setDisplay(displayIndex-1);
+	        }
+	    });
+		moveDown.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	        	setDisplay(displayIndex+1);
+	        }
+	    });
+		view.add(moveUp);
+		view.add(moveDown);
 		
 		menuBar.add(view);
 		setJMenuBar(menuBar);
@@ -190,9 +207,20 @@ public class FontPreviewWindow extends JDialog {
 	
 	private List<byte[]> content;
 	private byte[] display;
+	private int displayIndex;
 	public void setContent(byte[] arg0) {
-		content = splitLineBreaks(arg0);
-		this.display = content.get(0);
+		content = (arg0 == null) ? getEmpty() : splitLineBreaks(arg0);
+		setDisplay(0);
+	}
+	private List<byte[]> getEmpty() {
+		List<byte[]> output = new ArrayList<>();
+		output.add(new byte[] { (byte) 0x00, (byte) 0x00 });
+		return output;
+	}
+	private void setDisplay(int index) {
+		if (index >= content.size() || index < 0) return;
+		displayIndex = index;
+		this.display = content.get(displayIndex);
 		resetDisplayText();
 	}
 	private static final byte[] LINE_BREAK_DELIMITER = new byte[] { (byte) 0xFD, (byte) 0xFF }; //FDFF is new line

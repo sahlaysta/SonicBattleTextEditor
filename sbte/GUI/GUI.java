@@ -113,6 +113,7 @@ public class GUI extends JFrame {
 		textPreview.setVisible(true);
 		refreshGUIText(textPreview);
 		menuBar.viewMenu.textPreview.setSelected(true);
+		textPreview.setContent(listModel.content.get(list.getSelection()));
 	}
 	public void closeTextPreview() {
 		textPreview.dispose();

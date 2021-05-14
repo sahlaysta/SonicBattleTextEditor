@@ -61,7 +61,9 @@
 		"downOne": "Move down one",
 		"textPreview": "Text preview",
 		"saveImage": "Save image",
-		"copyImage": "Copy image"
+		"copyImage": "Copy image",
+		"moveDown": "Move down",
+		"moveUp": "Move up"
 	},
 	"es-*": {
 		"thisLang": "Español",
@@ -123,7 +125,9 @@
 		"downOne": "Bajar una fila",
 		"textPreview": "Vista previa del texto",
 		"saveImage": "Guardar imagen",
-		"copyImage": "Copiar imagen"
+		"copyImage": "Copiar imagen",
+		"moveDown": "Bajar",
+		"moveUp": "Subir"
 	},
 	"ja-*": {
 		"thisLang": "日本語",
@@ -185,6 +189,8 @@
 		"downOne": "１行下に移動",
 		"textPreview": "テキストプレビュー",
 		"saveImage": "イメージを保存",
-		"copyImage": "イメージをコピー"
+		"copyImage": "イメージをコピー",
+		"moveDown": "下に移動",
+		"moveUp": "上に移動"
 	}
 }
