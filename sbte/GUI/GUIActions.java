@@ -1,4 +1,4 @@
-package sbte.GUI;
+package sbte.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,10 +14,10 @@ import javax.swing.JOptionPane;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import sbte.FileTools;
-import sbte.JSONTools;
-import sbte.GUI.GUI.Msg;
-import sbte.GUI.FontPreview.FontPreviewWindow;
+import sbte.gui.FontPreview.FontPreviewWindow;
+import sbte.gui.GUI.Msg;
+import sbte.utilities.FileTools;
+import sbte.utilities.JSONTools;
 
 public class GUIActions {
 	public ROMEvent ROMListener = new ROMEvent();
@@ -136,7 +136,7 @@ public class GUIActions {
 			gfc.setParent(parent);
 			gfc.setPreference(GUIFileChooser.ROM_PATH_PREFERENCE);
 			gfc.show();
-	        if (gfc.HasCanceled()) return;
+	        if (gfc.hasCanceled()) return;
 	        selection = gfc.getSelectedFile();
 		}
 		else selection = file;
@@ -157,7 +157,7 @@ public class GUIActions {
 			gfc.setParent(parent);
 			gfc.setPreference(GUIFileChooser.ROM_PATH_PREFERENCE);
 			gfc.show();
-	        if (gfc.HasCanceled()) return;
+	        if (gfc.hasCanceled()) return;
 	        selection = gfc.getSelectedFile();
 		}
     	else {
@@ -179,7 +179,7 @@ public class GUIActions {
 		gfc.setParent(parent);
 		gfc.setPreference(GUIFileChooser.LINES_FILE_PREFERENCE);
 		gfc.show();
-        if (gfc.HasCanceled()) return;
+        if (gfc.hasCanceled()) return;
         File selection = gfc.getSelectedFile();
         if (selection.exists()) {
         	Object[] options = { parent.localization.get("yes"), parent.localization.get("no") };
@@ -213,7 +213,7 @@ public class GUIActions {
 		gfc.setParent(parent);
 		gfc.setPreference(GUIFileChooser.LINES_FILE_PREFERENCE);
 		gfc.show();
-        if (gfc.HasCanceled()) return;
+        if (gfc.hasCanceled()) return;
         File selection = gfc.getSelectedFile();
         
     	JSONObject json = null;
@@ -238,6 +238,7 @@ public class GUIActions {
         		missed.append(key + "\r\n");
         	}
         }
+        parent.closeTextPreview();
         parent.isSaved = false;
         parent.list.setSelection(-1);
         parent.list.setSelection(0);

@@ -1,12 +1,14 @@
-package sbte;
+package sbte.parser;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import sbte.SonicBattleROMReader.ROM;
-import sbte.SonicBattleROMReader.SonicBattleLine;
+import sbte.parser.SonicBattleROMReader.ROM;
+import sbte.parser.SonicBattleROMReader.SonicBattleLine;
+import sbte.utilities.ByteTools;
+import sbte.utilities.FileTools;
 
 public class SonicBattleROMSaver {
 	public static final byte[] POINTER_DELIMITER = new byte[] { 0x08 };

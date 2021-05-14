@@ -1,4 +1,4 @@
-package sbte.GUI;
+package sbte.gui;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -17,7 +17,7 @@ import javax.swing.JSplitPane;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import sbte.JSONTools;
+import sbte.utilities.JSONTools;
 
 public class Preferences extends JSONObject {
 	public Preferences(JSONObject jsonObject) {

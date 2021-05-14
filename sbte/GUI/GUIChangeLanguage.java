@@ -1,4 +1,4 @@
-package sbte.GUI;
+package sbte.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -22,7 +22,7 @@ import javax.swing.ListSelectionModel;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import sbte.JSONTools;
+import sbte.utilities.JSONTools;
 
 public class GUIChangeLanguage {
 	public static void languageGUI(GUI caller) {

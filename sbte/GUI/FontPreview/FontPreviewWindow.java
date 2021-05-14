@@ -1,4 +1,4 @@
-package sbte.GUI.FontPreview;
+package sbte.gui.FontPreview;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -38,11 +39,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
-import sbte.ByteTools;
-import sbte.SonicBattleTextParser.SonicBattleParseException;
-import sbte.GUI.GUI;
-import sbte.GUI.GUIFileChooser;
-import sbte.GUI.GUITools;
+import sbte.gui.GUI;
+import sbte.gui.GUIFileChooser;
+import sbte.gui.GUITools;
+import sbte.parser.SonicBattleTextParser.SonicBattleParseException;
+import sbte.utilities.ByteTools;
 
 public class FontPreviewWindow extends JDialog {
 	private final GUI parent;
@@ -50,7 +51,7 @@ public class FontPreviewWindow extends JDialog {
 		super(caller);
 		parent = caller;
 		setProperties();
-		setContent(null);
+		setContent(-1);
 	}
 	private JPanel imagePanel;
 	private ButtonPanel buttonPanel;
@@ -74,6 +75,10 @@ public class FontPreviewWindow extends JDialog {
 		    });
 		}
 		public void putButtons() {
+			JPanel masterPanel = new JPanel();
+			masterPanel.setLayout(new GridLayout(1,2,0,0));
+			masterPanel.setBorder(new EmptyBorder(0,0,0,0));
+			
 			JPanel buttons = new JPanel();
 			buttons.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			buttons.setBorder(new EmptyBorder(0,0,0,0));
@@ -81,13 +86,16 @@ public class FontPreviewWindow extends JDialog {
 			buttons.add(downButton);
 			
 			JPanel labelPanel = new JPanel();
-			labelPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-			labelPanel.setBorder(new EmptyBorder(0,0,0,0));
+			labelPanel.setLayout(new BorderLayout());
+			labelPanel.setBorder(new EmptyBorder(3,5,5,5));
 			this.label = new JLabel("");
-			labelPanel.add(label);
+			label.setVerticalAlignment(JLabel.BOTTOM);
+			labelPanel.add(label, BorderLayout.PAGE_END);
 			
-			add(labelPanel, BorderLayout.SOUTH);
-			add(buttons, BorderLayout.SOUTH);
+			masterPanel.add(labelPanel);
+			masterPanel.add(buttons);
+			
+			add(masterPanel);
 		}
 		public void setText(int index, int limit) {
 			label.setText((1 + index) + "/" + limit);
@@ -135,7 +143,7 @@ public class FontPreviewWindow extends JDialog {
 	        	gfc.setParent(parent);
 	        	gfc.setPreference("pngPath");
 	        	gfc.show();
-	        	if (gfc.HasCanceled()) return;
+	        	if (gfc.hasCanceled()) return;
 	        	File selection = gfc.getSelectedFile();
 	        	try {
 					ImageIO.write(rawImage, "png", selection);
@@ -245,10 +253,25 @@ public class FontPreviewWindow extends JDialog {
 	
 	private List<byte[]> content;
 	private byte[] display;
+	private int contentIndex;
 	private int displayIndex;
-	public void setContent(byte[] arg0) {
-		content = (arg0 == null) ? getEmpty() : splitLineBreaks(arg0);
-		setDisplay(0);
+	private HashMap<Integer, Integer> indexHistory = new HashMap<>();
+	public void setContent(int index) {
+		byte[] msg = null;
+		if (index >= 0)
+			msg = parent.listModel.content.get(index);
+		
+		content = (msg == null) ? getEmpty() : splitLineBreaks(msg);
+		contentIndex = index;
+		
+		int display = 0;
+		if (indexHistory.containsKey(index)) {
+			int hindex = indexHistory.get(index);
+			while (hindex >= content.size())
+				hindex--;
+			display = hindex;
+		}
+		setDisplay(display);
 	}
 	private List<byte[]> getEmpty() {
 		List<byte[]> output = new ArrayList<>();
@@ -260,6 +283,7 @@ public class FontPreviewWindow extends JDialog {
 		displayIndex = index;
 		this.display = content.get(displayIndex);
 		buttonPanel.setText(index, content.size());
+		indexHistory.put(contentIndex, displayIndex);
 		resetDisplayText();
 	}
 	private static final byte[] LINE_BREAK_DELIMITER = new byte[] { (byte) 0xFD, (byte) 0xFF }; //FDFF is new line

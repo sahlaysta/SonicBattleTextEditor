@@ -1,4 +1,4 @@
-package sbte.GUI;
+package sbte.gui;
 
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;

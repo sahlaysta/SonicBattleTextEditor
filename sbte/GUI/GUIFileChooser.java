@@ -1,4 +1,4 @@
-package sbte.GUI;
+package sbte.gui;
 
 import java.io.File;
 
@@ -70,7 +70,7 @@ public class GUIFileChooser extends JFileChooser {
 		
 		if (approve) putPreference();
 	}
-	public boolean HasCanceled() {
+	public boolean hasCanceled() {
 		return !approve;
 	}
 }

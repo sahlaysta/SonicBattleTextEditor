@@ -1,14 +1,14 @@
-package sbte.GUI;
+package sbte.gui;
 
 import java.io.IOException;
 import java.util.List;
 
-import sbte.SonicBattleROMReader;
-import sbte.SonicBattleROMSaver;
-import sbte.GUI.GUIActions.ROMArgs;
-import sbte.GUI.GUIActions.ROMListener;
-import sbte.SonicBattleROMReader.ROM;
-import sbte.SonicBattleROMReader.SonicBattleLine;
+import sbte.gui.GUIActions.ROMArgs;
+import sbte.gui.GUIActions.ROMListener;
+import sbte.parser.SonicBattleROMReader;
+import sbte.parser.SonicBattleROMSaver;
+import sbte.parser.SonicBattleROMReader.ROM;
+import sbte.parser.SonicBattleROMReader.SonicBattleLine;
 
 public class GUIHandler implements ROMListener {
 	public void ROMopened(ROMArgs args) {
