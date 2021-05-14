@@ -1,4 +1,4 @@
-package sbte;
+package sbte.utilities;
 
 public class ByteTools {
 	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();

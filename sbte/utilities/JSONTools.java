@@ -1,4 +1,4 @@
-package sbte;
+package sbte.utilities;
 
 import java.io.File;
 import java.io.FileNotFoundException;

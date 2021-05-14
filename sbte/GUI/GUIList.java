@@ -1,4 +1,4 @@
-package sbte.GUI;
+package sbte.gui;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -15,7 +15,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import sbte.ByteTools;
+import sbte.utilities.ByteTools;
 
 public class GUIList extends JPanel {
 	private final TitledBorder title;
@@ -113,7 +113,7 @@ public class GUIList extends JPanel {
 			if (index < 0) return;
 			
 			parent.textBox.setText(parent.listModel.textBoxDisplay.get(index).toString());
-			parent.setTextPreview(parent.listModel.content.get(index));
+			parent.setTextPreview(index);
 			if (parent.listModel.isProblematic(index)) {
 				parent.textBox.setRed();
 			}

@@ -1,4 +1,4 @@
-package sbte.GUI;
+package sbte.gui;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -15,11 +15,11 @@ import javax.swing.UIManager;
 
 import org.json.simple.parser.ParseException;
 
-import sbte.JSONTools;
-import sbte.SonicBattleROMReader.ROM;
-import sbte.SonicBattleROMReader.SonicBattleLine;
-import sbte.SonicBattleTextParser;
-import sbte.GUI.FontPreview.FontPreviewWindow;
+import sbte.gui.FontPreview.FontPreviewWindow;
+import sbte.parser.SonicBattleTextParser;
+import sbte.parser.SonicBattleROMReader.ROM;
+import sbte.parser.SonicBattleROMReader.SonicBattleLine;
+import sbte.utilities.JSONTools;
 
 public class GUI extends JFrame {
 	public Preferences preferences;
@@ -87,6 +87,7 @@ public class GUI extends JFrame {
 		isOpen = true;
 	}
 	public void close() {
+		closeTextPreview();
 		list.setSelection(-1);
 		listModel.clear();
 		textBox.clear();
@@ -113,16 +114,16 @@ public class GUI extends JFrame {
 		textPreview.setVisible(true);
 		refreshGUIText(textPreview);
 		menuBar.viewMenu.textPreview.setSelected(true);
-		textPreview.setContent(listModel.content.get(list.getSelection()));
+		textPreview.setContent(list.getSelection());
 	}
 	public void closeTextPreview() {
 		textPreview.dispose();
 		textPreview = null;
 		menuBar.viewMenu.textPreview.setSelected(false);
 	}
-	public void setTextPreview(byte[] message) {
+	public void setTextPreview(int index) {
 		if (textPreview != null)
-			textPreview.setContent(message);
+			textPreview.setContent(index);
 	}
 	public List<SonicBattleLine> getSonicBattleLines() {
 		return listModel.getSonicBattleLines();

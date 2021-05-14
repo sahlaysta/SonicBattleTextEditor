@@ -1,4 +1,4 @@
-package sbte.GUI;
+package sbte.gui;
 
 import java.util.HashMap;
 
@@ -6,7 +6,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import sbte.FileTools;
+import sbte.utilities.FileTools;
 
 public class Localization {
 	public static HashMap<String, String> getMap(String language) {

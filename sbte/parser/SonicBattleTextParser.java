@@ -1,4 +1,4 @@
-package sbte;
+package sbte.parser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,11 +9,15 @@ import java.util.List;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
+import sbte.utilities.ByteTools;
+import sbte.utilities.FileTools;
+import sbte.utilities.JSONTools;
+
 public class SonicBattleTextParser {
 	private LinkedHashMap<byte[], String> hexToString = new LinkedHashMap<>();
 	private LinkedHashMap<String, byte[]> stringToHex = new LinkedHashMap<>();
 	public SonicBattleTextParser() {
-		String jsonFile = FileTools.readResourceToString("SonicBattleTextHEXtable.json");
+		String jsonFile = FileTools.readResourceToString("parser/SonicBattleTextHEXtable.json");
 		JSONObject json = null;
 		try {
 			json = (JSONObject)JSONTools.jp.parse(jsonFile);

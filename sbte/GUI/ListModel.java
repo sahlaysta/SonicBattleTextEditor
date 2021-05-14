@@ -1,4 +1,4 @@
-package sbte.GUI;
+package sbte.gui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,9 +6,9 @@ import java.util.List;
 
 import javax.swing.DefaultListModel;
 
-import sbte.JSONTools;
-import sbte.SonicBattleROMReader.SonicBattleLine;
-import sbte.SonicBattleTextParser.SonicBattleParseException;
+import sbte.parser.SonicBattleROMReader.SonicBattleLine;
+import sbte.parser.SonicBattleTextParser.SonicBattleParseException;
+import sbte.utilities.JSONTools;
 
 public class ListModel extends DefaultListModel{
 	public List<byte[]> content = new ArrayList<>();
@@ -61,14 +61,14 @@ public class ListModel extends DefaultListModel{
 			
 			byte[] message = parent.sbtp.parseHexBinary(string);
 			content.set(index, message);
-			parent.setTextPreview(message);
 		} //error
 		catch (SonicBattleParseException e) {
 			char errorChar = e.source.charAt(e.index);
 			errors.put(index, errorChar + "");
 			parent.textBox.setRed();
 		}
-		
+
+		parent.setTextPreview(index);
 		textBoxDisplay.set(index, string);
 		this.setElementAt(JSONTools.toJSONValue(string), index);
 	}

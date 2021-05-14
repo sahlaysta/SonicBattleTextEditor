@@ -1,6 +1,6 @@
 package sbte;
 
-import sbte.GUI.GUI;
+import sbte.gui.GUI;
 
 public class Main {
 	public static void main (String[] args) {

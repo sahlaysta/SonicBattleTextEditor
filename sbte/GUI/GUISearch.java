@@ -1,4 +1,4 @@
-package sbte.GUI;
+package sbte.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -121,10 +121,11 @@ public class GUISearch {
 			JButton b = new JButton(parent.localization.get("go"));
 			buttonpanel.add(b);
 			
-			JPanel labelpanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			JPanel labelpanel = new JPanel(new BorderLayout());
+			labelpanel.setBorder(new EmptyBorder(3,5,5,5));
 			HitsLabel l = new HitsLabel();
 			l.setFound(m.size());
-			labelpanel.add(l, BorderLayout.SOUTH);
+			labelpanel.add(l, BorderLayout.PAGE_END);
 
 			bottom.add(labelpanel);
 			bottom.add(buttonpanel);
