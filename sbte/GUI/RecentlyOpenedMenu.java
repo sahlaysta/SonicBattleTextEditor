@@ -10,11 +10,9 @@ import java.util.List;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import sbte.Main;
-
 public class RecentlyOpenedMenu extends JMenu {
 	public static final int RECENT_FILES_LIMIT = 10;
-	private RecentFiles rf = null;
+	private RecentFiles rf;
 	private final GUI parent;
 	public RecentlyOpenedMenu(GUI caller, String name) {
 		parent = caller;
@@ -31,11 +29,10 @@ public class RecentlyOpenedMenu extends JMenu {
 		}
 	}
 	private class RecentFiles extends ArrayList<File>{
-		private int limitVal;
+		private final int limit;
 		public RecentFiles(int limit) {
-			limitVal = limit;
-			
-			List<File> recentsPreference = parent.preferences.getRecentlyOpened();
+			this.limit = limit;
+			final List<File> recentsPreference = parent.preferences.getRecentlyOpened();
 			
 			for (int i = 0; i < limit; i++)
 				addElement(null);
@@ -48,57 +45,49 @@ public class RecentlyOpenedMenu extends JMenu {
 			}
 		}
 		public void addElement(File arg0) {
-			int duplicate = indexOf(arg0);
-			if (arg0 == null) duplicate = -1;
-			if (duplicate != -1) {
-				remove(duplicate);
-			}
+			int duplicateIndex = indexOf(arg0);
+			if (arg0 == null) duplicateIndex = -1;
+			if (duplicateIndex != -1) remove(duplicateIndex);
 			
 			add(0, arg0);
 			refresh();
 		}
+		public void removeElement(int index) {
+			remove(index);
+			refresh();
+		}
 		public void refresh() {
 			RecentlyOpenedMenu.this.clear();
-			int i = 0;
-			for (File f: this) {
-				i++;
+			int index = 0;
+			for (File file: this) {
+				index++;
 				JMenuItem jmi = new JMenuItem();
-				if (f == null) {
+				if (file == null) {
 					jmi.setText("--");
 					jmi.setEnabled(false);
 				}
 				else {
-					jmi.setText(f.toString());
+					jmi.setText(file.toString());
 					jmi.addActionListener(new ActionListener() {
 					      public void actionPerformed(ActionEvent e) {
-					          parent.actions.open(f);
+					          parent.actions.open(file);
 					      }
 					});
 				}
 				
-				jmi.setText(String.format("%02d: " + jmi.getText(), i));
+				jmi.setText(String.format("%02d: " + jmi.getText(), index));
 				RecentlyOpenedMenu.this.add(jmi);
 			}
 			
-			while (size() < limitVal) {
+			while (size() < limit) {
 				addElement(null);
 			}
 			
-			while (size() > limitVal) {
-				remove(size()-1);
+			while (size() > limit) {
+				removeElement(size()-1);
 			}
 			
 			parent.preferences.setRecentlyOpened(this);
-		}
-	}
-	
-	public void setRecentlyOpened(List<File> files, GUIMenuBar gmb) {
-		if (files == null) return;
-		
-		int i = 0;
-		for (File f: files) {
-			if (i > RECENT_FILES_LIMIT) return;
-			add(f);
 		}
 	}
 }

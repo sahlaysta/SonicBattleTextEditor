@@ -34,14 +34,14 @@ public class SonicBattleTextParser {
 		}
 	}
 	public byte[] parseHexBinary(String e) throws SonicBattleParseException{
-		final List<Byte> bytes = new ArrayList<>();
+		final List<Byte> array = new ArrayList<>();
 		final StringBuilder sb = new StringBuilder(e);
 		while (sb.length() > 0) {
 			boolean found = false;
 			for (String s: stringToHex.keySet()) {
 				if (sb.indexOf(s) == 0) {
 					for (byte b: stringToHex.get(s))
-						bytes.add(b);
+						array.add(b);
 					sb.replace(0, s.length(), "");
 					found = true;
 					break;
@@ -57,9 +57,9 @@ public class SonicBattleTextParser {
 			}
 		}
 		
-		final byte[] output = new byte[bytes.size()];
+		byte[] output = new byte[array.size()];
 		for (int i = 0; i < output.length; i++)
-			output[i] = bytes.get(i);
+			output[i] = array.get(i);
 		return output;
 	}
 	public String parseString(byte[] e) throws IllegalArgumentException{
@@ -97,6 +97,32 @@ public class SonicBattleTextParser {
 		
 		return output.toString();
 	}
+	public List<byte[]> splitBytes(byte[] bytes) throws SonicBattleParseException{
+		List<byte[]> output = new ArrayList<>();
+		
+		List<Byte> array = new ArrayList<>();
+		for (byte b: bytes) array.add(b);
+
+		while (array.size() > 0) {
+			for (byte[] b: hexToString.keySet()) {
+				if (b.length > array.size()) continue;
+				boolean matched = true;
+				for (int i = 0; i < b.length; i++) {
+					if (b[i] != array.get(i)) {
+						matched = false;
+						break;
+					}
+				}
+				if (!matched) continue;
+				output.add(b);
+				for (int i = 0; i < b.length; i++) 
+					array.remove(0);
+			}
+		}
+		
+		return output;
+	}
+	
 	private List<Tuple> parseDictionary(JSONObject json){
 		List<Tuple> output = new ArrayList<>();
 		for (Object o: json.keySet()) {
