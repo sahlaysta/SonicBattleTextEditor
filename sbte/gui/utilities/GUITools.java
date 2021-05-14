@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.gui.utilities;
 
 import java.awt.Component;
 import java.awt.Container;

@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.gui.layout.menubar;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+
+import sbte.gui.GUI;
 
 public class RecentlyOpenedMenu extends JMenu {
 	public static final int RECENT_FILES_LIMIT = 10;

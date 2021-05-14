@@ -1,9 +1,11 @@
-package sbte.gui;
+package sbte.gui.layout.menubar.actions.utilities;
 
 import java.io.File;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import sbte.gui.GUI;
 
 public class GUIFileChooser extends JFileChooser {
 	public static final int OPEN_FILE_PROMPT = 0;

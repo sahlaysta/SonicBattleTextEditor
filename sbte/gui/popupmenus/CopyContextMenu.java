@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.gui.popupmenus;
 
 import java.awt.event.ActionEvent;
 
@@ -8,6 +8,8 @@ import javax.swing.KeyStroke;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.TextAction;
+
+import sbte.gui.GUI;
 
 public class CopyContextMenu extends JPopupMenu {
 	private final GUI parent;

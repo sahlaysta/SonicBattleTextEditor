@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.gui.layout.menubar.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,8 +14,15 @@ import javax.swing.JOptionPane;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
+import sbte.gui.GUI;
+import sbte.gui.GUIHandler;
 import sbte.gui.GUI.Msg;
-import sbte.gui.textpreview.TextPreviewWindow;
+import sbte.gui.layout.menubar.actions.utilities.GUIFileChooser;
+import sbte.gui.layout.menubar.actions.windowmenus.GUIChangeLanguage;
+import sbte.gui.layout.menubar.actions.windowmenus.GUIGoTo;
+import sbte.gui.layout.menubar.actions.windowmenus.GUISearch;
+import sbte.gui.layout.menubar.actions.windowmenus.ScrollMessage;
+import sbte.gui.layout.menubar.actions.windowmenus.textpreview.TextPreviewWindow;
 import sbte.utilities.FileTools;
 import sbte.utilities.JSONTools;
 

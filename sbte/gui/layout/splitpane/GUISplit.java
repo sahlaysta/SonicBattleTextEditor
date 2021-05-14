@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.gui.layout.splitpane;
 
 import java.awt.Component;
 

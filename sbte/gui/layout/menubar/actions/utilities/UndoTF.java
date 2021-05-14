@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.gui.layout.menubar.actions.utilities;
 
 import java.awt.event.ActionEvent;
 
@@ -8,6 +8,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.undo.UndoManager;
+
+import sbte.gui.GUI;
+import sbte.gui.popupmenus.CopyContextMenu;
 
 public class UndoTF extends JTextField {
 	public UndoTF(GUI parent) {

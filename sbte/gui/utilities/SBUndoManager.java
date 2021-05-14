@@ -1,10 +1,12 @@
-package sbte.gui;
+package sbte.gui.utilities;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.JTextArea;
 import javax.swing.undo.UndoManager;
+
+import sbte.gui.GUI;
 
 public class SBUndoManager {
 	private Set<Integer> firstEdit = new HashSet<>();

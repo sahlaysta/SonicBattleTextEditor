@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.gui.layout.menubar.actions.windowmenus;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -23,6 +23,9 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.undo.UndoManager;
+
+import sbte.gui.GUI;
+import sbte.gui.layout.menubar.actions.utilities.UndoTF;
 
 public class GUIGoTo {
 	public static void goToGUI(GUI caller) {

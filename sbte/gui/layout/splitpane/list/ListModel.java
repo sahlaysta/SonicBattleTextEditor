@@ -1,4 +1,4 @@
-package sbte.gui;
+package sbte.gui.layout.splitpane.list;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.swing.DefaultListModel;
 
+import sbte.gui.GUI;
+import sbte.gui.utilities.SBUndoManager;
 import sbte.parser.SonicBattleROMReader.SonicBattleLine;
 import sbte.parser.SonicBattleTextParser.SonicBattleParseException;
 import sbte.utilities.JSONTools;
