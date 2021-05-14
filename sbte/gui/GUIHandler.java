@@ -1,10 +1,10 @@
-package sbte.guicasetemp;
+package sbte.gui;
 
 import java.io.IOException;
 import java.util.List;
 
-import sbte.guicasetemp.GUIActions.ROMArgs;
-import sbte.guicasetemp.GUIActions.ROMListener;
+import sbte.gui.GUIActions.ROMArgs;
+import sbte.gui.GUIActions.ROMListener;
 import sbte.parser.SonicBattleROMReader;
 import sbte.parser.SonicBattleROMSaver;
 import sbte.parser.SonicBattleROMReader.ROM;

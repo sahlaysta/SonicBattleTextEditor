@@ -20,7 +20,7 @@ public class SonicBattleTextParser {
 		String jsonFile = FileTools.readResourceToString("parser/SonicBattleTextHEXtable.json");
 		JSONObject json = null;
 		try {
-			json = (JSONObject)JSONTools.jp.parse(jsonFile);
+			json = (JSONObject)JSONTools.parser.parse(jsonFile);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

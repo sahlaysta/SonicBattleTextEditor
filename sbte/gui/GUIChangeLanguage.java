@@ -1,4 +1,4 @@
-package sbte.guicasetemp;
+package sbte.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -35,7 +35,7 @@ public class GUIChangeLanguage {
 			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			setTitle(parent.localization.get("changeLang"));
 			JSONObject j = null;
-			try { j = (JSONObject) JSONTools.jp.parse(Localization.getLocalizationFile()); } catch (ParseException e) { e.printStackTrace(); }
+			try { j = (JSONObject) JSONTools.parser.parse(Localization.getLocalizationFile()); } catch (ParseException e) { e.printStackTrace(); }
 			{//list
 				JPanel p = new JPanel();
 				DefaultListModel<String> l = new DefaultListModel<>();  

@@ -1,4 +1,4 @@
-package sbte.guicasetemp;
+package sbte.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,8 +14,8 @@ import javax.swing.JOptionPane;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import sbte.guicasetemp.FontPreview.FontPreviewWindow;
-import sbte.guicasetemp.GUI.Msg;
+import sbte.gui.GUI.Msg;
+import sbte.gui.textpreview.TextPreviewWindow;
 import sbte.utilities.FileTools;
 import sbte.utilities.JSONTools;
 
@@ -219,7 +219,7 @@ public class GUIActions {
     	JSONObject json = null;
         try {
 			String jsonFile = FileTools.readFileToString(selection);
-			json = (JSONObject) JSONTools.jp.parse(jsonFile);
+			json = (JSONObject) JSONTools.parser.parse(jsonFile);
 		} catch (FileNotFoundException e) {
 			parent.showMsg(parent.localization.get("error") + ": " + selection.toString(), e.toString(), Msg.ERROR_MESSAGE);
 			return;

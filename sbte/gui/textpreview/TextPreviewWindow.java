@@ -1,4 +1,4 @@
-package sbte.guicasetemp.FontPreview;
+package sbte.gui.textpreview;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -39,15 +39,15 @@ import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
-import sbte.guicasetemp.GUI;
-import sbte.guicasetemp.GUIFileChooser;
-import sbte.guicasetemp.GUITools;
+import sbte.gui.GUI;
+import sbte.gui.GUIFileChooser;
+import sbte.gui.GUITools;
 import sbte.parser.SonicBattleTextParser.SonicBattleParseException;
 import sbte.utilities.ByteTools;
 
-public class FontPreviewWindow extends JDialog {
+public class TextPreviewWindow extends JDialog {
 	private final GUI parent;
-	public FontPreviewWindow(GUI caller) {
+	public TextPreviewWindow(GUI caller) {
 		super(caller);
 		parent = caller;
 		setProperties();
@@ -148,7 +148,7 @@ public class FontPreviewWindow extends JDialog {
 	        	try {
 					ImageIO.write(rawImage, "png", selection);
 				} catch (IOException e2) {
-					JOptionPane.showMessageDialog(FontPreviewWindow.this, parent.localization.get("saveImage") + ": " + selection.toString(), e2.toString(), GUI.Msg.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(TextPreviewWindow.this, parent.localization.get("saveImage") + ": " + selection.toString(), e2.toString(), GUI.Msg.ERROR_MESSAGE);
 				}
 	        }
 	    });
@@ -234,7 +234,7 @@ public class FontPreviewWindow extends JDialog {
 	private BufferedImage getResource(String resourceName) {
 		BufferedImage output = null;
 		setResource: try {
-			InputStream is = FontPreviewWindow.class.getResourceAsStream(resourceName);
+			InputStream is = TextPreviewWindow.class.getResourceAsStream(resourceName);
 			if (is == null) break setResource;
 			output = ImageIO.read(is);
 		} catch (IOException e) {}//impossible
