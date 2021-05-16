@@ -7,24 +7,21 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.Action;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.DefaultEditorKit;
 
 import sbte.gui.GUI;
 import sbte.gui.popupmenus.CopyContextMenu;
 
 public class GUITextBox extends JPanel {
 	private final GUI parent;
-	private TextArea ta;
+	private final TextArea ta;
 	public GUITextBox(GUI caller) {
 		parent = caller;
 		
@@ -40,10 +37,10 @@ public class GUITextBox extends JPanel {
 		ta.setText(text);
 		ta.programmaticEditing = false;
 	}
-	public void setTextUnprogrammatically(String text) {
-		ta.unprogrammaticEditing = true;
+	public void setUndo(String text) {
+		ta.undoOperation = true;
 		ta.setText(text);
-		ta.unprogrammaticEditing = false;
+		ta.undoOperation = false;
 	}
 	public void setRed() {
 		ta.setForeground(Color.RED);
@@ -59,7 +56,7 @@ public class GUITextBox extends JPanel {
 	}
 	private class TextArea extends JTextArea {
 		public boolean programmaticEditing = false;
-		public boolean unprogrammaticEditing = false;
+		public boolean undoOperation = false;
 		public TextArea() {
 			setName("disabledBeforeOpen:true");
 			getDocument().addDocumentListener(textListener);
@@ -85,7 +82,7 @@ public class GUITextBox extends JPanel {
 	        void changed(DocumentEvent e) {
 	        	if (programmaticEditing) return;
 
-	        	parent.list.setText(GUITextBox.this.ta.getText(), unprogrammaticEditing);
+	        	parent.list.setText(GUITextBox.this.ta.getText(), undoOperation);
 	        	if (parent.isSaved) parent.isSaved = false;
 	        }
 	    };

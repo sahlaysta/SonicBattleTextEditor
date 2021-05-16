@@ -3,12 +3,20 @@ package sbte.gui.utilities;
 import java.awt.Component;
 import java.awt.Container;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JMenu;
 
 public class GUITools {
-	public static List<Component> getAllComponents(Container container) {
+	//get all elements/components of a Swing Container
+	public static List<Object> getAllElements(Container c){
+		List<Object> elements = new ArrayList<>();
+		elements.addAll(getAllComponents(c));
+		elements.add(c);
+		return elements;
+	}
+	private static List<Component> getAllComponents(Container container) {
 		Component[] iterate = container.getComponents();
 		if (container instanceof JMenu)
 			iterate = ((JMenu) container).getMenuComponents();
@@ -23,6 +31,47 @@ public class GUITools {
 		
 		return components;
 	}
+	
+	//get all elements with matching key
+	public static HashMap<Object, String> getAllElements(Container c, String key) {
+		final HashMap<Object, String> result = new HashMap<>();
+		for (Object obj: getAllElements(c)) {
+			if (!(obj instanceof Component)) continue;
+			Component comp = (Component)obj;
+			String value = null;
+			try {
+				value = getComponentValue(comp, key);
+			} catch (GUIException e) {
+				continue;
+			}
+			
+			result.put(comp, value);
+		}
+		
+		return result;
+	}
+	private static String getComponentValue(Component component, String key) throws GUIException {
+		String keyVal = key + ":";
+		
+		String compName = component.getName();
+		if (compName == null) throw new GUIException("Null component");
+		String[] parts = compName.split(",");
+		for (String part: parts) {
+			if (part.length() < keyVal.length()) continue;
+			if (!part.substring(0, keyVal.length()).contains(keyVal)) continue;
+			part = part.replace(keyVal, "");
+			return part;
+		}
+		
+		throw new GUIException("Missing key");
+	}
+	private static class GUIException extends Exception{
+		public GUIException(String arg0) {
+			super(arg0);
+		}
+	}
+	
+	
 	
 	public static void setSwingObjectText(Object object, String text) {
 		//generated

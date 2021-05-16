@@ -11,14 +11,14 @@ import sbte.parser.SonicBattleROMReader.ROM;
 import sbte.parser.SonicBattleROMReader.SonicBattleLine;
 
 public class GUIHandler implements ROMListener {
-	public void ROMopened(ROMArgs args) {
+	public void romOpened(ROMArgs args) {
 		List<SonicBattleLine> sonicBattleLines = null;
 		ROM rom = null;
 		try {
 			rom = new ROM(args.selectedPath);
 			sonicBattleLines = SonicBattleROMReader.readUSAROM(rom);
 		} catch (Exception e) {
-			args.source.showMsg(args.source.localization.get("open") + ": " + args.selectedPath.toString(), e.toString(), GUI.Msg.ERROR_MESSAGE);
+			args.source.showErrorMsgBox(args.source.localization.get("open") + ": " + args.selectedPath.toString(), e.toString());
 			return;
 		}
 
@@ -26,15 +26,15 @@ public class GUIHandler implements ROMListener {
 		args.source.open(rom, sonicBattleLines);
 	}
 
-	public void ROMsaved(ROMArgs args) {
+	public void romSaved(ROMArgs args) {
 		try {
 			SonicBattleROMSaver.saveToUSAROM(args.selectedPath, args.source.rom, args.source.getSonicBattleLines());
 		} catch (IOException e) {
-			args.source.showMsg(args.source.localization.get("save") + ": " + args.selectedPath.toString(), e.toString(), GUI.Msg.ERROR_MESSAGE);
+			args.source.showErrorMsgBox(args.source.localization.get("save") + ": " + args.selectedPath.toString(), e.toString());
 			return;
 		}
 		
 		args.source.isSaved = true;
-		args.source.showMsg(args.source.localization.get("save"), args.source.localization.get("saved"), GUI.Msg.INFORMATION_MESSAGE);
+		args.source.showMsgBox(args.source.localization.get("save"), args.source.localization.get("saved"));
 	}
 }

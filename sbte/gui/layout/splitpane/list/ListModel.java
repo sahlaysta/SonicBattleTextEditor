@@ -15,10 +15,8 @@ import sbte.utilities.JSONTools;
 public class ListModel extends DefaultListModel{
 	public List<byte[]> content = new ArrayList<>();
 	public List<SonicBattleLine> baseLines = new ArrayList<>();
-	
 	public List<String> textBoxDisplay = new ArrayList<>();
 	public HashMap<Integer, String> errors = new HashMap<>();
-	
 	public SBUndoManager undo = null;
 	
 	private final GUI parent;

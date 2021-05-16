@@ -5,11 +5,16 @@ import java.awt.Component;
 import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
 
+import sbte.gui.utilities.Preferences;
+
 public class GUISplit extends JSplitPane {
-	public GUISplit(int arg0, Component arg1, Component arg2) {
-		super(arg0, arg1, arg2);
+	public GUISplit(Component arg0, Component arg1, Preferences preferences) {
+		super(JSplitPane.VERTICAL_SPLIT, arg0, arg1);
 		
 		setBorder(new EmptyBorder(0, 5, 5, 5));
 		setResizeWeight(1);
+		
+		setDividerLocation(preferences.getDividerLocation());
+		addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, preferences.dividerListener);
 	}
 }
