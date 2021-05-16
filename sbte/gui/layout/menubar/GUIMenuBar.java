@@ -10,22 +10,21 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import sbte.gui.GUI;
+import sbte.gui.layout.menubar.actions.GUIActions;
+import sbte.gui.utilities.Preferences;
 
 public class GUIMenuBar extends JMenuBar {
-	private final GUI parent;
-	
-	public RecentlyOpenedMenu recentOpened;
 	public FileMenu fileMenu;
 	public EditMenu editMenu;
 	public SearchMenu searchMenu;
 	public ViewMenu viewMenu;
 	public HelpMenu helpMenu;
 	
-	public GUIMenuBar(GUI caller) {
-		parent = caller;
-		
-		recentOpened = new RecentlyOpenedMenu(parent, "json:fileRecent");
+	private final GUIActions actions;
+	private final Preferences preferences;
+	public GUIMenuBar(GUIActions actions, Preferences preferences) {
+		this.actions = actions;
+		this.preferences = preferences;
 
 		fileMenu = new FileMenu();
 		editMenu = new EditMenu();
@@ -42,14 +41,16 @@ public class GUIMenuBar extends JMenuBar {
 	
 	//Menus
 	public class FileMenu extends JMenu{
-		public MenuItem open, save, saveAs, close;
+		public final MenuItem open, save, saveAs, close;
+		public final RecentlyOpenedMenu recentOpened;
 		public FileMenu() {
 			setName("json:file");
 			
-			open = new MenuItem("json:open", "control O", parent.actions.open);
-			save = new MenuItem("json:save,disabledBeforeOpen:true", "control S", parent.actions.save);
-			saveAs = new MenuItem("json:saveAs,disabledBeforeOpen:true", "control shift S", parent.actions.saveAs);
-			close = new MenuItem("json:close", null, parent.actions.close);
+			open = new MenuItem("json:open", "control O", actions.open);
+			recentOpened = new RecentlyOpenedMenu(actions, preferences, "json:fileRecent");
+			save = new MenuItem("json:save,disabledBeforeOpen:true", "control S", actions.save);
+			saveAs = new MenuItem("json:saveAs,disabledBeforeOpen:true", "control shift S", actions.saveAs);
+			close = new MenuItem("json:close", null, actions.close);
 			
 			add(open);
 			add(recentOpened);
@@ -60,17 +61,17 @@ public class GUIMenuBar extends JMenuBar {
 		}
 	}
 	public class EditMenu extends JMenu{
-		public MenuItem importion, exportion, undo, redo, upOne, downOne;
+		public final MenuItem importion, exportion, undo, redo, upOne, downOne;
 		public EditMenu() {
 			setName("json:edit,disabledBeforeOpen:true");
 			
-			importion = new MenuItem("json:import", null, parent.actions.importion);
-			exportion = new MenuItem("json:export", null, parent.actions.exportion);
-			undo = new MenuItem("json:undo", "control Z", parent.actions.undo);
-			redo = new MenuItem("json:redo", "control Y", parent.actions.redo);
-			upOne = new MenuItem("json:upOne", null, parent.actions.upOne);
+			importion = new MenuItem("json:import", null, actions.importion);
+			exportion = new MenuItem("json:export", null, actions.exportion);
+			undo = new MenuItem("json:undo", "control Z", actions.undo);
+			redo = new MenuItem("json:redo", "control Y", actions.redo);
+			upOne = new MenuItem("json:upOne", null, actions.upOne);
 			upOne.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.CTRL_MASK));
-			downOne = new MenuItem("json:downOne", null, parent.actions.downOne);
+			downOne = new MenuItem("json:downOne", null, actions.downOne);
 			downOne.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_MASK));
 			
 			add(importion);
@@ -83,13 +84,13 @@ public class GUIMenuBar extends JMenuBar {
 		}
 	}
 	public class SearchMenu extends JMenu{
-		public MenuItem goTo, search, problematicLines;
+		public final MenuItem goTo, search, problematicLines;
 		public SearchMenu() {
 			setName("json:search,disabledBeforeOpen:true");
 
-			goTo = new MenuItem("json:goTo", "control G", parent.actions.goTo);
-			search = new MenuItem("json:search", "control F", parent.actions.search);
-			problematicLines = new MenuItem("json:prob", null, parent.actions.problematicLines);
+			goTo = new MenuItem("json:goTo", "control G", actions.goTo);
+			search = new MenuItem("json:search", "control F", actions.search);
+			problematicLines = new MenuItem("json:prob", null, actions.problematicLines);
 			
 			add(goTo);
 			add(search);
@@ -97,24 +98,24 @@ public class GUIMenuBar extends JMenuBar {
 		}
 	}
 	public class ViewMenu extends JMenu{
-		public MenuItem changeLang;
+		public final MenuItem changeLang;
 		public CheckBoxMenuItem textPreview;
 		public ViewMenu() {
 			setName("json:options");
 			
-			changeLang = new MenuItem("json:changeLang", null, parent.actions.changeLanguage);
-			textPreview = new CheckBoxMenuItem("json:textPreview,disabledBeforeOpen:true", null, parent.actions.textPreview);
+			changeLang = new MenuItem("json:changeLang", null, actions.changeLanguage);
+			textPreview = new CheckBoxMenuItem("json:textPreview,disabledBeforeOpen:true", null, actions.textPreview);
 			
 			add(changeLang);
 			add(textPreview);
 		}
 	}
 	public class HelpMenu extends JMenu{
-		public MenuItem about;
+		public final MenuItem about;
 		public HelpMenu() {
 			setName("json:help");
 			
-			about = new MenuItem("json:about", "F1", parent.actions.about);
+			about = new MenuItem("json:about", "F1", actions.about);
 			
 			add(about);
 		}
@@ -123,16 +124,17 @@ public class GUIMenuBar extends JMenuBar {
 	//custom menuitem
 	public class MenuItem extends JMenuItem{
 		public MenuItem(String name, String shortcut, ActionListener action) {
-			setName(name);
-			if (shortcut != null) setAccelerator(KeyStroke.getKeyStroke(shortcut));
-			if (action != null) addActionListener(action);
+			setMenuItemProperties(this, name, shortcut, action);
 		}
 	}
 	public class CheckBoxMenuItem extends JCheckBoxMenuItem{
 		public CheckBoxMenuItem(String name, String shortcut, ActionListener action) {
-			setName(name);
-			if (shortcut != null) setAccelerator(KeyStroke.getKeyStroke(shortcut));
-			if (action != null) addActionListener(action);
+			setMenuItemProperties(this, name, shortcut, action);
 		}
+	}
+	private void setMenuItemProperties(JMenuItem arg0, String name, String shortcut, ActionListener action) {
+		arg0.setName(name);
+		if (shortcut != null) arg0.setAccelerator(KeyStroke.getKeyStroke(shortcut));
+		if (action != null) arg0.addActionListener(action);
 	}
 }

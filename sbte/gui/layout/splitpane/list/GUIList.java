@@ -16,13 +16,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import sbte.gui.GUI;
-import sbte.utilities.ByteTools;
 
 public class GUIList extends JPanel {
 	private final TitledBorder title;
 	private final JScrollPane scroll;
 	private final GUI parent;
-	private List list;
+	private final List list;
 	public GUIList(GUI caller, DefaultListModel e) {
 		parent = caller;
 		
@@ -89,7 +88,7 @@ public class GUIList extends JPanel {
 		setSelection(index + 1);
 		ensureIndexIsVisible(index + 1);
 	}
-	public class List extends JList {
+	private class List extends JList {
 		public List(DefaultListModel e) {
 			super(e);
 			
@@ -100,7 +99,7 @@ public class GUIList extends JPanel {
 			addListSelectionListener(lh);
 			setCellRenderer(new ColorList(parent.listModel));
 			
-			//remove key click to change position
+			//remove all the 'key click to change position' listeners
 			KeyListener[] lsnrs = getKeyListeners();
 			for (int i = 0; i < lsnrs.length; i++)
 			    removeKeyListener(lsnrs[i]);
@@ -128,11 +127,13 @@ public class GUIList extends JPanel {
 		public ColorList(ListModel e) {
 			lm = e;
 		}
+		
 		//background color of list items
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        	Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            if (lm.isProblematic(index)){
+        	final Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        	
+            if (lm.isProblematic(index)) {
             	setForeground(Color.RED);
             }
                   

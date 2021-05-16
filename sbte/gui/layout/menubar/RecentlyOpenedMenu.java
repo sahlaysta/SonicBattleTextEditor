@@ -10,20 +10,24 @@ import java.util.List;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import sbte.gui.GUI;
+import sbte.gui.layout.menubar.actions.GUIActions;
+import sbte.gui.utilities.Preferences;
 
 public class RecentlyOpenedMenu extends JMenu {
 	public static final int RECENT_FILES_LIMIT = 10;
-	private RecentFiles rf;
-	private final GUI parent;
-	public RecentlyOpenedMenu(GUI caller, String name) {
-		parent = caller;
+	
+	private final GUIActions actions;
+	private final Preferences preferences;
+	private final RecentFiles recentFiles;
+	public RecentlyOpenedMenu(GUIActions actions, Preferences preferences, String name) {
+		this.actions = actions;
+		this.preferences = preferences;
 		setName(name);
 		
-		rf = new RecentFiles(RECENT_FILES_LIMIT);
+		recentFiles = new RecentFiles(RECENT_FILES_LIMIT);
 	}
 	public void add(File file) {
-		rf.addElement(file);
+		recentFiles.addElement(file);
 	}
 	public void clear() {
 		for (Component c: this.getMenuComponents()) {
@@ -34,7 +38,7 @@ public class RecentlyOpenedMenu extends JMenu {
 		private final int limit;
 		public RecentFiles(int limit) {
 			this.limit = limit;
-			final List<File> recentsPreference = parent.preferences.getRecentlyOpened();
+			final List<File> recentsPreference = preferences.getRecentlyOpened();
 			
 			for (int i = 0; i < limit; i++)
 				addElement(null);
@@ -72,7 +76,7 @@ public class RecentlyOpenedMenu extends JMenu {
 					jmi.setText(file.toString());
 					jmi.addActionListener(new ActionListener() {
 					      public void actionPerformed(ActionEvent e) {
-					          parent.actions.open(file);
+					          actions.open(file);
 					      }
 					});
 				}
@@ -89,7 +93,7 @@ public class RecentlyOpenedMenu extends JMenu {
 				removeElement(size()-1);
 			}
 			
-			parent.preferences.setRecentlyOpened(this);
+			preferences.setRecentlyOpened(this);
 		}
 	}
 }

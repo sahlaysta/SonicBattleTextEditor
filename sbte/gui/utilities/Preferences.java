@@ -21,12 +21,16 @@ import sbte.gui.GUI;
 import sbte.utilities.JSONTools;
 
 public class Preferences extends JSONObject {
-	public Preferences(JSONObject jsonObject) {
+	private final GUI parent;
+	public Preferences(GUI caller, JSONObject jsonObject) {
+		parent = caller;
 		for (Object o: jsonObject.keySet()) {
 			String key = o.toString();
 			Object value = jsonObject.get(key);
 			super.put(key, value);
 		}
+		applyWindowProperties(parent);
+		parent.addComponentListener(windowListener);
 	}
 	
 	private static final String WINDOW_PROPERTIES_KEY = "windowProperties";
@@ -78,7 +82,7 @@ public class Preferences extends JSONObject {
 		return new WindowProperties(windowMaximized, windowLocationX, windowLocationY, windowSizeX, windowSizeY);
 	}
 	
-	public ComponentListener windowListener = new ComponentListener() {
+	private ComponentListener windowListener = new ComponentListener() {
 		@Override
 		public void componentHidden(ComponentEvent arg0) {
 			

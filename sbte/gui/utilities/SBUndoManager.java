@@ -37,7 +37,7 @@ public class SBUndoManager {
 	private void setUndoItem(UndoItem ui) {
 		parent.list.setSelection(ui.index);
 		parent.list.ensureIndexIsVisible(ui.index);
-		parent.textBox.setTextUnprogrammatically(ui.string);
+		parent.textBox.setUndo(ui.string);
 	}
 	private class UndoItem {
 		public final String string;

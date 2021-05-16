@@ -16,26 +16,24 @@ import org.json.simple.parser.ParseException;
 
 import sbte.gui.GUI;
 import sbte.gui.GUIHandler;
-import sbte.gui.GUI.Msg;
 import sbte.gui.layout.menubar.actions.utilities.GUIFileChooser;
 import sbte.gui.layout.menubar.actions.windowmenus.GUIChangeLanguage;
 import sbte.gui.layout.menubar.actions.windowmenus.GUIGoTo;
 import sbte.gui.layout.menubar.actions.windowmenus.GUISearch;
 import sbte.gui.layout.menubar.actions.windowmenus.ScrollMessage;
-import sbte.gui.layout.menubar.actions.windowmenus.textpreview.TextPreviewWindow;
 import sbte.utilities.FileTools;
 import sbte.utilities.JSONTools;
 
 public class GUIActions {
-	public ROMEvent ROMListener = new ROMEvent();
+	public ROMEvent romHandler = new ROMEvent();
 	
 	private final GUI parent;
 	public GUIActions(GUI caller) {
 		parent = caller;
-		ROMListener.addListener(new GUIHandler());
+		romHandler.addListener(new GUIHandler());
 	}
 
-	//menubar actions
+	//menubar actionlisteners
 	public ActionListener open = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
         	open(null);
@@ -55,12 +53,11 @@ public class GUIActions {
         public void actionPerformed(ActionEvent e) {
         	if (parent.isOpen) {
         		if (!parent.isSaved) {
-        			if (yesNoDialog("close") == JOptionPane.NO_OPTION) return;
+        			if (yesNoDialog("close") != JOptionPane.YES_OPTION) return;
         		}
         		parent.close();
         		return;
         	}
-        	
         	System.exit(0);
         }
     };
@@ -86,7 +83,10 @@ public class GUIActions {
     };
     public ActionListener about = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-        	JOptionPane.showMessageDialog(parent, "V3.3.0\n" + parent.localization.get("credits").replace("[v]", "porog") + "\nhttps://github.com/sahlaysta/SonicBattleTextEditor", parent.localization.get("about"), JOptionPane.INFORMATION_MESSAGE);
+        	parent.showMsgBox(
+        			parent.localization.get("about"), 
+        			"V3.3.0\n" + parent.localization.get("credits").replace("[v]", "porog") + "\nhttps://github.com/sahlaysta/SonicBattleTextEditor"
+        			);
         }
     };
     public ActionListener importion = new ActionListener() {
@@ -95,7 +95,7 @@ public class GUIActions {
         }
     };
     public ActionListener exportion = new ActionListener() {
-        public void actionPerformed(ActionEvent e) { //export all lines to json file
+        public void actionPerformed(ActionEvent e) {
         	exportion();
         }
     };
@@ -130,29 +130,26 @@ public class GUIActions {
         }
     };
     
-    public void open(File file) {
+    public void open(File file) { //open a ROM
     	if (parent.isOpen) {
     		if (!parent.isSaved) {
-    			if (yesNoDialog("open") == JOptionPane.NO_OPTION) return;
+    			if (yesNoDialog("open") != JOptionPane.YES_OPTION) return;
     		}
     	}
     		
     	File selection = null;
 		if (file == null) {
-			GUIFileChooser gfc = new GUIFileChooser(GUIFileChooser.OPEN_FILE_PROMPT, "GBA");
-			gfc.setParent(parent);
-			gfc.setPreference(GUIFileChooser.ROM_PATH_PREFERENCE);
-			gfc.show();
+			GUIFileChooser gfc = new GUIFileChooser(parent, GUIFileChooser.OPEN_FILE_PROMPT, "GBA", GUIFileChooser.ROM_PATH_PREFERENCE);
 	        if (gfc.hasCanceled()) return;
 	        selection = gfc.getSelectedFile();
 		}
 		else selection = file;
 		
-        parent.menuBar.recentOpened.add(selection);
-        ROMListener.raiseOpenROM(new ROMArgs(selection, parent));
+        parent.menuBar.fileMenu.recentOpened.add(selection);
+        romHandler.raiseOpenROM(new ROMArgs(selection, parent));
     }
     
-    public void save(File file) {
+    public void save(File file) { //save ROM
     	if (parent.listModel.errors.size() > 0) {
     		GUISearch.problematicGUI(parent);
     		return;
@@ -160,10 +157,7 @@ public class GUIActions {
     	
     	File selection = null;
     	if (file == null) {
-			GUIFileChooser gfc = new GUIFileChooser(GUIFileChooser.SAVE_FILE_PROMPT, "GBA");
-			gfc.setParent(parent);
-			gfc.setPreference(GUIFileChooser.ROM_PATH_PREFERENCE);
-			gfc.show();
+			GUIFileChooser gfc = new GUIFileChooser(parent, GUIFileChooser.SAVE_FILE_PROMPT, "GBA", GUIFileChooser.ROM_PATH_PREFERENCE);
 	        if (gfc.hasCanceled()) return;
 	        selection = gfc.getSelectedFile();
 		}
@@ -171,28 +165,25 @@ public class GUIActions {
     		selection = file;
     	}
     	
-    	if (selection.exists()) {
+    	if (selection.exists()) { //overwrite prompt
     		Object[] options = { parent.localization.get("yes"), parent.localization.get("no") };
     		if (JOptionPane.showOptionDialog(parent, parent.localization.get("overwrite").replace("[v]", selection.toString()), parent.localization.get("save"),
             	    JOptionPane.DEFAULT_OPTION, 3, null, 
-            	    options, options[0]) == JOptionPane.NO_OPTION) return;
+            	    options, options[0]) != JOptionPane.YES_OPTION) return;
     	}
     	
-    	ROMListener.raiseSaveROM(new ROMArgs(selection, parent));
+    	romHandler.raiseSaveROM(new ROMArgs(selection, parent));
     }
     
-    public void exportion() {
-    	GUIFileChooser gfc = new GUIFileChooser(GUIFileChooser.SAVE_FILE_PROMPT, "JSON");
-		gfc.setParent(parent);
-		gfc.setPreference(GUIFileChooser.LINES_FILE_PREFERENCE);
-		gfc.show();
+    public void exportion() { //export lines
+    	GUIFileChooser gfc = new GUIFileChooser(parent, GUIFileChooser.SAVE_FILE_PROMPT, "JSON", GUIFileChooser.LINES_FILE_PREFERENCE);
         if (gfc.hasCanceled()) return;
         File selection = gfc.getSelectedFile();
-        if (selection.exists()) {
+        if (selection.exists()) { //overwrite prompt
         	Object[] options = { parent.localization.get("yes"), parent.localization.get("no") };
     		if (JOptionPane.showOptionDialog(parent, parent.localization.get("overwrite").replace("[v]", selection.toString()), parent.localization.get("export"),
             	    JOptionPane.DEFAULT_OPTION, 3, null, 
-            	    options, options[0]) == JOptionPane.NO_OPTION) return;
+            	    options, options[0]) != JOptionPane.YES_OPTION) return;
     	}
         
     	StringBuilder sb = new StringBuilder("{\r\n");
@@ -208,18 +199,15 @@ public class GUIActions {
     	try {
 			FileTools.writeStringToFile(selection, sb.toString());
 		} catch (IOException e) {
-			parent.showMsg(parent.localization.get("error") + ": " + selection.toString(), e.toString(), Msg.ERROR_MESSAGE);
+			parent.showErrorMsgBox(parent.localization.get("error") + ": " + selection.toString(), e.toString());
 			return;
 		}
     	
-    	parent.showMsg(parent.localization.get("export"), parent.localization.get("exported"), Msg.INFORMATION_MESSAGE);
+    	parent.showMsgBox(parent.localization.get("export"), parent.localization.get("exported"));
     }
     
-    public void importion() {
-    	GUIFileChooser gfc = new GUIFileChooser(GUIFileChooser.OPEN_FILE_PROMPT, "JSON");
-		gfc.setParent(parent);
-		gfc.setPreference(GUIFileChooser.LINES_FILE_PREFERENCE);
-		gfc.show();
+    public void importion() { //import lines
+    	GUIFileChooser gfc = new GUIFileChooser(parent, GUIFileChooser.OPEN_FILE_PROMPT, "JSON", GUIFileChooser.LINES_FILE_PREFERENCE);
         if (gfc.hasCanceled()) return;
         File selection = gfc.getSelectedFile();
         
@@ -227,11 +215,9 @@ public class GUIActions {
         try {
 			String jsonFile = FileTools.readFileToString(selection);
 			json = (JSONObject) JSONTools.parser.parse(jsonFile);
-		} catch (FileNotFoundException e) {
-			parent.showMsg(parent.localization.get("error") + ": " + selection.toString(), e.toString(), Msg.ERROR_MESSAGE);
+		} catch (FileNotFoundException | ParseException e) {
+			parent.showErrorMsgBox(parent.localization.get("error") + ": " + selection.toString(), e.toString());
 			return;
-		} catch (ParseException e) {
-			parent.showMsg(parent.localization.get("error") + ": " + selection.toString(), e.toString(), Msg.ERROR_MESSAGE);
 		}
         
         StringBuilder missed = new StringBuilder();
@@ -252,7 +238,7 @@ public class GUIActions {
         
         parent.listModel.resetUndoManager();
         
-        parent.showMsg(parent.localization.get("import"), parent.localization.get("imported"), Msg.INFORMATION_MESSAGE);
+        parent.showMsgBox(parent.localization.get("import"), parent.localization.get("imported"));
         if (parent.listModel.errors.size() > 0)
         	GUISearch.problematicGUI(parent);
         if (missed.length() > 0) {
@@ -271,8 +257,8 @@ public class GUIActions {
     
     //custom listener ROM handler
     public interface ROMListener {
-	    void ROMopened(ROMArgs args);
-	    void ROMsaved(ROMArgs args);
+	    void romOpened(ROMArgs args);
+	    void romSaved(ROMArgs args);
 	}
 	public static class ROMEvent {
 	    private List<ROMListener> listeners = new ArrayList<ROMListener>();
@@ -283,11 +269,11 @@ public class GUIActions {
 
 	    public void raiseOpenROM(ROMArgs args) {
 	        for (ROMListener orl: listeners)
-	            orl.ROMopened(args);
+	            orl.romOpened(args);
 	    }
 	    public void raiseSaveROM(ROMArgs args) {
 	        for (ROMListener orl: listeners)
-	            orl.ROMsaved(args);
+	            orl.romSaved(args);
 	    }
 	}
 	public static class ROMArgs {

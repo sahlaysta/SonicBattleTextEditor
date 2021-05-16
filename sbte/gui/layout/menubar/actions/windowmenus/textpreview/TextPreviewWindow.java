@@ -139,16 +139,13 @@ public class TextPreviewWindow extends JDialog {
 		saveImage.setName("json:saveImage");
 		saveImage.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) { //save image
-	        	GUIFileChooser gfc = new GUIFileChooser(GUIFileChooser.SAVE_AS_FILE_PROMPT, "PNG");
-	        	gfc.setParent(parent);
-	        	gfc.setPreference("pngPath");
-	        	gfc.show();
+	        	GUIFileChooser gfc = new GUIFileChooser(parent, GUIFileChooser.SAVE_AS_FILE_PROMPT, "PNG", "pngPath");
 	        	if (gfc.hasCanceled()) return;
 	        	File selection = gfc.getSelectedFile();
 	        	try {
 					ImageIO.write(rawImage, "png", selection);
 				} catch (IOException e2) {
-					JOptionPane.showMessageDialog(TextPreviewWindow.this, parent.localization.get("saveImage") + ": " + selection.toString(), e2.toString(), GUI.Msg.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(TextPreviewWindow.this, parent.localization.get("saveImage") + ": " + selection.toString(), e2.toString(), JOptionPane.ERROR_MESSAGE);
 				}
 	        }
 	    });
@@ -622,7 +619,9 @@ public class TextPreviewWindow extends JDialog {
 	    return dimg;
 	}
 	private void removeAllJLabels(Container c) {
-		for (Component comp: GUITools.getAllComponents(c)) {
+		for (Object obj: GUITools.getAllElements(c)) {
+			if (!(obj instanceof Component)) continue;
+			Component comp = (Component)obj;
 			if (comp instanceof JLabel) {
 				c.remove(comp);
 			}

@@ -15,33 +15,43 @@ public class GUIFileChooser extends JFileChooser {
 	public static final String LINES_FILE_PREFERENCE = "jsonPath";
 	private boolean approve;
 	private GUI parent;
-	private final int args;
-	private final String filter;
-	public GUIFileChooser(int args, String filter) {
-		this.args = args;
-		this.filter = filter;
+	private int chooseType;
+	private String filter;
+	public GUIFileChooser(GUI caller, int chooseType, String filter) {
+		construct(caller, chooseType, filter);
+		start();
 	}
-	public void setParent(GUI caller) {
+	public GUIFileChooser(GUI caller, int chooseType, String filter, String pathPreference) {
+		construct(caller, chooseType, filter);
+		setPreference(pathPreference);
+		start();
+	}
+	private void construct(GUI caller, int chooseType, String filter) {
 		parent = caller;
+		this.chooseType = chooseType;
+		this.filter = filter;
+		
 		setDialogTitle();
 		setFilter(parent.localization.get("fileType"), filter);
 	}
+	
+	
 	private void setDialogTitle() {
 		String dialogTitle = null;
-		if (args == OPEN_FILE_PROMPT) dialogTitle = parent.localization.get("open");
-		else if (args == SAVE_FILE_PROMPT) dialogTitle = parent.localization.get("save");
-		else if (args == SAVE_AS_FILE_PROMPT) dialogTitle = parent.localization.get("saveAs");
+		if (chooseType == OPEN_FILE_PROMPT) dialogTitle = parent.localization.get("open");
+		else if (chooseType == SAVE_FILE_PROMPT) dialogTitle = parent.localization.get("save");
+		else if (chooseType == SAVE_AS_FILE_PROMPT) dialogTitle = parent.localization.get("saveAs");
 		if (dialogTitle != null) setDialogTitle(dialogTitle);
 	}
-	public void setFilter(String text, String filter) {
+	private void setFilter(String text, String filter) {
 		FileNameExtensionFilter fef = null; 
 		if (text != null) fef = new FileNameExtensionFilter(text.replace("[v]", filter), filter);
 		else fef = new FileNameExtensionFilter(filter, filter, filter);
 		addChoosableFileFilter(fef);
 		setFileFilter(fef);
 	}
-	public String key;
-	public void setPreference(String key) {
+	private String key;
+	private void setPreference(String key) {
 		this.key = key;
 		if (parent.preferences.containsKey(key)) {
 			setCurrentDirectory(new File(parent.preferences.get(key).toString()));
@@ -55,18 +65,18 @@ public class GUIFileChooser extends JFileChooser {
 	@Override
 	public File getSelectedFile() { //smart-add extension
 		File output = super.getSelectedFile();
-		if (output == null || this.args == OPEN_FILE_PROMPT || output.exists() || getFileFilter().toString().contains("AcceptAllFileFilter")) return output;
+		if (output == null || this.chooseType == OPEN_FILE_PROMPT || output.exists() || getFileFilter().toString().contains("AcceptAllFileFilter")) return output;
 		if (!output.toString().contains(".")) {
 			File extension = new File(output.toString() + "." + filter.toLowerCase());
 			if (!extension.exists()) return extension;
 		}
 		return output;
 	}
-	public void show() {
-		if (args == OPEN_FILE_PROMPT) {
+	private void start() {
+		if (chooseType == OPEN_FILE_PROMPT) {
 			approve = showOpenDialog(parent) == APPROVE_OPTION;
 		}
-		else if (args == SAVE_FILE_PROMPT || args == SAVE_AS_FILE_PROMPT) {
+		else if (chooseType == SAVE_FILE_PROMPT || chooseType == SAVE_AS_FILE_PROMPT) {
 			approve = showSaveDialog(parent) == APPROVE_OPTION;
 		}
 		
