@@ -106,7 +106,7 @@ public final class GUI extends JFrame {
 		isOpen = true;
 	}
 	public void close() {
-		closeTextPreview();
+		//closeTextPreview();
 		list.setSelection(-1);
 		listModel.clear();
 		textBox.clear();

@@ -48,6 +48,13 @@ public final class GUITextBox extends JPanel {
 	public void unred() {
 		ta.setForeground(Color.BLACK);
 	}
+	public void requestFocus() {
+		ta.requestFocus();
+	}
+	public void setEnabled(boolean enabled) {
+		ta.setEnabled(enabled);
+		super.setEnabled(enabled);
+	}
 	public void clear() {
 		unred();
 		ta.programmaticEditing = true;

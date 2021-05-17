@@ -61,7 +61,7 @@ public final class GUIMenuBar extends JMenuBar {
 		}
 	}
 	public class EditMenu extends JMenu{
-		public final MenuItem importion, exportion, undo, redo, upOne, downOne;
+		public final MenuItem importion, exportion, undo, redo, upOne, downOne, properties;
 		public EditMenu() {
 			setName("json:edit,disabledBeforeOpen:true");
 			
@@ -70,9 +70,11 @@ public final class GUIMenuBar extends JMenuBar {
 			undo = new MenuItem("json:undo", "control Z", actions.undo);
 			redo = new MenuItem("json:redo", "control Y", actions.redo);
 			upOne = new MenuItem("json:upOne", null, actions.upOne);
-			upOne.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.CTRL_MASK));
+			upOne.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK));
 			downOne = new MenuItem("json:downOne", null, actions.downOne);
-			downOne.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_MASK));
+			downOne.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK));
+			properties = new MenuItem("json:properties", null, null);
+			properties.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.ALT_DOWN_MASK));
 			
 			add(importion);
 			add(exportion);
@@ -81,6 +83,8 @@ public final class GUIMenuBar extends JMenuBar {
 			add(redo);
 			add(upOne);
 			add(downOne);
+			addSeparator();
+			add(properties);
 		}
 	}
 	public class SearchMenu extends JMenu{

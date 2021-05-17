@@ -3,6 +3,8 @@ package sbte.gui.layout.splitpane.list;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
 
 import javax.swing.DefaultListCellRenderer;
@@ -98,6 +100,7 @@ public final class GUIList extends JPanel {
 			ListHandler lh = new ListHandler();
 			addListSelectionListener(lh);
 			setCellRenderer(new ColorList(parent.listModel));
+			addFocusListener(new FocusHandler());
 			
 			//remove all the 'key click to change position' listeners
 			KeyListener[] lsnrs = getKeyListeners();
@@ -105,12 +108,27 @@ public final class GUIList extends JPanel {
 			    removeKeyListener(lsnrs[i]);
 		}
 	}
+	private class FocusHandler implements FocusListener { //on focus changed
+		@Override
+		public void focusGained(FocusEvent arg0) {
+			parent.textBox.requestFocus();
+		}
+		@Override
+		public void focusLost(FocusEvent arg0) {
+			
+		}
+	}
 	private class ListHandler implements ListSelectionListener { //on list index changed
 		@Override
 		public void valueChanged(ListSelectionEvent arg0) {
 			int index = ((JList)arg0.getSource()).getSelectedIndex();
 			refreshTitle();
-			if (index < 0) return;
+			if (index < 0) {
+				parent.textBox.clear();
+				parent.textBox.setEnabled(false);
+				return;
+			}
+			parent.textBox.setEnabled(true);
 			
 			parent.textBox.setText(parent.listModel.textBoxDisplay.get(index).toString());
 			parent.setTextPreview(index);
@@ -122,7 +140,7 @@ public final class GUIList extends JPanel {
 			}
 		}
 	}
-	public static class ColorList extends DefaultListCellRenderer {
+	private class ColorList extends DefaultListCellRenderer {
 		private final ListModel lm;
 		public ColorList(ListModel e) {
 			lm = e;
