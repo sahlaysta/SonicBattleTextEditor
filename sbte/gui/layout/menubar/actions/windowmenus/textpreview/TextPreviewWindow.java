@@ -16,6 +16,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -36,6 +38,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
@@ -108,15 +111,65 @@ public class TextPreviewWindow extends JDialog {
 		super.addWindowListener(new OnClose());
 		super.setResizable(false);
 		
+		this.setMenuBar();
 		imagePanel = new JPanel();
 		imagePanel.setLayout(new GridLayout(1,1,0,0));
 		imagePanel.setBorder(new EmptyBorder(0,0,0,0));
+		imagePanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				popupMenu(arg0);
+			}
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				popupMenu(arg0);
+			}
+			void popupMenu(MouseEvent arg0){
+				if (!arg0.isPopupTrigger()) return;
+				RightClickMenu rcm = new RightClickMenu();
+				rcm.show((Component)arg0.getSource(), arg0.getX(), arg0.getY());
+			}
+			class RightClickMenu extends JPopupMenu {
+				public RightClickMenu() {
+					addMenu(file);
+					addSeparator();
+					addMenu(view);
+				}
+				void addMenu(JMenu arg0) { //deep copy JMenu
+					for (Component comp: arg0.getMenuComponents()) {
+						if (!(comp instanceof JMenuItem)) continue;
+						JMenuItem source = (JMenuItem)comp;
+						JMenuItem addition = new JMenuItem();
+						addition.setText(source.getText());
+						addition.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent arg0) {
+								source.doClick();
+							}
+						});
+						super.add(addition);
+						if (!(comp instanceof JCheckBoxMenuItem)) continue;
+						super.remove(addition);
+						JCheckBoxMenuItem checkSource = (JCheckBoxMenuItem)comp;
+						JCheckBoxMenuItem checkAddition = new JCheckBoxMenuItem();
+						checkAddition.setText(checkSource.getText());
+						checkAddition.setSelected(checkSource.isSelected());
+						checkAddition.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent arg0) {
+								checkSource.doClick();
+							}
+						});
+						super.add(checkAddition);
+					}
+				}
+			}
+		});
 		super.add(imagePanel);
 		buttonPanel = new ButtonPanel();
 		buttonPanel.putButtons();
 		super.add(buttonPanel, BorderLayout.PAGE_END);
 		
-		this.setMenuBar();
 		this.setMagnification(0);
 	}
 	private class OnClose extends WindowAdapter { //close event
