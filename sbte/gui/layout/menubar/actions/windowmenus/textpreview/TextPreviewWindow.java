@@ -254,6 +254,8 @@ public class TextPreviewWindow extends JDialog {
 	private int displayIndex;
 	private HashMap<Integer, Integer> indexHistory = new HashMap<>();
 	public void setContent(int index) {
+		removeWorkers();
+		
 		byte[] msg = null;
 		if (index >= 0)
 			msg = parent.listModel.content.get(index);
@@ -279,7 +281,6 @@ public class TextPreviewWindow extends JDialog {
 		if (index >= content.size() || index < 0) return;
 		displayIndex = index;
 		this.display = content.get(displayIndex);
-		buttonPanel.setText(index, content.size());
 		indexHistory.put(contentIndex, displayIndex);
 		resetDisplayText();
 	}
@@ -338,6 +339,16 @@ public class TextPreviewWindow extends JDialog {
 		});
 		newThread.start();
 	}
+	private void removeWorkers() {
+		List<PaintWorker> removeQueue = new ArrayList<>();
+		for (PaintWorker pw: workers) {
+			removeQueue.add(pw);
+		}
+		for (PaintWorker pw: removeQueue) {
+			if (pw == null) continue;
+			workers.remove(pw);
+		}
+	}
 	private class PaintWorker extends SwingWorker {
 		BufferedImage buffImg;
 		
@@ -356,6 +367,7 @@ public class TextPreviewWindow extends JDialog {
 		protected void done() {
 			setTextFrame(buffImg);
 			workers.remove(this);
+			buttonPanel.setText(displayIndex, content.size());
 		}
 		
 	}
@@ -371,7 +383,7 @@ public class TextPreviewWindow extends JDialog {
 			} catch (ParseException e2) {}
 		}
 		int drawPosX = defaultFontPos.x, drawPosY = defaultFontPos.y;
-		int color = BLACK;
+		int color = getPrevColor(displayIndex);
 		for (Object obj: msg) {
 			if (obj instanceof NamedImage) {
 				NamedImage nimg = (NamedImage)obj;
@@ -477,6 +489,30 @@ public class TextPreviewWindow extends JDialog {
 		}
 		
 		return null; //no matches
+	}
+	private int getPrevColor(int index) {
+		int result = BLACK;
+		for (int i = 0; i < index; i++) {
+			List<Object> msg = null;
+			try {
+				msg = parseMessage(content.get(i));
+			} catch (ParseException e) {
+				return BLACK;
+			}
+			
+			for (Object obj: msg) {
+				if (!(obj instanceof SpecialChar)) continue;
+				SpecialChar sc = (SpecialChar)obj;
+				if (sc.arg == FontArg.BLUE) result = BLUE;
+				if (sc.arg == FontArg.BLACK) result = BLACK;
+				if (sc.arg == FontArg.GREEN) result = GREEN;
+				if (sc.arg == FontArg.PURPLE) result = PURPLE;
+				if (sc.arg == FontArg.RED) result = RED;
+				if (sc.arg == FontArg.WHITE) result = WHITE;
+			}
+		}
+		
+		return result;
 	}
 	private BufferedImage getSBResource(String arg0) {
 		return getResource("SonicBattleFont/" + arg0 + ".png");

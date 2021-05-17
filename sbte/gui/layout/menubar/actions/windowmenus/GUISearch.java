@@ -77,7 +77,6 @@ public class GUISearch {
 			
 			JPanel tfp = new JPanel();
 			UndoTF tf = new UndoTF(parent);
-			tf.setText(history);
 			tfp.setBorder(new EmptyBorder(5,5,5,5));
 			tfp.setLayout(new GridLayout(1,1));
 			tfp.add(tf);
@@ -174,6 +173,8 @@ public class GUISearch {
 					  l.setFound(m.getSize());
 				  }
 			});
+
+			tf.setText(history);
 			
 			//go to action
 			b.addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){
