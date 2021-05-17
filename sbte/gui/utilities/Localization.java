@@ -9,20 +9,33 @@ import org.json.simple.parser.ParseException;
 import sbte.utilities.FileTools;
 
 public class Localization {
-	public static HashMap<String, String> getMap(String language) {
-		String jsonToParse = getLocalizationFile();
-		JSONObject json = parseJsonString(jsonToParse);
+	private static final String DEFAULT_LANGUAGE = "en-*";
+	private static final String SEARCH_NOT_FOUND = (String)null;
+	public static HashMap<String, String> getMap(String arg0) {
+		/*
+		 * Guess the language with the String parameter
+		 * Example: parameter = "fr-FR" (french language)
+		 * Search localization.json for "fr-FR"
+		 * If that failed, mutilate to "fr-*"
+		 * Search localization.json for "fr-*"
+		 * If that failed, use the default language "en-*" (English)
+		 */
 		
-		String langKey = null;
+		final String jsonToParse = getLocalizationFile();
+		final JSONObject json = parseJsonString(jsonToParse);
+		String language = new String(arg0);
+	
+		String searchResult = SEARCH_NOT_FOUND;
+		
 		for (Object o: json.keySet()) {
 			String key = o.toString();
 			if (key.equals(language)) {
-				langKey = key;
+				searchResult = key;
 				break;
 			}
 		}
 		
-		if (langKey == null) {
+		if (searchResult == SEARCH_NOT_FOUND) {
 			if (language.contains("-")) {
 				language = language.substring(0, language.indexOf("-"));
 				language += "-*";
@@ -30,20 +43,19 @@ public class Localization {
 				language += "-*";
 			}
 		}
-		
 		for (Object o: json.keySet()) {
 			String key = o.toString();
 			if (key.equals(language)) {
-				langKey = key;
+				searchResult = key;
 				break;
 			}
 		}
 		
-		if (langKey == null) {
-			langKey = "en-*"; //default language
+		if (searchResult == SEARCH_NOT_FOUND) {
+			searchResult = DEFAULT_LANGUAGE; //default language
 		}
 
-		JSONObject languageJson = (JSONObject) json.get(langKey);
+		JSONObject languageJson = (JSONObject) json.get(searchResult);
 		HashMap<String, String> languageMap = new HashMap<>();
 		for (Object o: languageJson.keySet()) {
 			String key = o.toString();
@@ -51,7 +63,7 @@ public class Localization {
 			languageMap.put(key, value);
 		}
 		
-		languageMap.put("thisKey", langKey);
+		languageMap.put("thisKey", searchResult);
 		
 		return languageMap;
 	}

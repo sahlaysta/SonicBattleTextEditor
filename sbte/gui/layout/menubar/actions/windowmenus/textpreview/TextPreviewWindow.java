@@ -476,7 +476,7 @@ public class TextPreviewWindow extends JDialog {
 			return nimg;
 		}
 		
-		return null;
+		return null; //no matches
 	}
 	private BufferedImage getSBResource(String arg0) {
 		return getResource("SonicBattleFont/" + arg0 + ".png");

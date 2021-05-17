@@ -12,6 +12,10 @@ import javax.swing.text.TextAction;
 import sbte.gui.GUI;
 
 public class CopyContextMenu extends JPopupMenu {
+	/*
+	 * Global pop up menu with cut, copy and paste
+	 * menuitems
+	 */
 	private final GUI parent;
 	public CopyContextMenu(GUI caller) {
 		parent = caller;

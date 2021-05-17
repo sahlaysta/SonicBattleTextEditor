@@ -1,6 +1,6 @@
 package sbte.utilities;
 
-public class ByteTools {
+public class ByteTools { //Global byte utilities
 	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 	public static String toHexString(byte[] bytes) {
 		char[] hexChars = new char[bytes.length * 2];
@@ -11,13 +11,12 @@ public class ByteTools {
 	    }
 	    return new String(hexChars);
 	}
-
-	public static byte[] toByteArray(String s) {
-		int len = s.length();
+	public static byte[] toByteArray(String e) {
+		int len = e.length();
 	    byte[] data = new byte[len / 2];
 	    for (int i = 0; i < len; i += 2) {
-	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-	                             + Character.digit(s.charAt(i+1), 16));
+	        data[i / 2] = (byte) ((Character.digit(e.charAt(i), 16) << 4)
+	                             + Character.digit(e.charAt(i+1), 16));
 	    }
 	    return data;
 	}
@@ -27,7 +26,8 @@ public class ByteTools {
 	public static String intToHex(int e) {
 		return Integer.toHexString(e).toUpperCase();
 	}
-	public static String reversePointer(String pointer) {
+	public static String reversePointer(String arg0) {
+		String pointer = new String(arg0);
 		if (pointer.length() == 5) pointer = "0" + pointer;
 		return pointer.substring(4, 6) + pointer.substring(2, 4) + pointer.substring(0, 2);
 	}
