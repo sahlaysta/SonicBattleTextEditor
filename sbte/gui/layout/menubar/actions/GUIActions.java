@@ -16,15 +16,15 @@ import org.json.simple.parser.ParseException;
 
 import sbte.gui.GUI;
 import sbte.gui.GUIHandler;
-import sbte.gui.layout.menubar.actions.utilities.GUIFileChooser;
+import sbte.gui.layout.menubar.actions.util.GUIFileChooser;
 import sbte.gui.layout.menubar.actions.windowmenus.GUIChangeLanguage;
 import sbte.gui.layout.menubar.actions.windowmenus.GUIGoTo;
 import sbte.gui.layout.menubar.actions.windowmenus.GUISearch;
 import sbte.gui.layout.menubar.actions.windowmenus.ScrollMessage;
-import sbte.utilities.FileTools;
-import sbte.utilities.JSONTools;
+import sbte.util.FileTools;
+import sbte.util.JSONTools;
 
-public class GUIActions {
+public final class GUIActions {
 	public ROMEvent romHandler = new ROMEvent();
 	
 	private final GUI parent;

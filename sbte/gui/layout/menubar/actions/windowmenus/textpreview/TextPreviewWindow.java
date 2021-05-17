@@ -43,12 +43,12 @@ import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
 import sbte.gui.GUI;
-import sbte.gui.layout.menubar.actions.utilities.GUIFileChooser;
+import sbte.gui.layout.menubar.actions.util.GUIFileChooser;
 import sbte.gui.utilities.GUITools;
 import sbte.parser.SonicBattleTextParser.SonicBattleParseException;
-import sbte.utilities.ByteTools;
+import sbte.util.ByteTools;
 
-public class TextPreviewWindow extends JDialog {
+public final class TextPreviewWindow extends JDialog {
 	private final GUI parent;
 	public TextPreviewWindow(GUI caller) {
 		super(caller);

@@ -6,9 +6,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import sbte.utilities.FileTools;
+import sbte.util.FileTools;
 
-public class Localization {
+public final class Localization {
 	private static final String DEFAULT_LANGUAGE = "en-*";
 	private static final String SEARCH_NOT_FOUND = (String)null;
 	public static HashMap<String, String> getMap(String arg0) {

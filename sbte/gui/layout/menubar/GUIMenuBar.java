@@ -13,7 +13,7 @@ import javax.swing.KeyStroke;
 import sbte.gui.layout.menubar.actions.GUIActions;
 import sbte.gui.utilities.Preferences;
 
-public class GUIMenuBar extends JMenuBar {
+public final class GUIMenuBar extends JMenuBar {
 	public FileMenu fileMenu;
 	public EditMenu editMenu;
 	public SearchMenu searchMenu;
@@ -120,6 +120,7 @@ public class GUIMenuBar extends JMenuBar {
 			add(about);
 		}
 	}
+	
 	
 	//custom menuitem
 	public class MenuItem extends JMenuItem{

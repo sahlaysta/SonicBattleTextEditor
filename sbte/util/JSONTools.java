@@ -1,4 +1,4 @@
-package sbte.utilities;
+package sbte.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 //makes use of Google's GSON and simple JSON for formatted JSON
-public class JSONTools {
+public final class JSONTools {
 	public static String toJSONValue(String string) {
 		org.json.simple.JSONObject j = new org.json.simple.JSONObject();
 		j.put("", string);

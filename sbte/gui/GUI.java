@@ -27,9 +27,9 @@ import sbte.gui.utilities.Preferences;
 import sbte.parser.SonicBattleTextParser;
 import sbte.parser.SonicBattleROMReader.ROM;
 import sbte.parser.SonicBattleROMReader.SonicBattleLine;
-import sbte.utilities.JSONTools;
+import sbte.util.JSONTools;
 
-public class GUI extends JFrame {
+public final class GUI extends JFrame {
 	public final SonicBattleTextParser sbtp;
 	public final Preferences preferences;
 	public HashMap<String, String> localization;

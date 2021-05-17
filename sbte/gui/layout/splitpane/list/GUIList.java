@@ -17,7 +17,7 @@ import javax.swing.event.ListSelectionListener;
 
 import sbte.gui.GUI;
 
-public class GUIList extends JPanel {
+public final class GUIList extends JPanel {
 	private final TitledBorder title;
 	private final JScrollPane scroll;
 	private final GUI parent;

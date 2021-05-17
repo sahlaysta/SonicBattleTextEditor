@@ -8,7 +8,7 @@ import javax.swing.undo.UndoManager;
 
 import sbte.gui.GUI;
 
-public class SBUndoManager {
+public final class SBUndoManager {
 	private Set<Integer> firstEdit = new HashSet<>();
 	private final UndoWrapper uw = new UndoWrapper();
 	private final GUI parent;

@@ -9,9 +9,9 @@ import java.util.List;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import sbte.utilities.ByteTools;
-import sbte.utilities.FileTools;
-import sbte.utilities.JSONTools;
+import sbte.util.ByteTools;
+import sbte.util.FileTools;
+import sbte.util.JSONTools;
 
 public class SonicBattleTextParser {
 	private LinkedHashMap<byte[], String> hexToString = new LinkedHashMap<>();

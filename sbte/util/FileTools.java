@@ -1,4 +1,4 @@
-package sbte.utilities;
+package sbte.util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import sbte.Main;
 
-public class FileTools { //Global file IO utiilties
+public final class FileTools { //Global file IO utiilties
 	public static String readFileToString(File f) throws FileNotFoundException {
 		FileInputStream fis = new FileInputStream(f);
 		return readInputStreamToString(fis);

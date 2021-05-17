@@ -19,7 +19,7 @@ import javax.swing.event.DocumentListener;
 import sbte.gui.GUI;
 import sbte.gui.popupmenus.CopyContextMenu;
 
-public class GUITextBox extends JPanel {
+public final class GUITextBox extends JPanel {
 	private final GUI parent;
 	private final TextArea ta;
 	public GUITextBox(GUI caller) {

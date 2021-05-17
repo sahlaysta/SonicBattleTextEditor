@@ -18,9 +18,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import sbte.gui.GUI;
-import sbte.utilities.JSONTools;
+import sbte.util.JSONTools;
 
-public class Preferences extends JSONObject {
+public final class Preferences extends JSONObject {
 	private final GUI parent;
 	public Preferences(GUI caller, JSONObject jsonObject) {
 		parent = caller;

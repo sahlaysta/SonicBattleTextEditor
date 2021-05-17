@@ -1,4 +1,4 @@
-package sbte.gui.layout.menubar.actions.utilities;
+package sbte.gui.layout.menubar.actions.util;
 
 import java.awt.event.ActionEvent;
 

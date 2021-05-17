@@ -10,9 +10,9 @@ import sbte.gui.GUI;
 import sbte.gui.utilities.SBUndoManager;
 import sbte.parser.SonicBattleROMReader.SonicBattleLine;
 import sbte.parser.SonicBattleTextParser.SonicBattleParseException;
-import sbte.utilities.JSONTools;
+import sbte.util.JSONTools;
 
-public class ListModel extends DefaultListModel{
+public final class ListModel extends DefaultListModel{
 	public List<byte[]> content = new ArrayList<>();
 	public List<SonicBattleLine> baseLines = new ArrayList<>();
 	public List<String> textBoxDisplay = new ArrayList<>();

@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import sbte.utilities.ByteTools;
-import sbte.utilities.FileTools;
+import sbte.util.ByteTools;
+import sbte.util.FileTools;
 
 public class SonicBattleROMReader {
 	public static final byte[] delimiter = new byte[] { (byte) 0xFE, (byte) 0xFF }; //the end of line is FEFF
