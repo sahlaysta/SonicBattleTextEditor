@@ -8,7 +8,7 @@ import java.util.List;
 
 import javax.swing.JMenu;
 
-public class GUITools {
+public final class GUITools {
 	//get all elements/components of a Swing Container
 	public static List<Object> getAllElements(Container c){
 		List<Object> elements = new ArrayList<>();

@@ -10,7 +10,7 @@ import sbte.parser.SonicBattleROMSaver;
 import sbte.parser.SonicBattleROMReader.ROM;
 import sbte.parser.SonicBattleROMReader.SonicBattleLine;
 
-public class GUIHandler implements ROMListener {
+public final class GUIHandler implements ROMListener {
 	public void romOpened(ROMArgs args) {
 		List<SonicBattleLine> sonicBattleLines = null;
 		ROM rom = null;

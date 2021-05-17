@@ -21,7 +21,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
 import sbte.gui.GUI;
-import sbte.gui.layout.menubar.actions.utilities.UndoTF;
+import sbte.gui.layout.menubar.actions.util.UndoTF;
 
 public class GUIGoTo {
 	public static void goToGUI(GUI caller) {

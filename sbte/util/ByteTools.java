@@ -1,6 +1,6 @@
-package sbte.utilities;
+package sbte.util;
 
-public class ByteTools { //Global byte utilities
+public final class ByteTools { //Global byte utility
 	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 	public static String toHexString(byte[] bytes) {
 		char[] hexChars = new char[bytes.length * 2];

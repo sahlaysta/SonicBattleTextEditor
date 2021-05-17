@@ -7,7 +7,7 @@ import javax.swing.border.EmptyBorder;
 
 import sbte.gui.utilities.Preferences;
 
-public class GUISplit extends JSplitPane {
+public final class GUISplit extends JSplitPane {
 	public GUISplit(Component arg0, Component arg1, Preferences preferences) {
 		super(JSplitPane.VERTICAL_SPLIT, arg0, arg1);
 		

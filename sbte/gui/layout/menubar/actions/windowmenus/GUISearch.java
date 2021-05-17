@@ -31,7 +31,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import sbte.gui.GUI;
-import sbte.gui.layout.menubar.actions.utilities.UndoTF;
+import sbte.gui.layout.menubar.actions.util.UndoTF;
 
 public class GUISearch {
 	private static String history = ""; //save search option

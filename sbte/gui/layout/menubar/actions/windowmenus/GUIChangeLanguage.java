@@ -24,7 +24,7 @@ import org.json.simple.parser.ParseException;
 
 import sbte.gui.GUI;
 import sbte.gui.utilities.Localization;
-import sbte.utilities.JSONTools;
+import sbte.util.JSONTools;
 
 public class GUIChangeLanguage {
 	public static void languageGUI(GUI caller) {

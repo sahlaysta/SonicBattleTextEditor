@@ -13,7 +13,7 @@ import javax.swing.JMenuItem;
 import sbte.gui.layout.menubar.actions.GUIActions;
 import sbte.gui.utilities.Preferences;
 
-public class RecentlyOpenedMenu extends JMenu {
+public final class RecentlyOpenedMenu extends JMenu {
 	public static final int RECENT_FILES_LIMIT = 10;
 	
 	private final GUIActions actions;

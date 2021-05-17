@@ -1,4 +1,4 @@
-package sbte.gui.layout.menubar.actions.utilities;
+package sbte.gui.layout.menubar.actions.util;
 
 import java.io.File;
 
@@ -7,7 +7,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import sbte.gui.GUI;
 
-public class GUIFileChooser extends JFileChooser {
+public final class GUIFileChooser extends JFileChooser {
 	public static final int OPEN_FILE_PROMPT = 0;
 	public static final int SAVE_FILE_PROMPT = 1;
 	public static final int SAVE_AS_FILE_PROMPT = 2;

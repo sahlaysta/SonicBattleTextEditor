@@ -7,8 +7,8 @@ import java.util.List;
 
 import sbte.parser.SonicBattleROMReader.ROM;
 import sbte.parser.SonicBattleROMReader.SonicBattleLine;
-import sbte.utilities.ByteTools;
-import sbte.utilities.FileTools;
+import sbte.util.ByteTools;
+import sbte.util.FileTools;
 
 public class SonicBattleROMSaver {
 	public static final byte[] POINTER_DELIMITER = new byte[] { 0x08 };
