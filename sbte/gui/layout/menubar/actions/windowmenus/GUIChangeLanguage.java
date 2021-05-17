@@ -26,7 +26,7 @@ import sbte.gui.GUI;
 import sbte.gui.utilities.Localization;
 import sbte.util.JSONTools;
 
-public class GUIChangeLanguage {
+public final class GUIChangeLanguage {
 	public static void languageGUI(GUI caller) {
 		new ChangeLangGUI(caller).setVisible(true);
 	}

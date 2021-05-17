@@ -19,6 +19,7 @@ import sbte.gui.GUIHandler;
 import sbte.gui.layout.menubar.actions.util.GUIFileChooser;
 import sbte.gui.layout.menubar.actions.windowmenus.GUIChangeLanguage;
 import sbte.gui.layout.menubar.actions.windowmenus.GUIGoTo;
+import sbte.gui.layout.menubar.actions.windowmenus.GUIProperties;
 import sbte.gui.layout.menubar.actions.windowmenus.GUISearch;
 import sbte.gui.layout.menubar.actions.windowmenus.ScrollMessage;
 import sbte.util.FileTools;
@@ -117,6 +118,11 @@ public final class GUIActions {
     public ActionListener downOne = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
         	parent.list.downOne();
+        }
+    };
+    public ActionListener properties = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+        	GUIProperties.propertiesGUI(parent);
         }
     };
     public ActionListener textPreview = new ActionListener() {

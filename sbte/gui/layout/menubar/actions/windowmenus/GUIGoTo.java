@@ -23,7 +23,7 @@ import javax.swing.text.DocumentFilter;
 import sbte.gui.GUI;
 import sbte.gui.layout.menubar.actions.util.UndoTF;
 
-public class GUIGoTo {
+public final class GUIGoTo {
 	public static void goToGUI(GUI caller) {
 		new GoToGUI(caller).setVisible(true);
 	}

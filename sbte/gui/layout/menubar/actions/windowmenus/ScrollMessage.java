@@ -21,7 +21,7 @@ import javax.swing.text.DocumentFilter.FilterBypass;
 
 import sbte.gui.GUI;
 
-public class ScrollMessage {
+public final class ScrollMessage {
 	public static void show(GUI caller, String title, String message) {
 		new ScrollMsg(caller, title, message).setVisible(true);
 	}
