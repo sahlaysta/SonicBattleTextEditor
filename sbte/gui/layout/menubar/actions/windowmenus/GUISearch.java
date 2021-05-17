@@ -34,6 +34,8 @@ import sbte.gui.GUI;
 import sbte.gui.layout.menubar.actions.utilities.UndoTF;
 
 public class GUISearch {
+	private static String history = ""; //save search option
+	
 	public static void searchGUI(GUI caller) {
 		new SearchGUI(caller, 0).setVisible(true);
 	}
@@ -75,6 +77,7 @@ public class GUISearch {
 			
 			JPanel tfp = new JPanel();
 			UndoTF tf = new UndoTF(parent);
+			tf.setText(history);
 			tfp.setBorder(new EmptyBorder(5,5,5,5));
 			tfp.setLayout(new GridLayout(1,1));
 			tfp.add(tf);
@@ -157,6 +160,7 @@ public class GUISearch {
 						  l.setFound(m.size());
 						  return;
 					  }
+					  history = tf.getText();
 					  
 					  m.clear();
 					  index.clear();

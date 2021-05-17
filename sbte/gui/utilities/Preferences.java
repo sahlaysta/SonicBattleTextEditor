@@ -38,6 +38,7 @@ public class Preferences extends JSONObject {
 	private static final String WINDOW_SIZE_KEY = "windowSize";
 	private static final String WINDOW_LOCATION_KEY = "windowLocation";
 	private static final String RECENT_FILES_KEY = "recentFiles";
+	private static final String FILE_PREFERENCE_KEY = "fileChooserPreference";
 	private static final String DIVIDER_LOCATION_KEY = "dividerLocation";
 	private static final String LANGUAGE_KEY = "language";
 
@@ -205,6 +206,27 @@ public class Preferences extends JSONObject {
         	saveDividerLocation(((JSplitPane)e.getSource()).getDividerLocation());
         }
 	};
+	public void setFile(String key, String file) {
+		JSONObject files = null;
+		getObj: {
+			if (super.containsKey(FILE_PREFERENCE_KEY)) {
+				files = (JSONObject)super.get(FILE_PREFERENCE_KEY);
+				break getObj;
+			}
+			files = new JSONObject();
+		}
+		files.put(key, file);
+		put(FILE_PREFERENCE_KEY, files);
+	}
+	public String getFile(String key) {
+		JSONObject files = (JSONObject)super.get(FILE_PREFERENCE_KEY);
+		return files.get(key).toString();
+	}
+	public boolean containsFileKey(String key) {
+		if (!super.containsKey(FILE_PREFERENCE_KEY)) return false;
+		JSONObject files = (JSONObject)super.get(FILE_PREFERENCE_KEY);
+		return files.containsKey(key);
+	}
 	
 	@Override
 	public Object put(Object key, Object value) {

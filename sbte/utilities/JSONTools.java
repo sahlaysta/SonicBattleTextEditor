@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.json.simple.parser.ParseException;
 
-//makes use of Google's GSON and simple JSON
+//makes use of Google's GSON and simple JSON for formatted JSON
 public class JSONTools {
 	public static String toJSONValue(String string) {
 		org.json.simple.JSONObject j = new org.json.simple.JSONObject();
@@ -24,7 +24,7 @@ public class JSONTools {
 		
 		return j.get("a").toString();
 	}
-	public static String formattedJSON(org.json.simple.JSONObject e) {
+	private static String formattedJSON(org.json.simple.JSONObject e) {
 		com.google.gson.JsonObject jsonObject = com.google.gson.JsonParser.parseString(e.toString()).getAsJsonObject();
 		com.google.gson.Gson gson = new com.google.gson.GsonBuilder().setPrettyPrinting().create();
 		String prettyJsonString = gson.toJson(jsonObject);
@@ -33,7 +33,7 @@ public class JSONTools {
 	}
 	
 	public static final org.json.simple.parser.JSONParser parser = new org.json.simple.parser.JSONParser();
-	public static final File prefsJson = new File(FileTools.getRunningDirectory(), "prefs.json"); //location of the preferences file
+	public static final File prefsJson = new File(FileTools.RUNNING_DIRECTORY, "prefs.json"); //location of the preferences file
 	public static org.json.simple.JSONObject getPrefsJson() throws org.json.simple.parser.ParseException {
 		if (!prefsJson.exists()) return new org.json.simple.JSONObject();
 		

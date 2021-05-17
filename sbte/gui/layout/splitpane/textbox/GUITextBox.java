@@ -86,7 +86,7 @@ public class GUITextBox extends JPanel {
 	        	if (parent.isSaved) parent.isSaved = false;
 	        }
 	    };
-	    private class PopupMenu extends MouseAdapter {
+	    private class PopupMenu extends MouseAdapter { //right click copy menu with undo and redo
 	    	class PopupDemo extends CopyContextMenu {
 	    	    public PopupDemo(GUI caller) {
 	    	    	super(caller);

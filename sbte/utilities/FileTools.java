@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import sbte.Main;
 
-public class FileTools {
+public class FileTools { //Global file IO utiilties
 	public static String readFileToString(File f) throws FileNotFoundException {
 		FileInputStream fis = new FileInputStream(f);
 		return readInputStreamToString(fis);
@@ -31,7 +31,7 @@ public class FileTools {
 	public static String readResourceToString(String resource) {
 		return readInputStreamToString(Main.class.getResourceAsStream(resource));
 	}
-	public static String readInputStreamToString(InputStream is) {
+	private static String readInputStreamToString(InputStream is) {
 		String output = null;
 		try {
 			output = new BufferedReader(new InputStreamReader(is, "UTF-8")).lines().collect(Collectors.joining());
@@ -48,10 +48,7 @@ public class FileTools {
 			   fos.close();
 		}
 	}
-	private static final File runningDirectory = retrieveRunningDirectory();
-	public static File getRunningDirectory() {
-		return runningDirectory;
-	}
+	public static final File RUNNING_DIRECTORY = retrieveRunningDirectory();
 	private static File retrieveRunningDirectory() {
 		File dir = null;
 		try {

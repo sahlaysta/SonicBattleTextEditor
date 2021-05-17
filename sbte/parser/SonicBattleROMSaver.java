@@ -14,8 +14,8 @@ public class SonicBattleROMSaver {
 	public static final byte[] POINTER_DELIMITER = new byte[] { 0x08 };
 	
 	public static void saveToUSAROM(File savePath, ROM rom, List<SonicBattleLine> data) throws IOException {
-		byte[] delimiter = SonicBattleROMReader.delimiter;
-		int groupCount = getHighestGroupValue(data);
+		final byte[] delimiter = SonicBattleROMReader.delimiter;
+		final int groupCount = getHighestGroupValue(data);
 		for (int i = 0; i < groupCount; i++)
 			writeGroup(i, data, rom.content, delimiter);
 		FileTools.writeByteArrayToFile(savePath, rom.content);
@@ -23,7 +23,7 @@ public class SonicBattleROMSaver {
 	private static void writeGroup(int group, List<SonicBattleLine> data, byte[] rom, byte[] delimiter) {
 		int pos = -1;
 		int pointerPos = -1;
-		for (SonicBattleLine sbl: data) { //get the first pointer (position to start writing)
+		for (SonicBattleLine sbl: data) { //get the first pointer (position to start writing). (loops only once)
 			if (sbl.group != group) continue;
 			byte[] posPointer = new byte[] {
 					rom[sbl.pointer + 2],
@@ -33,11 +33,12 @@ public class SonicBattleROMSaver {
 			pos = ByteTools.hexToInt(ByteTools.toHexString(posPointer));
 			pointerPos = sbl.pointer;
 			
-			break;
+			break; //loop group only once
 		}
 		
-		List<byte[]> pointers = new ArrayList<>();
-		for (SonicBattleLine sbl: data) { //write lines
+		
+		final List<byte[]> pointers = new ArrayList<>();
+		for (SonicBattleLine sbl: data) { //write lines of group
 			if (sbl.group != group) continue;
 			pointers.add(ByteTools.toByteArray(ByteTools.reversePointer(ByteTools.intToHex(pos)) + ByteTools.toHexString(POINTER_DELIMITER)));
 			for (byte b: sbl.content) {

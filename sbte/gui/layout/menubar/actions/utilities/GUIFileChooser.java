@@ -50,16 +50,16 @@ public class GUIFileChooser extends JFileChooser {
 		addChoosableFileFilter(fef);
 		setFileFilter(fef);
 	}
-	private String key;
+	private String key = null;
 	private void setPreference(String key) {
 		this.key = key;
-		if (parent.preferences.containsKey(key)) {
-			setCurrentDirectory(new File(parent.preferences.get(key).toString()));
+		if (parent.preferences.containsFileKey(key)) {
+			setCurrentDirectory(new File(parent.preferences.getFile(key)));
 		}
 	}
 	private void putPreference() {
 		if (key == null) return;
-		parent.preferences.put(key, getSelectedFile().toString());
+		parent.preferences.setFile(key, getSelectedFile().getParentFile().toString());
 	}
 	
 	@Override
