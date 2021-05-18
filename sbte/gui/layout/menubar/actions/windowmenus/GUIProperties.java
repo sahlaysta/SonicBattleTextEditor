@@ -30,6 +30,8 @@ public final class GUIProperties {
 	public static void propertiesGUI(GUI caller) {
 		new PropertiesGUI(caller).setVisible(true);
 	}
+	
+	
 	public static class PropertiesGUI extends JDialog {
 		private static final long serialVersionUID = -1302051134202542036L;
 		
@@ -39,7 +41,8 @@ public final class GUIProperties {
 			
 			super.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			super.setModal(true);
-			super.setResizable(false);
+			//super.setResizable(false);
+			super.setMinimumSize(new Dimension(50, 210));
 			initializeComponents();
 		}
 		private String getTitle(int index) {
@@ -64,8 +67,10 @@ public final class GUIProperties {
 			messageHexPanel.setLayout(new BorderLayout());
 			messageHexPanel.setBorder(new EmptyBorder(0,0,0,0));
 			ScrollJTextArea messagePanel = new ScrollJTextArea(parent.localization.get("line"), message);
+			messagePanel.textArea.setEnabled(false); //auto-focus fix
 			messageHexPanel.add(messagePanel, BorderLayout.CENTER);
 			ScrollJTextArea hexPanel = new ScrollJTextArea("HEX", hex);
+			hexPanel.textArea.setEnabled(false);
 			hexPanel.setPreferredSize(new Dimension(0, 64));
 			messageHexPanel.add(hexPanel, BorderLayout.PAGE_END);
 			
@@ -94,20 +99,24 @@ public final class GUIProperties {
 		        public void componentHidden(ComponentEvent e) {}
 		        
 		        @Override
-		        public void componentShown(ComponentEvent e) {
+		        public void componentShown(ComponentEvent e) { //set focus to button
 		            okButton.requestFocus();
+		            messagePanel.textArea.setEnabled(true);
+		            hexPanel.textArea.setEnabled(true);
+		            PropertiesGUI.super.removeComponentListener(this); //fire only once (at startup)
 		        }
 		    });
 		}
 		private class ScrollJTextArea extends JPanel {
 			private static final long serialVersionUID = 1858482259392534496L;
 			
+			public final CustomTextArea textArea;
 			public ScrollJTextArea(String title, String content) {
 				super.setLayout(new GridLayout(1,1,0,0));
 				super.setBorder(new TitledBorder(title));
 				
-				CustomTextArea cta = new CustomTextArea(content);
-				JScrollPane jsp = new JScrollPane(cta);
+				textArea = new CustomTextArea(content);
+				JScrollPane jsp = new JScrollPane(textArea);
 				super.add(jsp);
 			}
 			class CustomTextArea extends JTextArea {
