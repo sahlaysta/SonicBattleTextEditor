@@ -130,9 +130,11 @@ public final class GUIList extends JPanel {
 			if (index < 0) {
 				parent.textBox.clear();
 				parent.textBox.setEnabled(false);
+				parent.menuBar.editMenu.properties.setEnabled(false);
 				return;
 			}
 			parent.textBox.setEnabled(true);
+			parent.menuBar.editMenu.properties.setEnabled(true);
 			
 			parent.textBox.setText(parent.listModel.textBoxDisplay.get(index).toString());
 			parent.setTextPreview(index);

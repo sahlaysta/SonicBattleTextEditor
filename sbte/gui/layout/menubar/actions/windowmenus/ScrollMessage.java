@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.AbstractDocument;
 
 import sbte.gui.GUI;
 import sbte.gui.layout.menubar.actions.util.NoInputDocumentFilter;
@@ -32,7 +31,7 @@ public final class ScrollMessage {
 			
 			JPanel p = new JPanel();
 			JTextArea tf = new JTextArea(message);
-			((AbstractDocument) tf.getDocument()).setDocumentFilter(new NoInputDocumentFilter());
+			NoInputDocumentFilter.set(tf);
 			p.add(new JScrollPane(tf));
 			p.setLayout(new GridLayout(1,1,5,5));
 			p.setBorder(new EmptyBorder(5,5,5,5));
