@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 
 import sbte.gui.GUI;
 import sbte.gui.layout.menubar.actions.util.NoInputDocumentFilter;
+import sbte.gui.popupmenus.CopyContextMenu;
 
 public final class ScrollMessage {
 	public static void show(GUI caller, String title, String message) {
@@ -32,6 +33,9 @@ public final class ScrollMessage {
 			JPanel p = new JPanel();
 			JTextArea tf = new JTextArea(message);
 			NoInputDocumentFilter.set(tf);
+			CopyContextMenu ccm = new CopyContextMenu(parent);
+			ccm.putItems(CopyContextMenu.UNEDITABLE_FIELD);
+			tf.setComponentPopupMenu(ccm);
 			p.add(new JScrollPane(tf));
 			p.setLayout(new GridLayout(1,1,5,5));
 			p.setBorder(new EmptyBorder(5,5,5,5));

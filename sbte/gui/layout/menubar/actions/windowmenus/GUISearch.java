@@ -33,7 +33,8 @@ import sbte.gui.GUI;
 import sbte.gui.layout.menubar.actions.util.UndoTF;
 
 public final class GUISearch {
-	private static String history = ""; //save search option
+	private static String searchHistory = ""; //preserve search option
+	private static String problematicHistory = "";
 	
 	public static void searchGUI(GUI caller) {
 		new SearchGUI(caller, 0).setVisible(true);
@@ -69,7 +70,7 @@ public final class GUISearch {
 				}
 			}
 			
-			boolean problematic = (args == 1);
+			final boolean problematic = (args == 1);
 			setModal(true);
 			setMinimumSize(new Dimension(150, 180));
 			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -161,7 +162,8 @@ public final class GUISearch {
 						  l.setFound(m.size());
 						  return;
 					  }
-					  history = tf.getText();
+					  if (!problematic) searchHistory = tf.getText();
+					  else problematicHistory = tf.getText();
 					  
 					  m.clear();
 					  index.clear();
@@ -176,7 +178,8 @@ public final class GUISearch {
 				  }
 			});
 
-			tf.setText(history);
+			if (!problematic) tf.setText(searchHistory);
+			else tf.setText(problematicHistory);
 			
 			//go to action
 			b.addActionListener(new ActionListener(){ public void actionPerformed(ActionEvent e){

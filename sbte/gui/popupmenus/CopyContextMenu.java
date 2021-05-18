@@ -21,10 +21,14 @@ public class CopyContextMenu extends JPopupMenu {
 	public CopyContextMenu(GUI caller) {
 		parent = caller;
 	}
-	public void putItems() {
+	
+	public static final boolean EDITABLE_FIELD = true;
+	public static final boolean UNEDITABLE_FIELD = false;
+	public void putItems(boolean editable) {
 		Action cut = new DefaultEditorKit.CutAction();
         cut.putValue(Action.NAME, parent.localization.get("cut"));
         cut.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control X"));
+        if (!editable) cut.setEnabled(false);
         add( cut );
         
         Action copy = new DefaultEditorKit.CopyAction();
@@ -35,6 +39,7 @@ public class CopyContextMenu extends JPopupMenu {
 		Action paste = new DefaultEditorKit.PasteAction();
         paste.putValue(Action.NAME, parent.localization.get("paste"));
         paste.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control V"));
+        if (!editable) paste.setEnabled(false);
         add( paste );
         
         class SelectAll extends TextAction
