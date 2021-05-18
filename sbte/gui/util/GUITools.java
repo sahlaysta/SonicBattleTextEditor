@@ -1,4 +1,4 @@
-package sbte.gui.utilities;
+package sbte.gui.util;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -66,6 +66,8 @@ public final class GUITools {
 		throw new GUIException("Missing key");
 	}
 	private static class GUIException extends Exception{
+		private static final long serialVersionUID = 687626372404197065L;
+
 		public GUIException(String arg0) {
 			super(arg0);
 		}
@@ -132,6 +134,8 @@ public final class GUITools {
 		else if (object instanceof javax.swing.border.TitledBorder)
 			((javax.swing.border.TitledBorder) object).setTitle(text);
 	}
+	
+	@SuppressWarnings("deprecation")
 	public static String getSwingObjectText(Object object) {
 		//generated
 		if (object instanceof javax.swing.AbstractButton)

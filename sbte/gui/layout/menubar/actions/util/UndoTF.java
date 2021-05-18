@@ -13,6 +13,7 @@ import sbte.gui.GUI;
 import sbte.gui.popupmenus.CopyContextMenu;
 
 public class UndoTF extends JTextField {
+	private static final long serialVersionUID = 1L;
 	/*
 	 * Custom JTextField with undo right-click menu
 	 * and shortcut functionality
@@ -25,7 +26,9 @@ public class UndoTF extends JTextField {
 		JMenuItem undo = new JMenuItem(parent.localization.get("undo"));
 		Action undoAction = new AbstractAction()
 		{
-		    @Override
+			private static final long serialVersionUID = 8754180552972132003L;
+
+			@Override
 		    public void actionPerformed(ActionEvent e)
 		    {
 		    	if (um.canUndo()) um.undo();
@@ -40,7 +43,9 @@ public class UndoTF extends JTextField {
 		JMenuItem redo = new JMenuItem(parent.localization.get("redo"));
 		Action redoAction = new AbstractAction()
 		{
-		    @Override
+			private static final long serialVersionUID = -1447812243591259027L;
+
+			@Override
 		    public void actionPerformed(ActionEvent e)
 		    {
 		    	if (um.canRedo()) um.redo();

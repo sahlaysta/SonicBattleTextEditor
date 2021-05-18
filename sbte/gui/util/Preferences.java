@@ -1,4 +1,4 @@
-package sbte.gui.utilities;
+package sbte.gui.util;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -20,7 +20,10 @@ import org.json.simple.JSONObject;
 import sbte.gui.GUI;
 import sbte.util.JSONTools;
 
+@SuppressWarnings("unchecked")
 public final class Preferences extends JSONObject {
+	private static final long serialVersionUID = -7570421525679413864L;
+	
 	private final GUI parent;
 	public Preferences(GUI caller, JSONObject jsonObject) {
 		parent = caller;
@@ -111,7 +114,7 @@ public final class Preferences extends JSONObject {
 	private int objToInt(Object arg0) {
 		if (arg0 instanceof Long) return Math.toIntExact((long)arg0);
 		if (arg0 instanceof Integer) return (int)arg0;
-		return (Integer)null;
+		throw new IllegalArgumentException("Not a number");
 	}
 	private class WindowProperties{
 		public final boolean windowMaximized;

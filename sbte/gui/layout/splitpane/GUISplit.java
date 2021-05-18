@@ -5,9 +5,11 @@ import java.awt.Component;
 import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
 
-import sbte.gui.utilities.Preferences;
+import sbte.gui.util.Preferences;
 
 public final class GUISplit extends JSplitPane {
+	private static final long serialVersionUID = 5643498359142545604L;
+
 	public GUISplit(Component arg0, Component arg1, Preferences preferences) {
 		super(JSplitPane.VERTICAL_SPLIT, arg0, arg1);
 		

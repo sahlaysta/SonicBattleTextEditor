@@ -44,11 +44,13 @@ import javax.swing.border.EmptyBorder;
 
 import sbte.gui.GUI;
 import sbte.gui.layout.menubar.actions.util.GUIFileChooser;
-import sbte.gui.utilities.GUITools;
+import sbte.gui.util.GUITools;
 import sbte.parser.SonicBattleTextParser.SonicBattleParseException;
 import sbte.util.ByteTools;
 
 public final class TextPreviewWindow extends JDialog {
+	private static final long serialVersionUID = 578154221665252907L;
+	
 	private final GUI parent;
 	public TextPreviewWindow(GUI caller) {
 		super(caller);
@@ -59,6 +61,8 @@ public final class TextPreviewWindow extends JDialog {
 	private JPanel imagePanel;
 	private ButtonPanel buttonPanel;
 	private class ButtonPanel extends JPanel {
+		private static final long serialVersionUID = 6473957450626208780L;
+		
 		public JButton upButton, downButton;
 		private JLabel label;
 		public ButtonPanel() {
@@ -130,6 +134,7 @@ public final class TextPreviewWindow extends JDialog {
 				rcm.show((Component)arg0.getSource(), arg0.getX(), arg0.getY());
 			}
 			class RightClickMenu extends JPopupMenu {
+				private static final long serialVersionUID = 1905073680128109030L;
 				public RightClickMenu() {
 					addMenu(file);
 					addSeparator();
@@ -402,7 +407,7 @@ public final class TextPreviewWindow extends JDialog {
 			workers.remove(pw);
 		}
 	}
-	private class PaintWorker extends SwingWorker {
+	private class PaintWorker extends SwingWorker<Object, Object> {
 		BufferedImage buffImg;
 		
 		public PaintWorker() {
@@ -502,6 +507,8 @@ public final class TextPreviewWindow extends JDialog {
 		return output;
 	}
 	private class ParseException extends Exception {
+		private static final long serialVersionUID = 5119810980401920182L;
+
 		public ParseException(String arg0) {
 			super(arg0);
 		}

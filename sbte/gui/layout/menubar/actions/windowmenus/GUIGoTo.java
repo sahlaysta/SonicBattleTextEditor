@@ -29,6 +29,8 @@ public final class GUIGoTo {
 	}
 	public static String history = ""; //save entry
 	public static class GoToGUI extends JDialog {
+		private static final long serialVersionUID = -836969490378692183L;
+
 		public GoToGUI(GUI parent) {
 			super(parent);
 			setModal(true);
@@ -121,7 +123,9 @@ public final class GUIGoTo {
 				// on enter key press
 				Action action = new AbstractAction()
 				{
-				    @Override
+					private static final long serialVersionUID = 8207604209813199163L;
+
+					@Override
 				    public void actionPerformed(ActionEvent e)
 				    {
 				        go.doClick();

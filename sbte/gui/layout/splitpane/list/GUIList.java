@@ -20,11 +20,13 @@ import javax.swing.event.ListSelectionListener;
 import sbte.gui.GUI;
 
 public final class GUIList extends JPanel {
+	private static final long serialVersionUID = -2190873094177847552L;
+	
 	private final TitledBorder title;
 	private final JScrollPane scroll;
 	private final GUI parent;
 	private final List list;
-	public GUIList(GUI caller, DefaultListModel e) {
+	public GUIList(GUI caller, DefaultListModel<String> e) {
 		parent = caller;
 		
 		setLayout(new GridLayout(1, 1, 0, 0));
@@ -90,8 +92,10 @@ public final class GUIList extends JPanel {
 		setSelection(index + 1);
 		ensureIndexIsVisible(index + 1);
 	}
-	private class List extends JList {
-		public List(DefaultListModel e) {
+	private class List extends JList<String> {
+		private static final long serialVersionUID = 1224580479384959661L;
+
+		public List(DefaultListModel<String> e) {
 			super(e);
 			
 			setPreferredSize(null);
@@ -121,7 +125,7 @@ public final class GUIList extends JPanel {
 	private class ListHandler implements ListSelectionListener { //on list index changed
 		@Override
 		public void valueChanged(ListSelectionEvent arg0) {
-			int index = ((JList)arg0.getSource()).getSelectedIndex();
+			int index = ((JList<?>)arg0.getSource()).getSelectedIndex();
 			refreshTitle();
 			if (index < 0) {
 				parent.textBox.clear();
@@ -141,6 +145,8 @@ public final class GUIList extends JPanel {
 		}
 	}
 	private class ColorList extends DefaultListCellRenderer {
+		private static final long serialVersionUID = -6895089364903065431L;
+		
 		private final ListModel lm;
 		public ColorList(ListModel e) {
 			lm = e;
@@ -148,7 +154,7 @@ public final class GUIList extends JPanel {
 		
 		//background color of list items
         @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         	final Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         	
             if (lm.isProblematic(index)) {

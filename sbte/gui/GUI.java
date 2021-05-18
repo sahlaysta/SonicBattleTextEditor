@@ -21,15 +21,16 @@ import sbte.gui.layout.splitpane.GUISplit;
 import sbte.gui.layout.splitpane.list.GUIList;
 import sbte.gui.layout.splitpane.list.ListModel;
 import sbte.gui.layout.splitpane.textbox.GUITextBox;
-import sbte.gui.utilities.GUITools;
-import sbte.gui.utilities.Localization;
-import sbte.gui.utilities.Preferences;
+import sbte.gui.util.GUITools;
+import sbte.gui.util.Localization;
+import sbte.gui.util.Preferences;
 import sbte.parser.SonicBattleTextParser;
 import sbte.parser.SonicBattleROMReader.ROM;
 import sbte.parser.SonicBattleROMReader.SonicBattleLine;
 import sbte.util.JSONTools;
 
 public final class GUI extends JFrame {
+	private static final long serialVersionUID = -6205118654005914884L;
 	public final SonicBattleTextParser sbtp;
 	public final Preferences preferences;
 	public HashMap<String, String> localization;
@@ -106,7 +107,7 @@ public final class GUI extends JFrame {
 		isOpen = true;
 	}
 	public void close() {
-		//closeTextPreview();
+		closeTextPreview();
 		list.setSelection(-1);
 		listModel.clear();
 		textBox.clear();

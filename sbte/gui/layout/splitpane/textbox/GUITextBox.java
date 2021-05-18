@@ -20,6 +20,8 @@ import sbte.gui.GUI;
 import sbte.gui.popupmenus.CopyContextMenu;
 
 public final class GUITextBox extends JPanel {
+	private static final long serialVersionUID = -2096201573553170972L;
+	
 	private final GUI parent;
 	private final TextArea ta;
 	public GUITextBox(GUI caller) {
@@ -62,6 +64,8 @@ public final class GUITextBox extends JPanel {
 		ta.programmaticEditing = false;
 	}
 	private class TextArea extends JTextArea {
+		private static final long serialVersionUID = 4464584664871435557L;
+		
 		public boolean programmaticEditing = false;
 		public boolean undoOperation = false;
 		public TextArea() {
@@ -95,7 +99,9 @@ public final class GUITextBox extends JPanel {
 	    };
 	    private class PopupMenu extends MouseAdapter { //right click copy menu with undo and redo
 	    	class PopupDemo extends CopyContextMenu {
-	    	    public PopupDemo(GUI caller) {
+				private static final long serialVersionUID = -4207580203458913254L;
+
+				public PopupDemo(GUI caller) {
 	    	    	super(caller);
 	    	    	JMenuItem undo = new JMenuItem(parent.localization.get("undo"));
 	    	    	undo.addActionListener(new ActionListener() {

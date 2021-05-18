@@ -23,7 +23,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import sbte.gui.GUI;
-import sbte.gui.utilities.Localization;
+import sbte.gui.util.Localization;
 import sbte.util.JSONTools;
 
 public final class GUIChangeLanguage {
@@ -31,6 +31,8 @@ public final class GUIChangeLanguage {
 		new ChangeLangGUI(caller).setVisible(true);
 	}
 	public static class ChangeLangGUI extends JDialog {
+		private static final long serialVersionUID = 632332229575360768L;
+
 		public ChangeLangGUI(GUI parent) {
 			super(parent);
 			setModal(true);

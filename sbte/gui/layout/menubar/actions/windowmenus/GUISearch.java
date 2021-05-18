@@ -24,7 +24,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
@@ -43,10 +42,13 @@ public final class GUISearch {
 		new SearchGUI(caller, 1).setVisible(true);
 	}
 	public static class SearchGUI extends JDialog {
+		private static final long serialVersionUID = -4978106057441802851L;
+		
 		public SearchGUI(GUI parent, int args) {
 			super(parent);
 			
 			class HitsLabel extends JLabel {
+				private static final long serialVersionUID = 7717279724397185383L;
 				private final String hits = parent.localization.get("hits");
 				private final String oneHit = parent.localization.get("oneHit");
 				public void setFound(int i) {
@@ -83,8 +85,8 @@ public final class GUISearch {
 			add(tfp, BorderLayout.PAGE_START);
 			
 			JPanel lp = new JPanel();
-			DefaultListModel m = new DefaultListModel<LineExt>();
-			JList list = new JList(m);
+			DefaultListModel<LineExt> m = new DefaultListModel<LineExt>();
+			JList<?> list = new JList<LineExt>(m);
 			List<Integer> index = new ArrayList<>();
 			for (int i = 0; i < parent.listModel.getSize(); i++) {
 				if (problematic && !parent.listModel.isProblematic(i)) continue;
@@ -93,15 +95,15 @@ public final class GUISearch {
 			}
 			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			JScrollPane sp = new JScrollPane(list);
-			//sp.setPreferredSize(new Dimension(200, 150));
 			lp.setBorder(new EmptyBorder(5,5,5,5));
 			lp.setLayout(new GridLayout(1,1));
 			lp.add(sp);
 			//list coloring
 			DefaultListCellRenderer colorCell = new DefaultListCellRenderer() {
+				private static final long serialVersionUID = 297264844593717357L;
 				//background color of list items
                 @Override
-                public Component getListCellRendererComponent(JList jlist, Object value, int jindex,
+                public Component getListCellRendererComponent(JList<?> jlist, Object value, int jindex,
                           boolean isSelected, boolean cellHasFocus) {
                      Component c = super.getListCellRendererComponent(jlist, value, jindex, isSelected, cellHasFocus);
                      if (((LineExt)value).red)
