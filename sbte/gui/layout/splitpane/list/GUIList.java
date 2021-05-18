@@ -6,6 +6,8 @@ import java.awt.GridLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -18,6 +20,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import sbte.gui.GUI;
+import sbte.gui.popupmenus.PropertiesContextMenu;
 
 public final class GUIList extends JPanel {
 	private static final long serialVersionUID = -2190873094177847552L;
@@ -105,11 +108,32 @@ public final class GUIList extends JPanel {
 			addListSelectionListener(lh);
 			setCellRenderer(new ColorList(parent.listModel));
 			addFocusListener(new FocusHandler());
+			addMouseListener(new PropertiesMenu());
 			
 			//remove all the 'key click to change position' listeners
 			KeyListener[] lsnrs = getKeyListeners();
 			for (int i = 0; i < lsnrs.length; i++)
 			    removeKeyListener(lsnrs[i]);
+		}
+	}
+	private class PropertiesMenu extends MouseAdapter {
+		@Override
+		public void mousePressed(MouseEvent arg0) {
+			popupMenu(arg0);
+		}
+		@Override
+		public void mouseReleased(MouseEvent arg0) {
+			popupMenu(arg0);
+		}
+		void popupMenu(MouseEvent arg0){ //properties right-click
+			if (!arg0.isPopupTrigger()) return;
+			if (getSelection() < 0) return;
+			if (!((Component)arg0.getSource()).isEnabled()) return;
+			final int index = getSelection();
+			final int mousePos = list.locationToIndex(arg0.getPoint());
+			if (index != mousePos) return; //mouse must be on selected line to show
+			
+			new PropertiesContextMenu(parent).show((Component)arg0.getSource(), arg0.getX(), arg0.getY());
 		}
 	}
 	private class FocusHandler implements FocusListener { //on focus changed
