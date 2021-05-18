@@ -226,6 +226,8 @@ public final class GUIActions {
 			return;
 		}
         
+        parent.closeTextPreview();
+        
         StringBuilder missed = new StringBuilder();
         for (int i = 0; i < parent.listModel.getSize(); i++) {
         	String key = parent.listModel.baseLines.get(i).group + "," + parent.listModel.baseLines.get(i).member;
@@ -237,7 +239,7 @@ public final class GUIActions {
         		missed.append(key + "\r\n");
         	}
         }
-        parent.closeTextPreview();
+        
         parent.isSaved = false;
         parent.list.setSelection(-1);
         parent.list.setSelection(0);

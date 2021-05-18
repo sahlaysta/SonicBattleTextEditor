@@ -12,6 +12,7 @@ import javax.swing.text.TextAction;
 import sbte.gui.GUI;
 
 public class CopyContextMenu extends JPopupMenu {
+	private static final long serialVersionUID = 3321735238397981864L;
 	/*
 	 * Global pop up menu with cut, copy and paste
 	 * menuitems
@@ -38,7 +39,9 @@ public class CopyContextMenu extends JPopupMenu {
         
         class SelectAll extends TextAction
 	    {
-	        public SelectAll()
+			private static final long serialVersionUID = -3854872983764809018L;
+
+			public SelectAll()
 	        {
 	            super(parent.localization.get("selectAll"));
 	            putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control A"));

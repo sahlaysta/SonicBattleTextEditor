@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 //makes use of Google's GSON and simple JSON for formatted JSON
+@SuppressWarnings("unchecked")
 public final class JSONTools {
 	public static String toJSONValue(String string) {
 		org.json.simple.JSONObject j = new org.json.simple.JSONObject();

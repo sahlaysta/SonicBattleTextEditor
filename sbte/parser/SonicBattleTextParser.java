@@ -29,6 +29,8 @@ public class SonicBattleTextParser {
 		this.populateHashMaps(dictionary);
 	}
 	public class SonicBattleParseException extends IllegalArgumentException{
+		private static final long serialVersionUID = 9174282340758556575L;
+		
 		public final String source;
 		public final int index;
 		public SonicBattleParseException(String arg0, String arg1, int arg2) {

@@ -5,7 +5,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -14,18 +13,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.AbstractDocument;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
-import javax.swing.text.DocumentFilter.FilterBypass;
 
 import sbte.gui.GUI;
+import sbte.gui.layout.menubar.actions.util.NoInputDocumentFilter;
 
 public final class ScrollMessage {
 	public static void show(GUI caller, String title, String message) {
 		new ScrollMsg(caller, title, message).setVisible(true);
 	}
 	public static class ScrollMsg extends JDialog {
+		private static final long serialVersionUID = 2728196067344029814L;
 		public ScrollMsg(GUI parent, String title, String message) {
 			super(parent);
 			setTitle(title);
@@ -35,7 +32,7 @@ public final class ScrollMessage {
 			
 			JPanel p = new JPanel();
 			JTextArea tf = new JTextArea(message);
-			((AbstractDocument) tf.getDocument()).setDocumentFilter(new CustomDocumentFilter());
+			((AbstractDocument) tf.getDocument()).setDocumentFilter(new NoInputDocumentFilter());
 			p.add(new JScrollPane(tf));
 			p.setLayout(new GridLayout(1,1,5,5));
 			p.setBorder(new EmptyBorder(5,5,5,5));
@@ -50,24 +47,5 @@ public final class ScrollMessage {
 			setLocationRelativeTo(parent);
 			tf.setCaretPosition(0);
 		}
-		private static class CustomDocumentFilter extends DocumentFilter {
-
-	        private Pattern regexCheck = Pattern.compile("[0-9]+");
-
-	        @Override
-	        public void insertString(FilterBypass fb, int offs, String str, AttributeSet a) throws BadLocationException {
-	            return;
-	        }
-
-	        @Override
-	        public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet a) throws BadLocationException {
-	           return;
-	        }
-	        
-	        @Override
-	        public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
-	           return;
-	        }
-	    }
 	}
 }

@@ -9,6 +9,8 @@ public final class GUIProperties {
 		new PropertiesGUI(caller).setVisible(true);
 	}
 	public static class PropertiesGUI extends JDialog {
+		private static final long serialVersionUID = -2414038955855809883L;
+
 		public PropertiesGUI(GUI parent) {
 			
 		}

@@ -11,11 +11,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import sbte.gui.layout.menubar.actions.GUIActions;
-import sbte.gui.utilities.Preferences;
+import sbte.gui.util.Preferences;
 
 public final class RecentlyOpenedMenu extends JMenu {
+	private static final long serialVersionUID = 6878635564312823495L;
+
 	public static final int RECENT_FILES_LIMIT = 10;
-	
 	private final GUIActions actions;
 	private final Preferences preferences;
 	private final RecentFiles recentFiles;
@@ -35,6 +36,8 @@ public final class RecentlyOpenedMenu extends JMenu {
 		}
 	}
 	private class RecentFiles extends ArrayList<File>{
+		private static final long serialVersionUID = 7274484046557149919L;
+		
 		private final int limit;
 		public RecentFiles(int limit) {
 			this.limit = limit;

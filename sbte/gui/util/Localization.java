@@ -1,4 +1,4 @@
-package sbte.gui.utilities;
+package sbte.gui.util;
 
 import java.util.HashMap;
 

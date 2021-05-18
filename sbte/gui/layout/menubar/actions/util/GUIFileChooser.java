@@ -8,6 +8,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import sbte.gui.GUI;
 
 public final class GUIFileChooser extends JFileChooser {
+	private static final long serialVersionUID = 2422590987110006512L;
+	
 	public static final int OPEN_FILE_PROMPT = 0;
 	public static final int SAVE_FILE_PROMPT = 1;
 	public static final int SAVE_AS_FILE_PROMPT = 2;

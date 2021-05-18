@@ -11,9 +11,10 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 import sbte.gui.layout.menubar.actions.GUIActions;
-import sbte.gui.utilities.Preferences;
+import sbte.gui.util.Preferences;
 
 public final class GUIMenuBar extends JMenuBar {
+	private static final long serialVersionUID = -1821750840678195375L;
 	public FileMenu fileMenu;
 	public EditMenu editMenu;
 	public SearchMenu searchMenu;
@@ -41,6 +42,7 @@ public final class GUIMenuBar extends JMenuBar {
 	
 	//Menus
 	public class FileMenu extends JMenu{
+		private static final long serialVersionUID = 2142829128662117775L;
 		public final MenuItem open, save, saveAs, close;
 		public final RecentlyOpenedMenu recentOpened;
 		public FileMenu() {
@@ -61,6 +63,7 @@ public final class GUIMenuBar extends JMenuBar {
 		}
 	}
 	public class EditMenu extends JMenu{
+		private static final long serialVersionUID = 7133941590425559963L;
 		public final MenuItem importion, exportion, undo, redo, upOne, downOne, properties;
 		public EditMenu() {
 			setName("json:edit,disabledBeforeOpen:true");
@@ -88,6 +91,7 @@ public final class GUIMenuBar extends JMenuBar {
 		}
 	}
 	public class SearchMenu extends JMenu{
+		private static final long serialVersionUID = -4330773302695881641L;
 		public final MenuItem goTo, search, problematicLines;
 		public SearchMenu() {
 			setName("json:search,disabledBeforeOpen:true");
@@ -102,6 +106,7 @@ public final class GUIMenuBar extends JMenuBar {
 		}
 	}
 	public class ViewMenu extends JMenu{
+		private static final long serialVersionUID = -4540985032186650818L;
 		public final MenuItem changeLang;
 		public CheckBoxMenuItem textPreview;
 		public ViewMenu() {
@@ -115,6 +120,7 @@ public final class GUIMenuBar extends JMenuBar {
 		}
 	}
 	public class HelpMenu extends JMenu{
+		private static final long serialVersionUID = 4138532151628533591L;
 		public final MenuItem about;
 		public HelpMenu() {
 			setName("json:help");
@@ -128,11 +134,13 @@ public final class GUIMenuBar extends JMenuBar {
 	
 	//custom menuitem
 	public class MenuItem extends JMenuItem{
+		private static final long serialVersionUID = -36495699632234418L;
 		public MenuItem(String name, String shortcut, ActionListener action) {
 			setMenuItemProperties(this, name, shortcut, action);
 		}
 	}
 	public class CheckBoxMenuItem extends JCheckBoxMenuItem{
+		private static final long serialVersionUID = -7347149932838121178L;
 		public CheckBoxMenuItem(String name, String shortcut, ActionListener action) {
 			setMenuItemProperties(this, name, shortcut, action);
 		}

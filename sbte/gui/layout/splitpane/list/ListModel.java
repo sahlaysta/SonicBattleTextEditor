@@ -7,12 +7,14 @@ import java.util.List;
 import javax.swing.DefaultListModel;
 
 import sbte.gui.GUI;
-import sbte.gui.utilities.SBUndoManager;
+import sbte.gui.util.SBUndoManager;
 import sbte.parser.SonicBattleROMReader.SonicBattleLine;
 import sbte.parser.SonicBattleTextParser.SonicBattleParseException;
 import sbte.util.JSONTools;
 
-public final class ListModel extends DefaultListModel{
+public final class ListModel extends DefaultListModel<String> {
+	private static final long serialVersionUID = 1057801624301988574L;
+	
 	public List<byte[]> content = new ArrayList<>();
 	public List<SonicBattleLine> baseLines = new ArrayList<>();
 	public List<String> textBoxDisplay = new ArrayList<>();
@@ -98,9 +100,8 @@ public final class ListModel extends DefaultListModel{
 	}
 	
 	@Override
-	public void setElementAt(Object object, int index) {
-		String value = object.toString();
-		if (value.length() == 0) value = " "; //JList empty line fix
-		super.setElementAt(value, index);
+	public void setElementAt(String element, int index) {
+		if (element.length() == 0) element = " "; //JList empty line fix
+		super.setElementAt(element, index);
 	}
 }

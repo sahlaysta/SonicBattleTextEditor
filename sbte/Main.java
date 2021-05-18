@@ -21,5 +21,6 @@ public class Main {
 	 * - Search GUI and Go To GUI preserve their text field entry on close and reopen
 	 * - Clicking the list auto-transfers focus to textbox
 	 * - Fixed list ctr-click glitch
+	 * - Optimization (serial version uids)
 	 */
 }
