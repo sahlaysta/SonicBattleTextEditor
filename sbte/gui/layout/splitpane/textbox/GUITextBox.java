@@ -121,7 +121,7 @@ public final class GUITextBox extends JPanel {
 	    	    	add(undo);
 	    	    	add(redo);
 	    	    	addSeparator();
-	    	    	putItems();
+	    	    	putItems(CopyContextMenu.EDITABLE_FIELD);
 	    	    }
 	    	}
 	    	

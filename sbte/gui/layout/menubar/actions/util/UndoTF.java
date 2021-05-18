@@ -59,7 +59,7 @@ public class UndoTF extends JTextField {
     	ccm.add(undo);
     	ccm.add(redo);
     	ccm.addSeparator();
-		ccm.putItems();
+		ccm.putItems(CopyContextMenu.EDITABLE_FIELD);
 		setComponentPopupMenu(ccm);
 	}
 }
