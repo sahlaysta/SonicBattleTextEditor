@@ -76,7 +76,7 @@ public final class GUIMenuBar extends JMenuBar {
 			upOne.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK));
 			downOne = new MenuItem("json:downOne", null, actions.downOne);
 			downOne.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK));
-			properties = new MenuItem("json:properties", null, null);
+			properties = new MenuItem("json:properties", null, actions.properties);
 			properties.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.ALT_DOWN_MASK));
 			
 			add(importion);
