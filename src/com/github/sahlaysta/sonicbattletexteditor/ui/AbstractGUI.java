@@ -63,7 +63,7 @@ public abstract class AbstractGUI extends JFrame {
 	public final boolean isThemed;
 	/** Construct the GUI JFrame setting the default size and the default close operation, etc. */
 	public AbstractGUI() {
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setSize(350, 250);
 		setMinimumSize(new Dimension(250, 200));
@@ -570,7 +570,6 @@ public abstract class AbstractGUI extends JFrame {
 						public DataFlavor[] getTransferDataFlavors() {
 							return new DataFlavor[] { DataFlavor.imageFlavor };
 						}
-
 						@Override
 						public boolean isDataFlavorSupported(DataFlavor flavor) {
 							return true;

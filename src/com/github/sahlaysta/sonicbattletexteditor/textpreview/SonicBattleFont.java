@@ -273,7 +273,8 @@ public class SonicBattleFont {
 				}
 			}
 		}
-		/** Draw a pixel to a Graphics object (with magnification) */
+		/** Draw a pixel to a Graphics object (with magnification)
+		 * e.g. if magnification is 1, draw 1x1, and if magnification is 2, draw 2x2 */
 		public static final void drawPixel(Graphics g, int x, int y, int magnification) {
 			for (int i = y; i < y + magnification; i++)
 				g.drawLine(x, i, x + magnification - 1, i);
