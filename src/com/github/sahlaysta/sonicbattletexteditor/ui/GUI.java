@@ -571,7 +571,7 @@ public final class GUI extends AbstractGUI {
 		ChoicePromptWindow<String> cpw = getChoicePromptWindow(getString("changeLang"), getString("ok"));
 		cpw.setSearchVisible(false);
 		cpw.setResizable(false);
-		cpw.setSize(160, 150);
+		cpw.setSize(200, 120);
 		cpw.setLocationRelativeTo(this);
 		for (Entry<String, Map<String, String>> entry: Localization.LANGUAGE_MAPS.entrySet())
 			cpw.addChoice(entry.getKey(), entry.getValue().get("lang"));
@@ -616,7 +616,7 @@ public final class GUI extends AbstractGUI {
 	@Override
 	protected final void about_Click() {
 		msgBox.show(
-				"Sonic Battle Text Editor v3.4.2\n"
+				"Sonic Battle Text Editor v3.4.3\n"
 					+ String.format(getString("aboutMsg"), "porog") + "\n"
 					+ "https://github.com/sahlaysta/SonicBattleTextEditor",
 				getString("about"),
