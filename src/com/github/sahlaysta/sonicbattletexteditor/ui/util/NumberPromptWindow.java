@@ -85,7 +85,7 @@ public class NumberPromptWindow extends JDialog {
 	protected void initializeNumberPromptWindow() {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setResizable(false);
-		setSize(160, 80);
+		setSize(160, 90);
 		
 		//Initialize components
 		jTextField = new JTextField();

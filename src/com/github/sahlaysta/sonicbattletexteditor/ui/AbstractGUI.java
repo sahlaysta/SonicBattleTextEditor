@@ -65,7 +65,7 @@ public abstract class AbstractGUI extends JFrame {
 	public AbstractGUI() {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setLocationRelativeTo(null);
-		setSize(350, 250);
+		setSize(400, 350);
 		setMinimumSize(new Dimension(250, 200));
 		setIconImage(new ImageIcon(getClass().getResource("icon.png")).getImage());
 		addComponentListener(windowPropertiesRefresher);
@@ -191,6 +191,7 @@ public abstract class AbstractGUI extends JFrame {
 		
 		//ListTextBox
 		listTextBox = new ListTextBox();
+		listTextBox.setDividerLocation(180);
 		
 		//Text preview window
 		textPreviewWindow = new TextPreviewWindow(this);
