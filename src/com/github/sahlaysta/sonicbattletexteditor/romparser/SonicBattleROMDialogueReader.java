@@ -86,17 +86,16 @@ public final class SonicBattleROMDialogueReader {
 		
 		/** Read a pointer in a Sonic Battle ROM */
 		public int readPointer() throws IOException {
-			byte[] b = new byte[3];
-			b[2] = nextByte();
-			b[1] = nextByte();
-			b[0] = nextByte();
+			byte byte1 = nextByte();
+			byte byte2 = nextByte();
+			byte byte3 = nextByte();
 			bufferPos++; //skip a byte
 			
-			//Convert to int from a byte array
+			//Convert to int from bytes
 			return (0
-					| ((b[0] & 0xff) << 16)
-					| ((b[1] & 0xff) << 8)
-					| (b[2] & 0xff));  
+					| ((byte3 & 0xff) << 16)
+					| ((byte2 & 0xff) << 8)
+					| (byte1 & 0xff));  
 		}
 		
 		/** Read the bytes of a dialogue line in a Sonic Battle ROM */
