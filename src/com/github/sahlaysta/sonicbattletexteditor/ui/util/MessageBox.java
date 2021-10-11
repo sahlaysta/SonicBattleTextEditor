@@ -39,8 +39,9 @@ public class MessageBox {
 	public void showError(String message, String title, String okButtonText) {
 		showError(parentComponent, message, title, okButtonText);
 	}
-	/** Show a Yes-No prompt with the message and title and the Yes and No buttons' text */
-	public int showYesNoPrompt(String message, String title, String yes, String no) {
+	/** Show a Yes-No prompt with the message and title and the Yes and No buttons' text.
+	 * Returns true if the 'Yes' option is clicked */
+	public boolean showYesNoPrompt(String message, String title, String yes, String no) {
 		return showYesNoPrompt(parentComponent, message, title, yes, no);
 	}
 	
@@ -53,18 +54,13 @@ public class MessageBox {
 	public static final int showError(Component parentComponent, String message, String title, String okButtonText) {
 		return show(parentComponent,message,title,JOptionPane.ERROR_MESSAGE,okButtonText);
 	}
-	/** Show a Yes-No prompt MessageBox over the passed parent Component, with the message and title and the Yes and No buttons' text */
-	public int showYesNoPrompt(Component parentComponent, String message, String title, String yes, String no) {
-		return show(parentComponent,message,title,JOptionPane.QUESTION_MESSAGE,yes,no);
+	/** Show a Yes-No prompt MessageBox over the passed parent Component, with the message and title and the Yes and No buttons' text.
+	 * Returns true if the 'Yes' option is clicked */
+	public boolean showYesNoPrompt(Component parentComponent, String message, String title, String yes, String no) {
+		return show(parentComponent,message,title,JOptionPane.QUESTION_MESSAGE,yes,no) == 0;
 	}
 	/** Show a MessageBox over the passed parent Component, with the message and title and message type and button */
 	public static final int show(Component parentComponent, String message, String title, int messageType, String... buttons) {
 		return JOptionPane.showOptionDialog(parentComponent,message,title,0,messageType,null,buttons,null);
 	}
-	
-	//Yes-No enum
-	/** Returned as the 'Yes' option from the <code>showYesNoPrompt</code> method */
-	public static final int YES = 0;
-	/** Returned as the 'No' option from the <code>showYesNoPrompt</code> method */
-	public static final int NO = 1;
 }

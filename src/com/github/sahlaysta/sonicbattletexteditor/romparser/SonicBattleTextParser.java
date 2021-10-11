@@ -42,14 +42,14 @@ public final class SonicBattleTextParser {
 			StringBuilder error = new StringBuilder("Unknown byte sequence in parse attempt");
 			String hexString = HexUtils.bytesToHexString(bytes);
 			if (hexString.length() > 48)
-				throw new SonicBattleTextParseException(error.toString(), pos);
+				throw new SonicBattleTextParseException(error.toString(), bytes, pos);
 			error.append(":\r\n");
 			error.append(hexString);
 			error.append('\n');
 			for (int i = 0; i < (pos * 2); i++)
 				error.append(' ');
 			error.append('^');
-			throw new SonicBattleTextParseException(error.toString(), pos);
+			throw new SonicBattleTextParseException(error.toString(), bytes, pos);
 		}
 		return sb.toString();
 	}
@@ -77,14 +77,14 @@ public final class SonicBattleTextParser {
 			StringBuilder error = new StringBuilder("Unknown byte sequence in parse attempt");
 			String hexString = HexUtils.bytesToHexString(bytes);
 			if (hexString.length() > 48)
-				throw new SonicBattleTextParseException(error.toString(), pos);
+				throw new SonicBattleTextParseException(error.toString(), bytes, pos);
 			error.append(":\r\n");
 			error.append(hexString);
 			error.append('\n');
 			for (int i = 0; i < (pos * 2); i++)
 				error.append(' ');
 			error.append('^');
-			throw new SonicBattleTextParseException(error.toString(), pos);
+			throw new SonicBattleTextParseException(error.toString(), bytes, pos);
 		}
 		return sb.toString();
 	}
@@ -120,14 +120,14 @@ public final class SonicBattleTextParser {
 			//parse fail, throw exception
 			StringBuilder error = new StringBuilder("Unknown byte sequence in parse attempt starting at char '" + (char)str.charAt(pos) + "'");
 			if (str.length() > 48)
-				throw new SonicBattleTextParseException(error.toString(), pos);
+				throw new SonicBattleTextParseException(error.toString(), str, pos);
 			error.append(" :\r\n");
 			error.append(str);
 			error.append('\n');
 			for (int i = 0; i < pos; i++)
 				error.append(' ');
 			error.append('^');
-			throw new SonicBattleTextParseException(error.toString(), pos);
+			throw new SonicBattleTextParseException(error.toString(), str, pos);
 		}
 		return bytes;
 	}

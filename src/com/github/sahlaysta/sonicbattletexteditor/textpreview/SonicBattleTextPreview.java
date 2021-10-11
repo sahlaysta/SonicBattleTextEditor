@@ -61,7 +61,7 @@ public class SonicBattleTextPreview extends JComponent {
 		/*
 		 * Parse a List of Glyphs with SonicBattleFont and split it into
 		 * separate arrays every two line breaks. Also preserve the color
-		 * that was last set into the next array.
+		 * that was last set into the next array page.
 		 */
 		int lineBreakCount = 0; //line break count
 		int lineBreakPos = 0; //keep track of the array index of the last line break
@@ -93,7 +93,7 @@ public class SonicBattleTextPreview extends JComponent {
 		}
 		if (lineBreakPos < glyphs.size()) {
 			/* Do the same thing as what would happen when the line break count
-			 * reaches 2, but with the remaining Glyphs that didn't make it in the loop */
+			 * reaches 2, but with the remaining Glyphs */
 			Glyph[] glyphArray = new Glyph[glyphs.size() - lineBreakPos + 1];
 			glyphArray[0] = new Glyph(fontColor);
 			for (int ii = 0; ii < glyphArray.length - 1; ii++)

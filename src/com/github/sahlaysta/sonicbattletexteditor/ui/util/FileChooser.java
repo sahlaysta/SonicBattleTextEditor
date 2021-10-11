@@ -65,11 +65,11 @@ public class FileChooser extends JFileChooser {
 	}
 	@Override
 	public void resetChoosableFileFilters() {
-		if (fileFilterList == null) {
+		if (fileFilterList == null)
 			fileFilterList = new ArrayList<>();
-			fileFilterList.add(getAcceptAllFileFilter());
-		}
-		fileFilterList.clear();
+		else
+			fileFilterList.clear();
+		fileFilterList.add(getAcceptAllFileFilter());
 		super.resetChoosableFileFilters();
 	}
 	/** Returns the added user choosable FileFilter at the index */
@@ -81,12 +81,13 @@ public class FileChooser extends JFileChooser {
 		return fileFilterList.get(index);
 	}
 	/** Sets the currently selected FileFilter to the passed index */
-	public void setFileFilter(int index) {
+	public void setFileFilterIndex(int index) {
 		if (fileFilterList == null) {
 			fileFilterList = new ArrayList<>();
 			fileFilterList.add(getAcceptAllFileFilter());
 		}
-		setFileFilter(fileFilterList.get(index));
+		if (index >= 0 && index < fileFilterList.size())
+			setFileFilter(fileFilterList.get(index));
 	}
 	/** Get the index of FileChooser's currently selected FileFilter */
 	public int getFileFilterIndex() {

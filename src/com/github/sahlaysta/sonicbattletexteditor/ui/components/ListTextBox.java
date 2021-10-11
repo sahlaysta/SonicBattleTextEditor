@@ -322,6 +322,18 @@ public class ListTextBox extends JSplitPane {
 			l.textBoxChanged(jList.getSelectedIndex(), jTextArea.getText());
 	}
 	
+	//Has unsaved changes
+	/** The index of the undo manager when <code>save()</code> was called */
+	protected int saveIndex = 0;
+	/** Save the ListTextBox to offset <code>hasUnsavedChanges()</code> */
+	public void save() {
+		saveIndex = ltbum.index;
+	}
+	/** True if there are unsaved changes made to ListTextBox. Offset with <code>save()</code> */
+	public boolean hasUnsavedChanges() {
+		return ltbum.index != saveIndex;
+	}
+	
 	//ListTextBox Undo Manager
 	/** ListTextBoxUndoManager: a DocumentFilter that keeps tracks of all edits and provides undo and redo operations */
 	protected class ListTextBoxUndoManager extends DocumentFilter {

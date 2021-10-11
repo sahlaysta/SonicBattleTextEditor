@@ -85,11 +85,20 @@ public final class GUI extends AbstractGUI {
 		//Set ListTextBox layout
 		setupListTextBox();
 		
-		//Save preferences on close
+		//Save before closing prompt + save preferences on close
 		addWindowListener(new WindowAdapter() {
 		    @Override
 		    public void windowClosing(WindowEvent e) {
+		    	if (listTextBox.hasUnsavedChanges() &&
+		    		!msgBox.showYesNoPrompt(
+		    				getString("unsaved"),
+		    				getString("close"),
+		    				getString("yes"),
+		    				getString("no"))) {
+		    		return;
+		    	}
 		    	trySavePreferences();
+		    	System.exit(0);
 		    }
 		});
 		
@@ -142,8 +151,8 @@ public final class GUI extends AbstractGUI {
 							listTextBox.setColor(index, Color.RED);
 							errorMap.put(index, str.charAt(errorPos));
 						}
-						
 						listTextBox.repaint();
+						setTitle(listTextBox.hasUnsavedChanges() ? getString("title") + "*" : getString("title")); //'edited' asterisk
 						indexChanged(listTextBox.getSelectedIndex());
 					}
 				});
@@ -216,6 +225,9 @@ public final class GUI extends AbstractGUI {
 		});
 		listRightClickMenu.add(copyHex);
 		listTextBox.setListContextMenu(listRightClickMenu);
+		
+		//Window title edited asterisk
+		setTitle(listTextBox.hasUnsavedChanges() ? getString("title") + "*" : getString("title"));
 	}
 	
 	
@@ -233,7 +245,7 @@ public final class GUI extends AbstractGUI {
 		openRecent.addFile(file);
 		try {
 			//Read and parse all dialogue lines in the Sonic Battle ROM
-			List<String> lines = new ArrayList<>(2750);
+			List<String> lines = new ArrayList<>(5481);
 			for (SonicBattleLineGroup sblg: sonicBattleLineGroupCollection = SonicBattleROMDialogueReader.parseUSARom(file))
 				for (SonicBattleLine sbl: sblg)
 					lines.add(sbl.getContent());
@@ -273,19 +285,22 @@ public final class GUI extends AbstractGUI {
 		}
 	}
 	//Save ROM
+	/** Save a ROM in Sonic Battle Text Editor GUI */
 	public final void saveRom(File file) {
 		openRecent.addFile(file);
 		String[] strs = listTextBox.getStrings();
 		int i = 0;
-		for (SonicBattleLineGroup sblg: sonicBattleLineGroupCollection)
+		for (SonicBattleLineGroup sblg: sonicBattleLineGroupCollection) //put all Strings in the SonicBattleLineGroupCollection
 			for (SonicBattleLine sbl: sblg)
 				sbl.setContent(strs[i++]);
-		sonicBattleLineGroupCollection.save();
+		sonicBattleLineGroupCollection.save(); //save the byte data of SonicBattleLineGroupCollection
 		try {
-			FileOutputStream fos = new FileOutputStream(file);
+			FileOutputStream fos = new FileOutputStream(file); //write Sonic Battle ROM to file
 			fos.write(sonicBattleLineGroupCollection.getRom());
 			fos.close();
 			msgBox.show(getString("saved") + "\n" + file.toString(), getString("save"), getString("ok"));
+			listTextBox.save();
+			setTitle(getString("title"));
 		} catch (IOException e) {
 			e.printStackTrace();
 			msgBox.showError(
@@ -303,7 +318,7 @@ public final class GUI extends AbstractGUI {
 		FileChooser fc = new FileChooser();
 		fc.setParentComponent(this);
 		fc.addChoosableFileFilter(fileDescription, fileExtension);
-		fc.setFileFilter(fileFilterIndex);
+		fc.setFileFilterIndex(fileFilterIndex);
 		fc.setDialogTitle(title);
 		fc.setCurrentDirectory(defaultDirectory);
 		fc.setFileErrorText(getString("fileErr"));
@@ -329,15 +344,25 @@ public final class GUI extends AbstractGUI {
 	}
 	@Override
 	protected final void save_Click() {
-		if (!checkErrorLines()) return;
+		if (!checkErrorLines())
+			return;
+		if (openedRom.exists()
+			&& !msgBox.showYesNoPrompt(
+					getString("overwrite") + "\n" + openedRom,
+					getString("save"),
+					getString("yes"),
+					getString("no")))
+			return;
 		saveRom(openedRom);
 	}
 	@Override
 	protected final void saveAs_Click() {
 		if (!checkErrorLines()) return;
 		FileChooser fc = getFileChooser("gba", getString("gbaFiles"), romFileFilter_Pref, getString("saveAs"), openRecent.getFiles()[0]);
-		if (fc.showSaveDialog() == FileChooser.APPROVE_OPTION)
-			saveRom(fc.getSelectedFile());
+		if (fc.showSaveDialog() == FileChooser.APPROVE_OPTION) {
+			openedRom = fc.getSelectedFile();
+			saveRom(openedRom);
+		}
 		romFileFilter_Pref = fc.getFileFilterIndex();
 	}
 	private final boolean checkErrorLines() {
@@ -356,9 +381,17 @@ public final class GUI extends AbstractGUI {
 			System.exit(0);
 		}
 		else {
+			if (listTextBox.hasUnsavedChanges() &&
+				!msgBox.showYesNoPrompt(
+    				getString("unsaved"),
+    				getString("close"),
+    				getString("yes"),
+    				getString("no")))
+				return;
 			listTextBox.clear();
 			openedRom = null;
 			sonicBattleLineGroupCollection = null;
+			setTitle(getString("title"));
 			save.setEnabled(false);
 			saveAs.setEnabled(false);
 			edit.setEnabled(false);
@@ -498,6 +531,8 @@ public final class GUI extends AbstractGUI {
 		String[] strings = listTextBox.getEscapedStrings();
 		for (String str: strings)
 			cpw.addChoice(str);
+		
+		//Copy ListTextBox's colorMap to ChoicePromptWindow
 		for (Entry<Integer, Color> entry: listTextBox.getColors().entrySet())
 			cpw.setColor(strings[entry.getKey()], entry.getValue());
 		
@@ -512,6 +547,8 @@ public final class GUI extends AbstractGUI {
 		cpw.setSearchQuery(errorLines_Pref);
 		String[] strings = listTextBox.getEscapedStrings();
 		List<Integer> stringIndexes = new ArrayList<>();
+		
+		//Only add lines that are colored red
 		Map<Integer, Color> colorMap = listTextBox.getColors();
 		Set<Integer> colorSet = colorMap.keySet();
 		for (int i = 0; i < strings.length; i++) {
@@ -579,7 +616,7 @@ public final class GUI extends AbstractGUI {
 	@Override
 	protected final void about_Click() {
 		msgBox.show(
-				"Sonic Battle Text Editor v3.4.0\n"
+				"Sonic Battle Text Editor v3.4.2\n"
 					+ String.format(getString("aboutMsg"), "porog") + "\n"
 					+ "https://github.com/sahlaysta/SonicBattleTextEditor",
 				getString("about"),

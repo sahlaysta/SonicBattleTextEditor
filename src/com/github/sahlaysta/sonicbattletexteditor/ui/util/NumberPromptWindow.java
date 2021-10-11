@@ -109,15 +109,15 @@ public class NumberPromptWindow extends JDialog {
 		/* DocumentFilter that only allows numbers to be entered to jTextField */
 		((AbstractDocument)jTextField.getDocument()).setDocumentFilter(new DocumentFilter() {
 			@Override
-	        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-				if ((string.length() > 0 && string.charAt(0) == '-' && offset == 0) || numCheck(string))
+			public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+				if ((offset != 0 || jTextField.getText().indexOf('-') == -1) && ((string.length() > 0 && string.charAt(0) == '-' && offset == 0) || numCheck(string)))
 					super.insertString(fb, offset, string, attr);
-	        }
+			}
 			@Override
-	        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+			public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
 				if ((offset != 0 || jTextField.getText().indexOf('-') == -1) && ((text.length() > 0 && text.charAt(0) == '-' && offset == 0) || numCheck(text)))
 					super.replace(fb, offset, length, text, attrs);
-	        }
+			}
 			private final boolean numCheck(CharSequence cs) {
 				for (int i = 0; i < cs.length(); i++) {
 					switch (cs.charAt(i)) {

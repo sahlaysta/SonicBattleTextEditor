@@ -289,12 +289,11 @@ public class ChoicePromptWindow<T> extends JDialog {
 				choices.remove(c);
 				if (dlm.contains(c))
 					dlm.removeElement(c);
-				break;
 			}
 	}
 	/** Return the added choices to ChoicePromptWindow */
 	public List<T> getChoices() {
-		List<T> list = new ArrayList<>();
+		List<T> list = new ArrayList<>(choices.size());
 		for (Choice c: choices)
 			list.add(c.obj);
 		return list;
