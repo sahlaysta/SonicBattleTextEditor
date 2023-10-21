@@ -21,7 +21,7 @@ internal class GUIOpenRecentMenu(val gui: GUI) {
             jMenu.add(jMenuItem)
             jMenuItem.addActionListener {
                 if (gui.actions.preCloseROM(fromOpen = true)) {
-                    gui.actions.closeROM();
+                    gui.actions.closeROM()
                     gui.actions.openROM(filePaths[index])
                 }
             }
