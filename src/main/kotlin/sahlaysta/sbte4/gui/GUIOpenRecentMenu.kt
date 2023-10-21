@@ -20,8 +20,10 @@ internal class GUIOpenRecentMenu(val gui: GUI) {
         menuItems.forEachIndexed { index, jMenuItem ->
             jMenu.add(jMenuItem)
             jMenuItem.addActionListener {
-                if (gui.actions.preCloseROM(fromOpen = true))
+                if (gui.actions.preCloseROM(fromOpen = true)) {
+                    gui.actions.closeROM();
                     gui.actions.openROM(filePaths[index])
+                }
             }
         }
     }
