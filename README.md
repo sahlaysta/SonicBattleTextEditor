@@ -1,6 +1,7 @@
 # Sonic Battle Text Editor
 
 <img src="https://i.imgur.com/OXKAAmD.png"/>
+
 Sonic Battle Text Editor GUI
 
 ## Licensing
