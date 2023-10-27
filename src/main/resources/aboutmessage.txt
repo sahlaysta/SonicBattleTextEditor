@@ -1,4 +1,4 @@
-Sonic Battle Text Editor v4.0.0
+Sonic Battle Text Editor v4.0.1
 https://www.github.com/sahlaysta
 sahlaysta A.K.A porog
 
