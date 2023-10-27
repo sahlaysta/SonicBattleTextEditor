@@ -205,7 +205,7 @@ internal class GUIEditorTree(val gui: GUI) {
             count++
             val childNode = node.getChildAt(i)
             if (isExpanded(tree, childNode))
-                count += getExpandedChildCount(tree, node)
+                count += getExpandedChildCount(tree, childNode)
         }
         return count
     }
