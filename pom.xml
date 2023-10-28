@@ -81,7 +81,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fully.qualified.MainClass</mainClass>
+                            <mainClass>MainKt</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
