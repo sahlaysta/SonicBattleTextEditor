@@ -4,6 +4,14 @@
 
 Sonic Battle Text Editor GUI
 
+---
+
+(how to build manually)
+
+Open the source as a Maven project, then run:
+
+`mvn clean compile assembly:single`
+
 ## Licensing
 
 \#1 Sonic Battle Text Editor - https://github.com/sahlaysta/SonicBattleTextEditor - is licensed under [MIT license](https://github.com/sahlaysta/SonicBattleTextEditor/blob/master/LICENSE.txt)  
