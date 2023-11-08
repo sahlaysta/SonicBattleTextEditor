@@ -470,7 +470,7 @@ internal class GUITextPreview(val gui: GUI) {
             }
             if (paintBlueArrows && !frame.isLastFrame) {
                 paintBufferedImage(frameBackgroundBlueArrow, g,
-                    FRAME_BACKGROUND_BLUEARROW_X * scale, FRAME_BACKGROUND_BLUEARROW_Y * scale, scale)
+                    x + (FRAME_BACKGROUND_BLUEARROW_X * scale), y + (FRAME_BACKGROUND_BLUEARROW_Y * scale), scale)
             }
             g.color = originalColor
         }
