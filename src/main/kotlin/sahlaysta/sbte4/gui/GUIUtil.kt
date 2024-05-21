@@ -60,13 +60,16 @@ internal object GUIUtil {
         actionMap.put(binding, abstractAction)
     }
 
+    private val iloLock = Any()
     private val iloKeys = HashSet<Any?>()
     fun invokeLaterOnce(key: Any, action: () -> Unit) {
-        if (!iloKeys.contains(key)) {
-            iloKeys.add(key)
-            SwingUtilities.invokeLater {
-                iloKeys.remove(key)
-                action()
+        synchronized(iloLock) {
+            if (!iloKeys.contains(key)) {
+                iloKeys.add(key)
+                SwingUtilities.invokeLater {
+                    iloKeys.remove(key)
+                    action()
+                }
             }
         }
     }
