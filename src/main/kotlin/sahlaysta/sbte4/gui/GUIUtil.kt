@@ -67,7 +67,9 @@ internal object GUIUtil {
             if (!iloKeys.contains(key)) {
                 iloKeys.add(key)
                 SwingUtilities.invokeLater {
-                    iloKeys.remove(key)
+                    synchronized(iloLock) {
+                        iloKeys.remove(key)
+                    }
                     action()
                 }
             }
