@@ -20,9 +20,11 @@ internal object HTMLDisabler {
     fun disableHTMLInTitlePane(jFrame: JFrame) {
         val rootPaneUI = jFrame.rootPane?.ui
         if (rootPaneUI !is FlatRootPaneUI) return
-        val titlePane = titlePaneField.get(rootPaneUI) as FlatTitlePane
-        val titleLabel = titleLabelField.get(titlePane) as JComponent
-        titleLabel.putClientProperty("html.disable", true)
+        val titlePane = titlePaneField.get(rootPaneUI)
+        if (titlePane is FlatTitlePane) {
+            val titleLabel = titleLabelField.get(titlePane) as JComponent
+            titleLabel.putClientProperty("html.disable", true)
+        }
     }
 
 }
