@@ -251,12 +251,18 @@ internal class GUIActions(val gui: GUI) {
             saveUndoIndex = 0
         if (gui.editor.romData != null) {
             if (hasUnsavedChanges) {
-                gui.jFrame.title = "*${gui.editor.romFilePath} - Sonic Battle Text Editor"
+                setGUITitle("*${gui.editor.romFilePath} - Sonic Battle Text Editor")
             } else {
-                gui.jFrame.title = "${gui.editor.romFilePath} - Sonic Battle Text Editor"
+                setGUITitle("${gui.editor.romFilePath} - Sonic Battle Text Editor")
             }
         } else {
-            gui.jFrame.title = "Sonic Battle Text Editor"
+            setGUITitle("Sonic Battle Text Editor")
+        }
+    }
+
+    private fun setGUITitle(title: String) {
+        if (gui.jFrame.title != title) {
+            gui.jFrame.title = title
         }
     }
 
