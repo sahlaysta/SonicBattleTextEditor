@@ -13,7 +13,7 @@ enum class SBTEStringLanguage { JAPANESE, ENGLISH, FRENCH, GERMAN, SPANISH, ITAL
 /** The names for the dialogue groups in Sonic Battle. */
 enum class SBTEStringDescription {
     STORY_MODE, EMERL_CARD_DESCRIPTIONS, OPTIONS_MENU, BATTLE_MENU, BATTLE_RULES_MENU, TRAINING_MODE_MENU,
-    MINIGAME_MENU, BATTLE_RECORD_MENU, CAPTURED_SKILL, STORY_MODE_MENU }
+    MINIGAME_MENU, BATTLE_RECORD_MENU, CAPTURED_SKILL, STORY_MODE_MENU, EMERL_SKILLS }
 
 /** A group of strings that were read from a Sonic Battle ROM. */
 class SBTEStringGroup(val strings: List<SBTEMutableBlob>,
