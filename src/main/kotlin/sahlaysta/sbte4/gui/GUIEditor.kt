@@ -151,6 +151,7 @@ internal class GUIEditor(val gui: GUI) {
             SBTEStringDescription.BATTLE_RECORD_MENU -> "Battle record menu"
             SBTEStringDescription.CAPTURED_SKILL -> "\"Captured skill\""
             SBTEStringDescription.STORY_MODE_MENU -> "Story mode menu"
+            SBTEStringDescription.EMERL_SKILLS -> "Emerl skills"
         }
     }
 
