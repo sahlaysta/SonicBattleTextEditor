@@ -178,7 +178,7 @@ internal class GUIEditor(val gui: GUI) {
         override var text = romBlob.binary?.let { SBTEStringDecoder.decodeString(it) }
         override var displayText = getDisplayTextFromText(text)
         override var hasError = false
-        override var caretPosition = 0
+        override var caretPosition = text?.length ?: 0
 
         override val treeNode = TreeNodeImpl()
         override val treePath get() = TreePath(treeModel.getPathToRoot(treeNode))
