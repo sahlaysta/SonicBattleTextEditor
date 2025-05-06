@@ -17,6 +17,8 @@ internal val usROMStringPointers = arrayOf(
     SBTEStringPointerGroup(0xEDC9B8, 6,    SBTEStringLanguage.JAPANESE, SBTEStringDescription.CAPTURED_SKILL),
     SBTEStringPointerGroup(0xEDD5B0, 8,    SBTEStringLanguage.JAPANESE, SBTEStringDescription.STORY_MODE_MENU),
     SBTEStringPointerGroup(0xED8C18, 309,  SBTEStringLanguage.JAPANESE, SBTEStringDescription.EMERL_SKILLS),
+    SBTEStringPointerGroup(0xED95C0, 16,   SBTEStringLanguage.JAPANESE, SBTEStringDescription.MULTIPLAYER_MESSAGES),
+    SBTEStringPointerGroup(0xEDD73C, 51,   SBTEStringLanguage.JAPANESE, SBTEStringDescription.STORY_MODE_AREA_NAMES),
 
     //ENGLISH
     SBTEStringPointerGroup(0xEDFE8C, 2299, SBTEStringLanguage.ENGLISH,  SBTEStringDescription.STORY_MODE),
@@ -30,6 +32,8 @@ internal val usROMStringPointers = arrayOf(
     SBTEStringPointerGroup(0xEDC9D0, 7,    SBTEStringLanguage.ENGLISH,  SBTEStringDescription.CAPTURED_SKILL),
     SBTEStringPointerGroup(0xEDD5D0, 8,    SBTEStringLanguage.ENGLISH,  SBTEStringDescription.STORY_MODE_MENU),
     SBTEStringPointerGroup(0xED90EC, 309,  SBTEStringLanguage.ENGLISH,  SBTEStringDescription.EMERL_SKILLS),
+    SBTEStringPointerGroup(0xED9600, 16,   SBTEStringLanguage.ENGLISH,  SBTEStringDescription.MULTIPLAYER_MESSAGES),
+    SBTEStringPointerGroup(0xEDD670, 51,   SBTEStringLanguage.ENGLISH,  SBTEStringDescription.STORY_MODE_AREA_NAMES),
 
     //FRENCH
     SBTEStringPointerGroup(0xEE2278, 2299, SBTEStringLanguage.FRENCH,   SBTEStringDescription.STORY_MODE),
@@ -42,6 +46,7 @@ internal val usROMStringPointers = arrayOf(
     SBTEStringPointerGroup(0xEDD070, 40,   SBTEStringLanguage.FRENCH,   SBTEStringDescription.BATTLE_RECORD_MENU),
     SBTEStringPointerGroup(0xEDC9EC, 6,    SBTEStringLanguage.FRENCH,   SBTEStringDescription.CAPTURED_SKILL),
     SBTEStringPointerGroup(0xEDD5F0, 8,    SBTEStringLanguage.FRENCH,   SBTEStringDescription.STORY_MODE_MENU),
+    SBTEStringPointerGroup(0xED9640, 16,   SBTEStringLanguage.FRENCH,   SBTEStringDescription.MULTIPLAYER_MESSAGES),
 
     //GERMAN
     SBTEStringPointerGroup(0xEE4664, 2299, SBTEStringLanguage.GERMAN,   SBTEStringDescription.STORY_MODE),
@@ -54,6 +59,7 @@ internal val usROMStringPointers = arrayOf(
     SBTEStringPointerGroup(0xEDD110, 40,   SBTEStringLanguage.GERMAN,   SBTEStringDescription.BATTLE_RECORD_MENU),
     SBTEStringPointerGroup(0xEDCA04, 6,    SBTEStringLanguage.GERMAN,   SBTEStringDescription.CAPTURED_SKILL),
     SBTEStringPointerGroup(0xEDD610, 8,    SBTEStringLanguage.GERMAN,   SBTEStringDescription.STORY_MODE_MENU),
+    SBTEStringPointerGroup(0xED9680, 16,   SBTEStringLanguage.GERMAN,   SBTEStringDescription.MULTIPLAYER_MESSAGES),
 
     //SPANISH
     SBTEStringPointerGroup(0xEE6A50, 2299, SBTEStringLanguage.SPANISH,  SBTEStringDescription.STORY_MODE),
@@ -66,6 +72,7 @@ internal val usROMStringPointers = arrayOf(
     SBTEStringPointerGroup(0xEDD1B0, 39,   SBTEStringLanguage.SPANISH,  SBTEStringDescription.BATTLE_RECORD_MENU),
     SBTEStringPointerGroup(0xEDCA34, 6,    SBTEStringLanguage.SPANISH,  SBTEStringDescription.CAPTURED_SKILL),
     SBTEStringPointerGroup(0xEDD630, 8,    SBTEStringLanguage.SPANISH,  SBTEStringDescription.STORY_MODE_MENU),
+    SBTEStringPointerGroup(0xED96C0, 16,   SBTEStringLanguage.SPANISH,  SBTEStringDescription.MULTIPLAYER_MESSAGES),
 
     //ITALIAN
     SBTEStringPointerGroup(0xEE8E3C, 2299, SBTEStringLanguage.ITALIAN,  SBTEStringDescription.STORY_MODE),
@@ -77,7 +84,8 @@ internal val usROMStringPointers = arrayOf(
     SBTEStringPointerGroup(0xEDC470, 9,    SBTEStringLanguage.ITALIAN,  SBTEStringDescription.MINIGAME_MENU),
     SBTEStringPointerGroup(0xEDD24C, 40,   SBTEStringLanguage.ITALIAN,  SBTEStringDescription.BATTLE_RECORD_MENU),
     SBTEStringPointerGroup(0xEDCA1C, 6,    SBTEStringLanguage.ITALIAN,  SBTEStringDescription.CAPTURED_SKILL),
-    SBTEStringPointerGroup(0xEDD650, 8,    SBTEStringLanguage.ITALIAN,  SBTEStringDescription.STORY_MODE_MENU)
+    SBTEStringPointerGroup(0xEDD650, 8,    SBTEStringLanguage.ITALIAN,  SBTEStringDescription.STORY_MODE_MENU),
+    SBTEStringPointerGroup(0xED9700, 16,   SBTEStringLanguage.ITALIAN,  SBTEStringDescription.MULTIPLAYER_MESSAGES)
 
 )
 
@@ -95,6 +103,8 @@ internal val jpROMStringPointers = arrayOf(
     SBTEStringPointerGroup(0xE4B244, 6,    SBTEStringLanguage.JAPANESE, SBTEStringDescription.CAPTURED_SKILL),
     SBTEStringPointerGroup(0xE4B968, 8,    SBTEStringLanguage.JAPANESE, SBTEStringDescription.STORY_MODE_MENU),
     SBTEStringPointerGroup(0xE48CE8, 309,  SBTEStringLanguage.JAPANESE, SBTEStringDescription.EMERL_SKILLS),
+    SBTEStringPointerGroup(0xE49690, 16,   SBTEStringLanguage.JAPANESE, SBTEStringDescription.MULTIPLAYER_MESSAGES),
+    SBTEStringPointerGroup(0xE4BA74, 51,   SBTEStringLanguage.JAPANESE, SBTEStringDescription.STORY_MODE_AREA_NAMES),
 
     //ENGLISH
     SBTEStringPointerGroup(0xE4E1C4, 2299, SBTEStringLanguage.ENGLISH,  SBTEStringDescription.STORY_MODE),
@@ -107,7 +117,9 @@ internal val jpROMStringPointers = arrayOf(
     SBTEStringPointerGroup(0xE4B71C, 40,   SBTEStringLanguage.ENGLISH,  SBTEStringDescription.BATTLE_RECORD_MENU),
     SBTEStringPointerGroup(0xE4B25C, 7,    SBTEStringLanguage.ENGLISH,  SBTEStringDescription.CAPTURED_SKILL),
     SBTEStringPointerGroup(0xE4B988, 8,    SBTEStringLanguage.ENGLISH,  SBTEStringDescription.STORY_MODE_MENU),
-    SBTEStringPointerGroup(0xE491BC, 309,  SBTEStringLanguage.ENGLISH,  SBTEStringDescription.EMERL_SKILLS)
+    SBTEStringPointerGroup(0xE491BC, 309,  SBTEStringLanguage.ENGLISH,  SBTEStringDescription.EMERL_SKILLS),
+    SBTEStringPointerGroup(0xE496D0, 16,   SBTEStringLanguage.ENGLISH,  SBTEStringDescription.MULTIPLAYER_MESSAGES),
+    SBTEStringPointerGroup(0xE4B9A8, 51,   SBTEStringLanguage.ENGLISH,  SBTEStringDescription.STORY_MODE_AREA_NAMES)
 
 )
 
@@ -125,6 +137,8 @@ internal val euROMStringPointers = arrayOf(
     SBTEStringPointerGroup(0xEDDAE4, 6,    SBTEStringLanguage.JAPANESE, SBTEStringDescription.CAPTURED_SKILL),
     SBTEStringPointerGroup(0xEDE6E0, 8,    SBTEStringLanguage.JAPANESE, SBTEStringDescription.STORY_MODE_MENU),
     SBTEStringPointerGroup(0xED9D44, 309,  SBTEStringLanguage.JAPANESE, SBTEStringDescription.EMERL_SKILLS),
+    SBTEStringPointerGroup(0xEDA6EC, 16,   SBTEStringLanguage.JAPANESE, SBTEStringDescription.MULTIPLAYER_MESSAGES),
+    SBTEStringPointerGroup(0xEDE86C, 51,   SBTEStringLanguage.JAPANESE, SBTEStringDescription.STORY_MODE_AREA_NAMES),
 
     //ENGLISH
     SBTEStringPointerGroup(0xEE0FBC, 2299, SBTEStringLanguage.ENGLISH,  SBTEStringDescription.STORY_MODE),
@@ -138,6 +152,8 @@ internal val euROMStringPointers = arrayOf(
     SBTEStringPointerGroup(0xEDDAFC, 7,    SBTEStringLanguage.ENGLISH,  SBTEStringDescription.CAPTURED_SKILL),
     SBTEStringPointerGroup(0xEDE700, 8,    SBTEStringLanguage.ENGLISH,  SBTEStringDescription.STORY_MODE_MENU),
     SBTEStringPointerGroup(0xEDA218, 309,  SBTEStringLanguage.ENGLISH,  SBTEStringDescription.EMERL_SKILLS),
+    SBTEStringPointerGroup(0xEDA72C, 16,   SBTEStringLanguage.ENGLISH,  SBTEStringDescription.MULTIPLAYER_MESSAGES),
+    SBTEStringPointerGroup(0xEDE7A0, 51,   SBTEStringLanguage.ENGLISH,  SBTEStringDescription.STORY_MODE_AREA_NAMES),
 
     //FRENCH
     SBTEStringPointerGroup(0xEE33A8, 2299, SBTEStringLanguage.FRENCH,   SBTEStringDescription.STORY_MODE),
@@ -150,6 +166,7 @@ internal val euROMStringPointers = arrayOf(
     SBTEStringPointerGroup(0xEDE19C, 40,   SBTEStringLanguage.FRENCH,   SBTEStringDescription.BATTLE_RECORD_MENU),
     SBTEStringPointerGroup(0xEDDB18, 6,    SBTEStringLanguage.FRENCH,   SBTEStringDescription.CAPTURED_SKILL),
     SBTEStringPointerGroup(0xEDE720, 8,    SBTEStringLanguage.FRENCH,   SBTEStringDescription.STORY_MODE_MENU),
+    SBTEStringPointerGroup(0xEDA76C, 16,   SBTEStringLanguage.FRENCH,   SBTEStringDescription.MULTIPLAYER_MESSAGES),
 
     //GERMAN
     SBTEStringPointerGroup(0xEE5794, 2299, SBTEStringLanguage.GERMAN,   SBTEStringDescription.STORY_MODE),
@@ -162,6 +179,7 @@ internal val euROMStringPointers = arrayOf(
     SBTEStringPointerGroup(0xEDE23C, 40,   SBTEStringLanguage.GERMAN,   SBTEStringDescription.BATTLE_RECORD_MENU),
     SBTEStringPointerGroup(0xEDDB30, 6,    SBTEStringLanguage.GERMAN,   SBTEStringDescription.CAPTURED_SKILL),
     SBTEStringPointerGroup(0xEDE740, 8,    SBTEStringLanguage.GERMAN,   SBTEStringDescription.STORY_MODE_MENU),
+    SBTEStringPointerGroup(0xEDA7AC, 16,   SBTEStringLanguage.GERMAN,   SBTEStringDescription.MULTIPLAYER_MESSAGES),
 
     //SPANISH
     SBTEStringPointerGroup(0xEE7B80, 2299, SBTEStringLanguage.SPANISH,  SBTEStringDescription.STORY_MODE),
@@ -174,6 +192,7 @@ internal val euROMStringPointers = arrayOf(
     SBTEStringPointerGroup(0xEDE2DC, 40,   SBTEStringLanguage.SPANISH,  SBTEStringDescription.BATTLE_RECORD_MENU),
     SBTEStringPointerGroup(0xEDDB60, 6,    SBTEStringLanguage.SPANISH,  SBTEStringDescription.CAPTURED_SKILL),
     SBTEStringPointerGroup(0xEDE760, 8,    SBTEStringLanguage.SPANISH,  SBTEStringDescription.STORY_MODE_MENU),
+    SBTEStringPointerGroup(0xEDA7EC, 16,   SBTEStringLanguage.SPANISH,  SBTEStringDescription.MULTIPLAYER_MESSAGES),
 
     //ITALIAN
     SBTEStringPointerGroup(0xEE9F6C, 2299, SBTEStringLanguage.ITALIAN,  SBTEStringDescription.STORY_MODE),
@@ -185,6 +204,7 @@ internal val euROMStringPointers = arrayOf(
     SBTEStringPointerGroup(0xEDD59C, 9,    SBTEStringLanguage.ITALIAN,  SBTEStringDescription.MINIGAME_MENU),
     SBTEStringPointerGroup(0xEDE37C, 40,   SBTEStringLanguage.ITALIAN,  SBTEStringDescription.BATTLE_RECORD_MENU),
     SBTEStringPointerGroup(0xEDDB48, 6,    SBTEStringLanguage.ITALIAN,  SBTEStringDescription.CAPTURED_SKILL),
-    SBTEStringPointerGroup(0xEDE780, 8,    SBTEStringLanguage.ITALIAN,  SBTEStringDescription.STORY_MODE_MENU)
+    SBTEStringPointerGroup(0xEDE780, 8,    SBTEStringLanguage.ITALIAN,  SBTEStringDescription.STORY_MODE_MENU),
+    SBTEStringPointerGroup(0xEDA82C, 16,   SBTEStringLanguage.ITALIAN,  SBTEStringDescription.MULTIPLAYER_MESSAGES)
 
 )
