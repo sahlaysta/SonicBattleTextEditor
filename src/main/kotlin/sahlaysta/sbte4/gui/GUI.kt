@@ -19,8 +19,15 @@ internal class GUI private constructor() {
         private var _gui: GUI? = null
         val gui: GUI? get() = _gui
 
-        fun start() {
-            SwingUtilities.invokeLater { _gui = GUI() }
+        fun start(romFilePath: String? = null) {
+            SwingUtilities.invokeLater {
+                _gui = GUI()
+                if (romFilePath != null) {
+                    SwingUtilities.invokeLater {
+                        _gui!!.actions.openROM(romFilePath)
+                    }
+                }
+            }
         }
 
     }
